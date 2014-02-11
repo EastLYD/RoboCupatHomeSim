@@ -1,10 +1,10 @@
-// RobocupReferee.cpp : main project file.
+// CleanUpReferee.cpp : main project file.
 
 #include "stdafx.h"
 #include "Form1.h"
-#include "RobocupReferee.h"
+#include "CleanUpReferee.h"
 
-using namespace RobocupReferee;
+using namespace CleanUpReferee;
 
 [STAThreadAttribute]
 int main(array<System::String ^> ^args)

@@ -1,8 +1,8 @@
 #pragma once
 
-#include "RobocupReferee.h"
+#include "CleanUpReferee.h"
 
-namespace RobocupReferee {
+namespace CleanUpReferee {
 
 	using namespace System;
 	using namespace System::ComponentModel;
@@ -27,7 +27,7 @@ namespace RobocupReferee {
 			m_connected = false;
 
 			// Ú‘±‚ğ‚İ‚é
-			m_srv = gcnew Referee("RobocupReferee");
+			m_srv = gcnew Referee("CleanUpReferee");
 			cli::array<System::String^>^ args = System::Environment::GetCommandLineArgs();
 
 			//if(m_srv->connect("socio4.iir.nii.ac.jp", 9333)){
@@ -78,7 +78,7 @@ namespace RobocupReferee {
 	private: System::Windows::Forms::ListBox^  listBox2;
 			 
 			 
-			 //sigverse::SIGService ^srv = gcnew sigverse::SIGService("RobocupReferee");
+			 //sigverse::SIGService ^srv = gcnew sigverse::SIGService("CleanUpReferee");
 			 Referee ^m_srv;
 	private: System::Windows::Forms::Label^  label3;
 			 bool m_connected;
@@ -260,7 +260,7 @@ namespace RobocupReferee {
 			 }
 	private: System::Void button1_Click_1(System::Object^  sender, System::EventArgs^  e) {
 				 if(m_srv == nullptr){
-					 m_srv = gcnew Referee("RobocupReferee");
+					 m_srv = gcnew Referee("CleanUpReferee");
 					 if(m_srv->connect("socio4.iir.nii.ac.jp", 9333)){
 						 m_connected = true;
 						 m_srv->connectToViewer();

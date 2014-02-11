@@ -73,7 +73,7 @@ void Referee::onRecvMsg(sigverse::RecvMsgEvent ^evt)
 	// split
 	array<System::String^>^ split_msg = msg->Split(SepString, System::StringSplitOptions::None);
 	
-	if(split_msg[0] == "RobocupReferee"){
+	if(split_msg[0] == "CleanUpReferee"){
 		// name
 		tmp_msg->Add(split_msg[1]);
 		
