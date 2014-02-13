@@ -47,14 +47,14 @@ void MyController::onInit(InitEvent &evt) {
 double MyController::onAction(ActionEvent &evt) 
 { 
   // サービスが使用可能か定期的にチェックする  
-  bool available = checkService("RobocupReferee");  
+  bool available = checkService("CleanUpReferee");  
 
   if(!available && m_ref != NULL) m_ref = NULL;
 
   // 使用可能  
   else if(available && m_ref == NULL){  
     // サービスに接続  
-    m_ref = connectToService("RobocupReferee");  
+    m_ref = connectToService("CleanUpReferee");  
   }  
  
   // 自分の位置取得
@@ -173,14 +173,12 @@ double MyController::onAction(ActionEvent &evt)
 	usleep(100000);
 
 	if(success){
-	  //msg = "RobocupReferee/Clean up succeeded" "/10000";
-	  msg = "RobocupReferee/";
+	  msg = "CleanUpReferee/";
 	  msg += ent->name();
 	  msg += " succeeded/1000";
 	}
 	else{
-	  //msg = "RobocupReferee/Clean up failed" "/-6000";
-	  msg = "RobocupReferee/";
+	  msg = "CleanUpReferee/";
 	  msg += ent->name();
 	  msg += " failed/-600";
 
