@@ -38,24 +38,24 @@ void MyController::onInit(InitEvent &evt) {
 	colState = false;
 
 	// ゴミ箱
-	tboxSize_x   = 20.0;
-	tboxSize_z   = 40.5; 
-	tboxMin_y    = 40.0;
-	tboxMax_y    = 1000.0;
-}  
-  
+	tboxSize_x = 20.0;
+	tboxSize_z = 40.5; 
+	tboxMin_y  = 40.0;
+	tboxMax_y  = 1000.0;
+}
+
 double MyController::onAction(ActionEvent &evt) 
 { 
 	// サービスが使用可能か定期的にチェックする  
-	bool available = checkService("RobocupReferee");  
+	bool available = checkService("CleanUpReferee");  
 
 	if(!available && m_ref != NULL) m_ref = NULL;
 
 	// 使用可能  
 	else if(available && m_ref == NULL){  
 		// サービスに接続  
-		m_ref = connectToService("RobocupReferee");  
-	}  
+		m_ref = connectToService("CleanUpReferee");  
+	}
  
 	// 自分の位置取得
 	Vector3d myPos;
@@ -75,9 +75,9 @@ double MyController::onAction(ActionEvent &evt)
 
 		// ロボットまたはゴミ箱の場合は除く
 		if(m_entities[i]  == "robot_000"  ||
-			m_entities[i] == "trashbox_0" ||
-			m_entities[i] == "trashbox_1" ||
-			m_entities[i] == "trashbox_2"){
+		   m_entities[i] == "trashbox_0" ||
+		   m_entities[i] == "trashbox_1" ||
+		   m_entities[i] == "trashbox_2"){
 			continue;
 		}
 		// エンティティ取得
@@ -139,14 +139,12 @@ double MyController::onAction(ActionEvent &evt)
 					   strcmp(ent->name(), "petbottle_2") == 0 ||
 					   strcmp(ent->name(), "petbottle_4") == 0 ||
 					   strcmp(ent->name(), "mayonaise_1") == 0 ) {
-						//msg = "RobocupReferee/Clean up succeeded" "/10000";
-						msg = "RobocupReferee/";
+						msg = "CleanUpReferee/";
 						msg += ent->name();
 						msg += " succeeded/1000";
 					}
 					else{
-						//msg = "RobocupReferee/Clean up failed" "/-6000";
-						msg = "RobocupReferee/";
+						msg = "CleanUpReferee/";
 						msg += ent->name();
 						msg += " failed/-600";
 					}
@@ -154,25 +152,22 @@ double MyController::onAction(ActionEvent &evt)
 				// 燃えるゴミ
 				else if(strcmp(myname(), "trashbox_1") == 0){
 					// 燃えるゴミに入れるべきものは無い
-					//msg = "RobocupReferee/Clean up failed" "/-6000";
-					msg = "RobocupReferee/";
+					msg = "CleanUpReferee/";
 					msg += ent->name();
 					msg += " failed/-600";
 				}
 				// 缶瓶
 				else if(strcmp(myname(), "trashbox_2") == 0){
 					if(strcmp(ent->name(), "can_0") == 0 ||
-						strcmp(ent->name(), "can_1") == 0 ||
-						strcmp(ent->name(), "can_2") == 0 ||
-						strcmp(ent->name(), "can_3") == 0) {
-						//msg = "RobocupReferee/Clean up succeeded" "/1000";
-						msg = "RobocupReferee/";
+					   strcmp(ent->name(), "can_1") == 0 ||
+					   strcmp(ent->name(), "can_2") == 0 ||
+					   strcmp(ent->name(), "can_3") == 0) {
+						msg = "CleanUpReferee/";
 						msg += ent->name();
 						msg += " succeeded/1000";
 					}
 					else {
-						//msg = "RobocupReferee/Clean up succeeded" "/-600";
-						msg = "RobocupReferee/";
+						msg = "CleanUpReferee/";
 						msg += ent->name();
 						msg += " failed/-600";
 					}
@@ -203,7 +198,7 @@ void MyController::onCollision(CollisionEvent &evt) {
       // robotと衝突
       if(wname[i] == roboName){
 	colState = true;
-	std::string msg = "RobocupReferee/Collision with [" + std::string(myname()) + "]" "/-1";
+	std::string msg = "CleanUpReferee/Collision with [" + std::string(myname()) + "]" "/-1";
 	if(m_ref != NULL){
 	  m_ref->sendMsgToSrv(msg.c_str());
 	}

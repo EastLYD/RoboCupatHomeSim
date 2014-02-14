@@ -67,20 +67,34 @@ void MyController::onInit(InitEvent &evt)
 	getAllEntities(m_entities);
 
 	// select objects to be observed
-	cnt = m_entities.size();
+
 	for(i=0;i<cnt;i++){
 		if((m_entities[i] != mdName) &&
 		   (m_entities[i] != roboName) &&
 		   (m_entities[i] != "trashbox_0") &&
 		   (m_entities[i] != "trashbox_1") &&
 		   (m_entities[i] != "trashbox_2") &&
-		   (m_entities[i] != "apple") &&
+		   (m_entities[i] != "petbottle_0") &&
+		   (m_entities[i] != "petbottle_1") &&
+		   (m_entities[i] != "petbottle_2") &&
+		   (m_entities[i] != "petbottle_3") &&
+		   (m_entities[i] != "petbottle_4") &&
+		   (m_entities[i] != "banana") &&
+		   (m_entities[i] != "chigarette") &&
+		   (m_entities[i] != "chocolate") &&
+		   (m_entities[i] != "mayonaise_0") &&
+		   (m_entities[i] != "mayonaise_1") &&
+		   (m_entities[i] != "mugcup") &&
 		   (m_entities[i] != "can_0") &&
-		   (m_entities[i] != "petbottle_1") ){
+		   (m_entities[i] != "can_1") &&
+		   (m_entities[i] != "can_2") &&
+		   (m_entities[i] != "can_3") &&
+		   (m_entities[i] != "apple") &&
+		   (m_entities[i] != "clock") &&
+		   (m_entities[i] != "kettle") ){
 			m_entNames.push_back(m_entities[i]);
 		}
 	}
-
 	entNum = m_entNames.size();
 
 	trialCount = 0;
