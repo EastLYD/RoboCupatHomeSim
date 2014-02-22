@@ -67,7 +67,7 @@ void MyController::onInit(InitEvent &evt)
 	getAllEntities(m_entities);
 
 	// select objects to be observed
-
+	cnt = m_entities.size();
 	for(i=0;i<cnt;i++){
 		if((m_entities[i] != mdName) &&
 		   (m_entities[i] != roboName) &&
