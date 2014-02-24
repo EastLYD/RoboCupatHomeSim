@@ -1,2 +1,16 @@
-Please send messages to 'robot_000' as follows, start, kitchen, lobby, and bed room.
-Moderator will output the room name as a log message.
+本サンプルプログラムは、EGPSRのデモンストレーションのベースとして開発中である。
+
+＜現状の機能＞
+・2012年のメキシコ大会の会場を構築（Mexico2012Field.xml）
+・ロボットがメッセージを受け取って順番に部屋を移動するコントローラの構築（EGPSR2014Robo.cpp）
+・ロボットが部屋に到達したかを監視する（Moderator.cpp）
+
+＜SIGViewerでの実行手順＞
+
+robot_00に以下の順番でメッセージを送信
+
+「start」→「kitchen」→「lobby」→「bed room」
+
+※GitHubの同じディレクトリのRefereeのサービスプロバイダを読み込むと、ロボットが指定した部屋に到達した場合に500点加点されます。
+
+作成者　NII　萩原
