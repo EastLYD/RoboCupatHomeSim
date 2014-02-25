@@ -94,10 +94,10 @@ void MyController::onInit(InitEvent &evt) {
   
 double MyController::onAction(ActionEvent &evt) {
   // check whether Referee service is available or not
-  bool available = checkService("RobocupReferee");
+  bool available = checkService("EGPSRReferee");
   if(!available && m_ref != NULL) m_ref = NULL;
   else if(available && m_ref == NULL){
-    m_ref = connectToService("RobocupReferee");
+    m_ref = connectToService("EGPSRReferee");
   }
 
   // get information about the robot and renew it
@@ -132,7 +132,7 @@ double MyController::onAction(ActionEvent &evt) {
         r_my->setPosition(prv1Pos);
       }
 
-      std::string msg = "RobocupReferee/Collision with [" + m_entNames[k] + "]" "/-100";
+      std::string msg = "EGPSRReferee/Collision with [" + m_entNames[k] + "]" "/-100";
       if(m_ref != NULL){
         m_ref->sendMsgToSrv(msg.c_str());
       }
@@ -172,7 +172,7 @@ void MyController::onCheckRoom(){
 	if(x>100&&x<500&&z>75&&z<425){ // kitchen
 		num=1;
 		if(m_roomState==0){
-			std::string msg = "RobocupReferee/Robot is in [" + m_rooms[num] + "]" "/+500";
+			std::string msg = "EGPSRReferee/Robot is in [" + m_rooms[num] + "]" "/+500";
 			m_roomState=1;
 			if(m_ref != NULL){
 				m_ref->sendMsgToSrv(msg.c_str());
@@ -185,7 +185,7 @@ void MyController::onCheckRoom(){
 	if(x>-500&&x<-100&&z>-425&&z<-75){ // lobby
 	 num=2;
 		if(m_roomState==1){
-			std::string msg = "RobocupReferee/Robot is in [" + m_rooms[num] + "]" "/+500";
+			std::string msg = "EGPSRReferee/Robot is in [" + m_rooms[num] + "]" "/+500";
 			m_roomState=2;
 			if(m_ref != NULL){
 				m_ref->sendMsgToSrv(msg.c_str());
@@ -198,7 +198,7 @@ void MyController::onCheckRoom(){
 	if(x>-500&&x<-100&&z>75&&z<425){ // bed room
 	 num=3;
 		if(m_roomState==2){
-			std::string msg = "RobocupReferee/Robot is in [" + m_rooms[num] + "]" "/+500";
+			std::string msg = "EGPSRReferee/Robot is in [" + m_rooms[num] + "]" "/+500";
 			m_roomState=3;
 			if(m_ref != NULL){
 				m_ref->sendMsgToSrv(msg.c_str());
