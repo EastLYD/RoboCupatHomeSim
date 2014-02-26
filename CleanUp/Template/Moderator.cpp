@@ -1,6 +1,8 @@
 #include "ControllerEvent.h"
 #include "Controller.h"
 #include "Logger.h"
+#include <sstream>
+#include <iomanip>
 
 class MyController : public Controller {  
 public:
@@ -198,11 +200,32 @@ double MyController::onAction(ActionEvent &evt)
 		colState = false;
 	}
 
-	//double elapsedTime = evt.time() - startTime;
-	if(evt.time() - startTime > endTime){
+	std::stringstream time_ss;
+	double elapsedTime = evt.time() - startTime;
+	//if(evt.time() - startTime > endTime){
+	if(elapsedTime > endTime){
 		LOG_MSG(("Time_over"));
 		broadcastMsg("Time_over");
 		breakTask();
+		time_ss << "CleanUpReferee/time/00:00:00";
+	}
+	else{
+		double remainedTime = endTime - elapsedTime;
+		int min, sec, msec;
+		sec = (int)remainedTime;
+		min = sec / 60;
+		sec %= 60;
+		msec = (int)((remainedTime - sec) * 100);
+		time_ss <<  "CleanUpReferee/time/";
+		time_ss << std::setw(2) << std::setfill('0') << min << ":";
+		time_ss << std::setw(2) << std::setfill('0') << sec;// << ":";
+		//time_ss << std::setw(2) << std::setfill('0') << msec;
+	}
+	if(m_ref != NULL){
+		m_ref->sendMsgToSrv(time_ss.str().c_str());
+	}
+	else{
+		LOG_MSG((time_ss.str().c_str()));
 	}
 
 	return retValue;
