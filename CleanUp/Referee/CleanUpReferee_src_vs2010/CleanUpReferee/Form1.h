@@ -81,6 +81,8 @@ namespace CleanUpReferee {
 			 //sigverse::SIGService ^srv = gcnew sigverse::SIGService("RobocupReferee");
 			 Referee ^m_srv;
 	private: System::Windows::Forms::Label^  label3;
+	private: System::Windows::Forms::TextBox^  textBox2;
+	private: System::Windows::Forms::Label^  label4;
 			 bool m_connected;
 			 //srv->connect("socio4.iir.nii.ac.jp", 9333);
 			 
@@ -102,14 +104,16 @@ namespace CleanUpReferee {
 			this->textBox1 = (gcnew System::Windows::Forms::TextBox());
 			this->listBox2 = (gcnew System::Windows::Forms::ListBox());
 			this->label3 = (gcnew System::Windows::Forms::Label());
+			this->textBox2 = (gcnew System::Windows::Forms::TextBox());
+			this->label4 = (gcnew System::Windows::Forms::Label());
 			this->SuspendLayout();
 			// 
 			// label1
 			// 
 			this->label1->AutoSize = true;
-			this->label1->Font = (gcnew System::Drawing::Font(L"HGSGothicE", 15.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point, 
+			this->label1->Font = (gcnew System::Drawing::Font(L"HGS恨集窫", 15.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point, 
 				static_cast<System::Byte>(128)));
-			this->label1->Location = System::Drawing::Point(170, 255);
+			this->label1->Location = System::Drawing::Point(199, 255);
 			this->label1->Name = L"label1";
 			this->label1->Size = System::Drawing::Size(57, 21);
 			this->label1->TabIndex = 0;
@@ -119,7 +123,7 @@ namespace CleanUpReferee {
 			// connect
 			// 
 			this->connect->Enabled = false;
-			this->connect->Font = (gcnew System::Drawing::Font(L"HGPGothicE", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point, 
+			this->connect->Font = (gcnew System::Drawing::Font(L"HGP恨集窫", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point, 
 				static_cast<System::Byte>(128)));
 			this->connect->Location = System::Drawing::Point(12, 293);
 			this->connect->Name = L"connect";
@@ -137,8 +141,7 @@ namespace CleanUpReferee {
 			// 
 			// button1
 			// 
-			this->button1->Font = (gcnew System::Drawing::Font(L"HGPGothicE", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point, 
-				static_cast<System::Byte>(128)));
+			this->button1->Font = (gcnew System::Drawing::Font(L"HGP恨集窫", 14.25F));
 			this->button1->Location = System::Drawing::Point(128, 293);
 			this->button1->Name = L"button1";
 			this->button1->Size = System::Drawing::Size(116, 37);
@@ -149,7 +152,7 @@ namespace CleanUpReferee {
 			// 
 			// button2
 			// 
-			this->button2->Font = (gcnew System::Drawing::Font(L"HGPGothicE", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point, 
+			this->button2->Font = (gcnew System::Drawing::Font(L"HGP恨集窫", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point, 
 				static_cast<System::Byte>(128)));
 			this->button2->Location = System::Drawing::Point(280, 293);
 			this->button2->Name = L"button2";
@@ -178,7 +181,7 @@ namespace CleanUpReferee {
 			// label2
 			// 
 			this->label2->AutoSize = true;
-			this->label2->Font = (gcnew System::Drawing::Font(L"HGSGothicE", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point, 
+			this->label2->Font = (gcnew System::Drawing::Font(L"HGS恨集窫", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point, 
 				static_cast<System::Byte>(128)));
 			this->label2->Location = System::Drawing::Point(271, 26);
 			this->label2->Name = L"label2";
@@ -218,13 +221,39 @@ namespace CleanUpReferee {
 			// label3
 			// 
 			this->label3->AutoSize = true;
-			this->label3->Font = (gcnew System::Drawing::Font(L"HGSGothicE", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point, 
+			this->label3->Font = (gcnew System::Drawing::Font(L"HGS恨集窫", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point, 
 				static_cast<System::Byte>(128)));
 			this->label3->Location = System::Drawing::Point(13, 26);
 			this->label3->Name = L"label3";
 			this->label3->Size = System::Drawing::Size(71, 16);
 			this->label3->TabIndex = 8;
 			this->label3->Text = L"Comment";
+			// 
+			// textBox2
+			// 
+			this->textBox2->BackColor = System::Drawing::SystemColors::InfoText;
+			this->textBox2->Font = (gcnew System::Drawing::Font(L"MS UI Gothic", 18, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point, 
+				static_cast<System::Byte>(128)));
+			this->textBox2->ForeColor = System::Drawing::SystemColors::InactiveBorder;
+			this->textBox2->Location = System::Drawing::Point(90, 249);
+			this->textBox2->Name = L"textBox2";
+			this->textBox2->RightToLeft = System::Windows::Forms::RightToLeft::No;
+			this->textBox2->Size = System::Drawing::Size(103, 31);
+			this->textBox2->TabIndex = 6;
+			this->textBox2->Text = L"00:00";
+			this->textBox2->TextAlign = System::Windows::Forms::HorizontalAlignment::Right;
+			// 
+			// label4
+			// 
+			this->label4->AutoSize = true;
+			this->label4->Font = (gcnew System::Drawing::Font(L"HGS恨集窫", 15.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point, 
+				static_cast<System::Byte>(128)));
+			this->label4->Location = System::Drawing::Point(27, 255);
+			this->label4->Name = L"label4";
+			this->label4->Size = System::Drawing::Size(53, 21);
+			this->label4->TabIndex = 0;
+			this->label4->Text = L"Time";
+			this->label4->Click += gcnew System::EventHandler(this, &Form1::label1_Click);
 			// 
 			// Form1
 			// 
@@ -234,12 +263,14 @@ namespace CleanUpReferee {
 			this->ClientSize = System::Drawing::Size(390, 352);
 			this->Controls->Add(this->label3);
 			this->Controls->Add(this->listBox2);
+			this->Controls->Add(this->textBox2);
 			this->Controls->Add(this->textBox1);
 			this->Controls->Add(this->label2);
 			this->Controls->Add(this->listBox1);
 			this->Controls->Add(this->button2);
 			this->Controls->Add(this->button1);
 			this->Controls->Add(this->connect);
+			this->Controls->Add(this->label4);
 			this->Controls->Add(this->label1);
 			this->Name = L"Form1";
 			this->RightToLeft = System::Windows::Forms::RightToLeft::No;
@@ -283,6 +314,14 @@ private: System::Void timer1_Tick(System::Object^  sender, System::EventArgs^  e
 					 int total = m_srv->getTotal();
 					 this->textBox1->Text = total.ToString();
 				 }
+
+				System::String^ msg =  m_srv->getRemainingTime();
+				if(msg!=""){
+					this->textBox2->Text = msg;
+				}
+				else{
+					this->textBox2->Text = "00:00";
+				}
 			 }
 		 }
 private: System::Void button1_Click_2(System::Object^  sender, System::EventArgs^  e) {

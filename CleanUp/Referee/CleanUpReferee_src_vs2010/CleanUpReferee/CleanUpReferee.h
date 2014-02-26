@@ -17,12 +17,14 @@ public:
 	int getTotal();
 	void setTotal(int total){ m_total = total; }
 	System::String^ getMessage();
+	System::String^ getRemainingTime();
 	virtual void onRecvMsg(sigverse::RecvMsgEvent ^evt) override;
 	virtual double onAction() override;
 	
 private:
 	System::Collections::Generic::List<int>^ tmp_score;
 	System::Collections::Generic::List<System::String^>^ tmp_msg;
+	System::String^ remainingTime;
 	int m_total;
 };
 
@@ -62,6 +64,11 @@ double Referee::onAction()
   return 10.0;  
 }  
 
+System::String^ Referee::getRemainingTime()
+{
+	return remainingTime;
+}
+
 void Referee::onRecvMsg(sigverse::RecvMsgEvent ^evt)  
 {  
 	
@@ -75,11 +82,16 @@ void Referee::onRecvMsg(sigverse::RecvMsgEvent ^evt)
 	
 	if(split_msg[0] == "CleanUpReferee"){
 		// name
-		tmp_msg->Add(split_msg[1]);
+		if(split_msg[1] == "time"){
+			remainingTime = split_msg[2];
+		}
+		else{
+			tmp_msg->Add(split_msg[1]);
 		
-		// score
-		int score = int::Parse(split_msg[2]);
-		tmp_score->Add(score);
-		m_total += score;
+			// score
+			int score = int::Parse(split_msg[2]);
+			tmp_score->Add(score);
+			m_total += score;
+		}
 	}
 }
