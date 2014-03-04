@@ -1,6 +1,8 @@
 #sigverse header
 SIG_SRC  = $(SIGVERSE_PATH)/include/sigverse
 
+OBJS = CheckPoint.so CheckPoint2.so FollowMeHuman2.so FollowMeTestRobot_v2.so Wall.so score.so FollowReferee_v2.so Moderator.so
+
 all: $(OBJS)
 
 #compile

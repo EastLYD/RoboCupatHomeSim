@@ -121,6 +121,15 @@
             position="-10.0 10.0 20.0"/>    
   </instanciate>
 
+<!--   <instanciate class="Robot-nii.xml">  
+        <set-attr-value name="name" value="robot_010"/>  
+        <set-attr-value name="dynamics" value="false"/>  
+        <set-attr-value name="x" value="-50.0"/>  
+        <set-attr-value name="y" value="60.0"/>  
+        <set-attr-value name="z" value="0.0"/> 
+        <set-attr-value name="collision" value="true"/> 
+  </instanciate> -->
+
 	<!--House-->
 	<instanciate class="Floor_B.xml">
 		<set-attr-value name="name" value="floor_b"/>
@@ -465,5 +474,19 @@
 		<set-attr-value name="scaley" value="1.0"/>  
 		<set-attr-value name="scalez" value="1.5"/>  
     <set-attr-value name="dynamics" value="false"/>
+  </instanciate>
+
+<!--Moderator-->
+  <instanciate class="seModerator.xml">
+    <set-attr-value name="name" value="moderator_0"/>
+    <set-attr-value name="dynamics" value="false"/>
+    <set-attr-value name="x" value="190.0"/>
+    <set-attr-value name="y" value="200.0"/>
+    <set-attr-value name="z" value="190.0"/>
+    <set-attr-value name="language" value="c++"/>
+    <set-attr-value name="implementation"
+                    value="./Moderator.so"/>
+    <set-attr-value name="collision" value="false"/>
+    <set-attr-value name="graspable" value="false"/>
   </instanciate>
 </world>
