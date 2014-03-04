@@ -1,0 +1,129 @@
+ImageRuntimeVersion: v4.0.30319
+Assembly SIGService, Version=1.0.*, Culture=ロケールに依存しない言語 (ロケールに依存しない国): 
+	hash=SHA1, flags=PublicKey
+Assembly mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
+	hash=None, flags=None
+Assembly System.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
+	hash=None, flags=None
+Assembly System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
+	hash=None, flags=None
+Assembly System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
+	hash=None, flags=None
+Assembly System.Xml, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
+	hash=None, flags=None
+Assembly Microsoft.VisualC, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a: 
+	hash=None, flags=None
+Assembly System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
+	hash=None, flags=None
+Assembly Microsoft.VisualC.STLCLR, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a: 
+	hash=None, flags=None
+Class sigverse.SgvSocket: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(UInt32): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Interfaces:
+    System.IDisposable
+  Methods:
+    initWinsock(): PrivateScope, Public, HideBySig
+    finalWinsock(): PrivateScope, Public, HideBySig
+    connectTo(SByte*, Int32): PrivateScope, Public, HideBySig
+    sendData(SByte*, Int32): PrivateScope, Public, HideBySig
+    recvData(SByte*, Int32): PrivateScope, Public, HideBySig
+    getSocket(): PrivateScope, Public, HideBySig
+    Dispose(): PrivateScope, Public, Final, Virtual, HideBySig
+Class sigverse.ViewImageInfo: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(sigverse.ViewImageInfo): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+    Void .ctor(sigverse.ImageDataType, sigverse.ColorBitType, Int32, Int32): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+    Void .ctor(sigverse.ImageDataType, sigverse.ColorBitType, sigverse.ImageDataSize): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Methods:
+    getDataType(): PrivateScope, Public, HideBySig
+    getColorBitType(): PrivateScope, Public, HideBySig
+    getWidth(): PrivateScope, Public, HideBySig
+    getHeight(): PrivateScope, Public, HideBySig
+    getBytesPerOnePixel(): PrivateScope, Public, HideBySig
+Class sigverse.ViewImage: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(sigverse.ViewImageInfo): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Interfaces:
+    System.IDisposable
+  Methods:
+    getInfo(): PrivateScope, Public, HideBySig
+    getWidth(): PrivateScope, Public, HideBySig
+    getHeight(): PrivateScope, Public, HideBySig
+    getBuffer(): PrivateScope, Public, HideBySig
+    setBuffer(SByte*): PrivateScope, Public, HideBySig
+    getBufferLength(): PrivateScope, Public, HideBySig
+    setFOVy(Double): PrivateScope, Public, HideBySig
+    setAspectRatio(Double): PrivateScope, Public, HideBySig
+    getFOVy(): PrivateScope, Public, HideBySig
+    getFOVx(): PrivateScope, Public, HideBySig
+    getAspectRatio(): PrivateScope, Public, HideBySig
+    setBitImageAsWindowsBMP(Byte*): PrivateScope, Public, HideBySig
+    saveAsWindowsBMP(SByte*): PrivateScope, Public, HideBySig
+    Dispose(): PrivateScope, Public, Final, Virtual, HideBySig
+Class sigverse.RecvMsgEvent: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Methods:
+    setData(String, Int32): PrivateScope, Public, HideBySig
+    getSender(): PrivateScope, Public, HideBySig
+    getMsg(): PrivateScope, Public, HideBySig
+Class sigverse.SIGService: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+    Void .ctor(System.String): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Interfaces:
+    System.IDisposable
+  Fields:
+    System.Collections.Generic.List`1[System.String] m_entitiesName IsByValue : Public, InitOnly
+    System.Collections.Generic.List`1[System.String] m_elseServices IsByValue : Public, InitOnly
+  Methods:
+    sendMsg(List`1, String): PrivateScope, Public, HideBySig
+    sendMsg(String, String): PrivateScope, Public, HideBySig
+    sendMsgToCtr(String, String): PrivateScope, Public, HideBySig
+    connect(String, Int32): PrivateScope, Public, HideBySig
+    disconnect(): PrivateScope, Public, HideBySig
+    disconnectFromController(String): PrivateScope, Public, HideBySig
+    disconnectFromAllController(): PrivateScope, Public, HideBySig
+    disconnectFromViewer(): PrivateScope, Public, HideBySig
+    startLoop(): PrivateScope, Public, HideBySig
+    startLoop(Double): PrivateScope, Public, HideBySig
+    checkRecvData(Int32): PrivateScope, Public, HideBySig
+    connectToViewer(): PrivateScope, Public, HideBySig
+    getIsConnectedView(): PrivateScope, Public, HideBySig
+    captureView(String, Int32, ColorBitType): PrivateScope, Public, HideBySig
+    captureView(String, Int32): PrivateScope, Public, HideBySig
+    captureView(String): PrivateScope, Public, HideBySig
+    captureView(String, Int32, ColorBitType, ImageDataSize): PrivateScope, Public, HideBySig
+    distanceSensor(String, Double, Double): PrivateScope, Public, HideBySig
+    distanceSensor(String, Double): PrivateScope, Public, HideBySig
+    distanceSensor(String): PrivateScope, Public, HideBySig
+    distanceSensor(String, Double, Double, Int32): PrivateScope, Public, HideBySig
+    distanceSensor1D(String, Double, Double, Int32, ColorBitType): PrivateScope, Public, HideBySig
+    distanceSensor1D(String, Double, Double, Int32): PrivateScope, Public, HideBySig
+    distanceSensor1D(String, Double, Double): PrivateScope, Public, HideBySig
+    distanceSensor1D(String, Double): PrivateScope, Public, HideBySig
+    distanceSensor1D(String): PrivateScope, Public, HideBySig
+    distanceSensor1D(String, Double, Double, Int32, ColorBitType, ImageDataSize): PrivateScope, Public, HideBySig
+    distanceSensor2D(String, Double, Double, Int32, ColorBitType): PrivateScope, Public, HideBySig
+    distanceSensor2D(String, Double, Double, Int32): PrivateScope, Public, HideBySig
+    distanceSensor2D(String, Double, Double): PrivateScope, Public, HideBySig
+    distanceSensor2D(String, Double): PrivateScope, Public, HideBySig
+    distanceSensor2D(String): PrivateScope, Public, HideBySig
+    distanceSensor2D(String, Double, Double, Int32, ColorBitType, ImageDataSize): PrivateScope, Public, HideBySig
+    getDepthImage(String, Double, Double, Int32, ColorBitType): PrivateScope, Public, HideBySig
+    getDepthImage(String, Double, Double, Int32): PrivateScope, Public, HideBySig
+    getDepthImage(String, Double, Double): PrivateScope, Public, HideBySig
+    getDepthImage(String, Double): PrivateScope, Public, HideBySig
+    getDepthImage(String): PrivateScope, Public, HideBySig
+    getDepthImage(String, Double, Double, Int32, ColorBitType, ImageDataSize): PrivateScope, Public, HideBySig
+    getName(): PrivateScope, Public, HideBySig
+    setName(String): PrivateScope, Public, HideBySig
+    getNewServiceNum(): PrivateScope, Public, HideBySig
+    getAllOtherServices(): PrivateScope, Public, HideBySig
+    getAllConnectedEntitiesName(): PrivateScope, Public, HideBySig
+    getSgvSocket(): PrivateScope, Public, HideBySig
+    getControllerSocket(String): PrivateScope, Public, HideBySig
+    getConnectedControllerNum(): PrivateScope, Public, HideBySig
+    setAutoExitLoop(Boolean(HasFieldMarshal)): PrivateScope, Public, HideBySig
+    setAutoExitProc(Boolean(HasFieldMarshal)): PrivateScope, Public, HideBySig
+    onInit(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    onRecvMsg(RecvMsgEvent): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    onAction(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    Dispose(): PrivateScope, Public, Final, Virtual, HideBySig

@@ -1,0 +1,37 @@
+﻿2014/02/26 17:56:38 にビルドを開始しました。
+     1>ノード 2 上のプロジェクト "C:\Users\hagiwara\Desktop\SIGVerse\SIGService\Referee\Robocup2014\EGPSRReferee_src_vs2010\EGPSRReferee\EGPSRReferee.vcxproj" (build ターゲット)。
+     1>InitializeBuildStatus:
+         "AlwaysCreate" が指定されたため "Release\EGPSRReferee.unsuccessfulbuild" を作成しています。
+       GenerateTargetFrameworkMonikerAttribute:
+       すべての出力ファイルが入力ファイルに対して最新なので、ターゲット "GenerateTargetFrameworkMonikerAttribute" を省略します。
+     1>C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\Microsoft.MetaGen.targets(91,5): warning : 必要なファイル "C:\USERS\HAGIWARA\DESKTOP\SIGVERSE\SIGSERVICE\REFEREE\EGPSRREFEREE_SRC_2014\RELEASE\SIGSERVICE.DLL" が見つかりません。
+         タスクが ContinueOnError=true を伴って呼び出されたため、前のエラーは警告に変換されました。
+       ClCompile:
+         c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /AI"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0" /Zi /clr:pure /nologo /W3 /WX- /O2 /Oy- /D WIN32 /D NDEBUG /D _UNICODE /D UNICODE /EHa /MD /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yc"StdAfx.h" /Fp"Release\EGPSRReferee.pch" /Fo"Release\\" /Fd"Release\vc100.pdb" /TP /FUC:\Users\hagiwara\Desktop\SIGVerse\SIGService\Referee\Robocup2014\EGPSRReferee_src_vs2010\Release\SIGService.dll /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\System.Core.dll" /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\System.Data.dll" /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\System.dll" /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\System.Drawing.dll" /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\System.Windows.Forms.dll" /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\System.Xml.dll" /analyze- /errorReport:prompt stdafx.cpp /clr:nostdlib 
+         stdafx.cpp
+         c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /AI"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0" /Zi /clr:pure /nologo /W3 /WX- /O2 /Oy- /D WIN32 /D NDEBUG /D _UNICODE /D UNICODE /EHa /MD /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"StdAfx.h" /Fp"Release\EGPSRReferee.pch" /Fo"Release\\" /Fd"Release\vc100.pdb" /TP /FUC:\Users\hagiwara\Desktop\SIGVerse\SIGService\Referee\Robocup2014\EGPSRReferee_src_vs2010\Release\SIGService.dll /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\System.Core.dll" /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\System.Data.dll" /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\System.dll" /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\System.Drawing.dll" /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\System.Windows.Forms.dll" /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\System.Xml.dll" /analyze- /errorReport:prompt AssemblyInfo.cpp EGPSRReferee.cpp /clr:nostdlib 
+         AssemblyInfo.cpp
+         EGPSRReferee.cpp
+         コードを生成中...
+         すべての出力が最新のものです。
+       CoreResGen:
+         古いリソースは、それらのソース ファイルに対して存在しません。リソース生成を省略します。
+       ResourceCompile:
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\rc.exe /D _UNICODE /D UNICODE /l"0x0409" /nologo /fo"Release\app.res" app.rc 
+       Link:
+         c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\hagiwara\Desktop\SIGVerse\SIGService\Referee\Robocup2014\EGPSRReferee_src_vs2010\Release\EGPSRReferee.sig" /INCREMENTAL:NO /NOLOGO /ASSEMBLYRESOURCE:Release\EGPSRReferee.Form1.resources /MANIFEST /ManifestFile:"Release\EGPSRReferee.sig.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\Users\hagiwara\Desktop\SIGVerse\SIGService\Referee\Robocup2014\EGPSRReferee_src_vs2010\Release\EGPSRReferee.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /ENTRY:"main" /DYNAMICBASE /FIXED:NO /NXCOMPAT /MACHINE:X86 Release\app.res
+         Release\AssemblyInfo.obj
+         Release\EGPSRReferee.obj
+         Release\stdafx.obj
+         "Release\.NETFramework,Version=v4.0.AssemblyAttributes.obj"
+         EGPSRReferee.vcxproj -> C:\Users\hagiwara\Desktop\SIGVerse\SIGService\Referee\Robocup2014\EGPSRReferee_src_vs2010\Release\EGPSRReferee.sig
+       Manifest:
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /outputresource:"C:\Users\hagiwara\Desktop\SIGVerse\SIGService\Referee\Robocup2014\EGPSRReferee_src_vs2010\Release\EGPSRReferee.sig;#1" /manifest Release\EGPSRReferee.sig.intermediate.manifest
+       FinalizeBuildStatus:
+         ファイル "Release\EGPSRReferee.unsuccessfulbuild" を削除しています。
+         "Release\EGPSRReferee.lastbuildstate" のタッチ タスクを実行しています。
+     1>プロジェクト "C:\Users\hagiwara\Desktop\SIGVerse\SIGService\Referee\Robocup2014\EGPSRReferee_src_vs2010\EGPSRReferee\EGPSRReferee.vcxproj" (build ターゲット) のビルドが完了しました。
+
+ビルドに成功しました。
+
+経過時間 00:00:00.85
