@@ -5,6 +5,7 @@
 #include <string> 
 #include <iostream>
 #include <math.h>
+#include <unistd.h>
 
 #define PI 3.1415926535
 

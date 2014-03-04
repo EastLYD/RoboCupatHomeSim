@@ -5,6 +5,7 @@
 #include <string> 
 #include <iostream>
 #include <math.h>
+#include <unistd.h>
 
 #define PI 3.1415926535
 
@@ -153,11 +154,12 @@ double MyController::onAction(ActionEvent &evt)
 				dy=(temp.y[i]-pos.y());
 				dz=(temp.z[i]-pos.z());
 
-				angle = rotateTowardObj(npos);
+				//angle = rotateTowardObj(npos);
+				angle = -atan2(dx,dz);
 
-				if(angle < 0.0){
-					angle = -1.0 * angle;
-				}
+				//if(angle < 0.0){
+				//	angle = -1.0 * angle;
+				//}
 
 				my->setAxisAndAngle(0,1.0, 0, -angle);
 
