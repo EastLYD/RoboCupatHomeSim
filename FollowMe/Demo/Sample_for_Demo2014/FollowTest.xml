@@ -49,7 +49,7 @@
     <set-attr-value name="z" value="275.0"/>
     <set-attr-value name="collision" value="false"/>
   </instanciate>
-	<instanciate class="CheckPoint.xml">  
+	<instanciate class="seModerator.xml">  
     <set-attr-value name="name" value="score"/> 
     <set-attr-value name="language" value="c++"/>
     <set-attr-value name="implementation"
