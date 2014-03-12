@@ -50,8 +50,6 @@ public:
 
 	/* @brief  位置を指定しその方向に回転を開始し、回転終了時間を返します
 	 * @param  pos 回転したい方向の位置
-	 * @param  vel 回転速度
-	 * @param  now 現在時間
 	 * @return 回転終了時間
 	 */
 	double rotateTowardObj(Vector3d pos);
@@ -70,6 +68,23 @@ private:
 	std::vector<std::string> m_entities;
 
 	coordinate temp; 
+
+	FILE* fp;
+	float stepWidth;
+	int sleeptime;
+	const static int SIZE = 30;
+	int motionNum;
+	float HEIGHT[SIZE];
+	float LARM_JOINT1[SIZE]; // left shoulder
+	float LARM_JOINT3[SIZE]; // left elbow
+	float RARM_JOINT1[SIZE]; // right shoulder
+	float RARM_JOINT3[SIZE]; // right elbow
+	float LLEG_JOINT2[SIZE]; // left groin(leg)
+	float LLEG_JOINT4[SIZE]; // left knee
+	float LLEG_JOINT6[SIZE]; // left ankle
+	float RLEG_JOINT2[SIZE]; // right groin
+	float RLEG_JOINT4[SIZE]; // right knee
+	float RLEG_JOINT6[SIZE]; // right ankle
 };
 
 void MyController::onInit(InitEvent &evt) 
@@ -96,7 +111,6 @@ void MyController::onInit(InitEvent &evt)
 	my->setJointAngle("RARM_JOINT2", DEG2RAD(90));  
 
 	if(first==false){
-		FILE* fp;
 		x=0;
 		y=0;
 		z=0;
@@ -108,7 +122,7 @@ void MyController::onInit(InitEvent &evt)
 
 		if((fp = fopen("node.txt", "r")) == NULL) {
 			printf("File do not exist.\n");
-			exit(0);
+			//exit(0);
 		}
 		while(fscanf(fp, "%lf,%lf,%lf,%lf", &x, &y, &z,&w) != EOF) {
 			temp.x[i]=x;
@@ -122,6 +136,32 @@ void MyController::onInit(InitEvent &evt)
 		i=0;
 	}
 
+	stepWidth = 85;
+	sleeptime = 300000;
+
+	if((fp = fopen("motion.txt", "r")) == NULL) {
+		printf("File do not exist.\n");
+		//exit(0);
+	}
+	else{
+		fscanf(fp, "%d", &motionNum);
+		fscanf(fp, "%d", &sleeptime);
+		for(int i=0; i<motionNum; i++){
+			fscanf(fp, "%f %f %f %f %f %f %f %f %f %f %f",
+					   &HEIGHT[i],
+					   &LARM_JOINT1[i],
+					   &LARM_JOINT3[i],
+					   &RARM_JOINT1[i],
+					   &RARM_JOINT3[i],
+					   &LLEG_JOINT2[i],
+					   &LLEG_JOINT4[i],
+					   &LLEG_JOINT6[i],
+					   &RLEG_JOINT2[i],
+					   &RLEG_JOINT4[i],
+					   &RLEG_JOINT6[i]);
+		}
+	}
+
 	getAllEntities(m_entities);
 
 }
@@ -129,11 +169,10 @@ void MyController::onInit(InitEvent &evt)
 double MyController::onAction(ActionEvent &evt)
 {
 	int    count = 0;
-	int    count2 = 0; //何歩歩くか
+	int    step = 0; //何歩歩くか
 	double r = 0.0;    //2点間の直線距離
 	double r2 = 0.0;
 	bool   sw = false; //歩行の左右切り替え  
-	int    j = 0;
 
 	if(end==false){
 		if(start==true){
@@ -151,54 +190,62 @@ double MyController::onAction(ActionEvent &evt)
 				npos.z(temp.z[i]); 
 
 				dx=(temp.x[i]-pos.x());
-				dy=(temp.y[i]-pos.y());
+				//dy=(temp.y[i]-pos.y());
 				dz=(temp.z[i]-pos.z());
 
-				//angle = rotateTowardObj(npos);
-				angle = -atan2(dx,dz);
+				angle = atan2(dx,dz);
 
-				//if(angle < 0.0){
-				//	angle = -1.0 * angle;
-				//}
-
-				my->setAxisAndAngle(0,1.0, 0, -angle);
+				my->setAxisAndAngle(0,1.0, 0, angle);
 
 				r=sqrt(pow(dx,2)+pow(dz,2));
 
-				count2 = (int)r / 10;
+				step = (int)r / stepWidth;
 
-				dx = dx/count2;
-				dz = dz/count2;
+				dx = dx/(2*step*motionNum);
+				dz = dz/(2*step*motionNum);
 
-				while(count<count2){
-					if(sw == false){
-						my->getPosition(pos);
-						my->setPosition(pos.x()+dx,pos.y(),pos.z()+dz);
-						my->setJointAngle("LARM_JOINT1", DEG2RAD(-30)); 
-						my->setJointAngle("RLEG_JOINT2", DEG2RAD(-20));
-						my->setJointAngle("RLEG_JOINT4", DEG2RAD(10));   
-						usleep(100000);
-						my->setJointAngle("LARM_JOINT1", DEG2RAD(0));  
-						my->setJointAngle("RLEG_JOINT2", DEG2RAD(0)); 
-						my->setJointAngle("RLEG_JOINT4", DEG2RAD(0)); 
-						sw = true;
-					}else{
-						my->getPosition(pos);
-						my->setPosition(pos.x()+dx,pos.y(),pos.z()+dz);
-						my->setJointAngle("RARM_JOINT1", DEG2RAD(-30)); 
-						my->setJointAngle("LLEG_JOINT2", DEG2RAD(-20));  
-						my->setJointAngle("LLEG_JOINT4", DEG2RAD(10));  
-						usleep(100000);
-						my->setJointAngle("RARM_JOINT1", DEG2RAD(0));  
-						my->setJointAngle("LLEG_JOINT2", DEG2RAD(0)); 
-						my->setJointAngle("LLEG_JOINT4", DEG2RAD(0));  
-						sw = false;
+				while (count<step){
+					double addx = 0.0;
+					double addz = 0.0;
+					my->getPosition(pos);
+					for(int j=0; j<motionNum; j++){
+						addx += dx;
+						addz += dz;
+						if(motionNum)
+							usleep(sleeptime);
+						my->setPosition(pos.x()+addx, HEIGHT[i], pos.z()+addz);
+						my->setJointAngle("LARM_JOINT1", DEG2RAD(LARM_JOINT1[j]));
+						my->setJointAngle("LARM_JOINT3", DEG2RAD(LARM_JOINT3[j]));
+						my->setJointAngle("RARM_JOINT1", DEG2RAD(RARM_JOINT1[j]));
+						my->setJointAngle("RARM_JOINT3", DEG2RAD(RARM_JOINT3[j]));
+						my->setJointAngle("LLEG_JOINT2", DEG2RAD(LLEG_JOINT2[j]));
+						my->setJointAngle("LLEG_JOINT4", DEG2RAD(LLEG_JOINT4[j]));
+						my->setJointAngle("LLEG_JOINT6", DEG2RAD(LLEG_JOINT6[j]));
+						my->setJointAngle("RLEG_JOINT2", DEG2RAD(RLEG_JOINT2[j]));
+						my->setJointAngle("RLEG_JOINT4", DEG2RAD(RLEG_JOINT4[j]));
+						my->setJointAngle("RLEG_JOINT6", DEG2RAD(RLEG_JOINT6[j]));
+					}
+					for(int j=0; j<motionNum; j++){
+						addx += dx;
+						addz += dz;
+						usleep(sleeptime);
+						my->setPosition(pos.x()+addx, HEIGHT[i], pos.z()+addz);
+						my->setJointAngle("RARM_JOINT1", DEG2RAD(LARM_JOINT1[j]));
+						my->setJointAngle("RARM_JOINT3", DEG2RAD(-LARM_JOINT3[j]));
+						my->setJointAngle("LARM_JOINT1", DEG2RAD(RARM_JOINT1[j]));
+						my->setJointAngle("LARM_JOINT3", DEG2RAD(-RARM_JOINT3[j]));
+						my->setJointAngle("RLEG_JOINT2", DEG2RAD(LLEG_JOINT2[j]));
+						my->setJointAngle("RLEG_JOINT4", DEG2RAD(LLEG_JOINT4[j]));
+						my->setJointAngle("RLEG_JOINT6", DEG2RAD(LLEG_JOINT6[j]));
+						my->setJointAngle("LLEG_JOINT2", DEG2RAD(RLEG_JOINT2[j]));
+						my->setJointAngle("LLEG_JOINT4", DEG2RAD(RLEG_JOINT4[j]));
+						my->setJointAngle("LLEG_JOINT6", DEG2RAD(RLEG_JOINT6[j]));
 					}
 					count++;
 				}
 
 				count = 0;
-				count2= 0;
+				step= 0;
 				i++;
 			}//stopのところ
 
@@ -242,6 +289,7 @@ double MyController::onAction(ActionEvent &evt)
 							} 
 							if(elevator==true){
 								if(flg2==false){
+									//my->setAxisAndAngle(0,1.0, 0, DEG2RAD(90));
 									std::string msg2 = "elevator_open";
 									sendMsg("wall_008", msg2);
 									std::string msg4 = "elevator";

@@ -20,30 +20,25 @@ public:
 	void onRecvMsg(RecvMsgEvent &evt);
 	void onCollision(CollisionEvent &evt);
 
-	/* @brief  位置を指定しその方向に回転を開始し、回転終了時間を返します
-	* @param  pos 回転したい方向の位置
-	* @param  vel 回転速度
-	* @param  now 現在時間
-	* @return 回転終了時間
-	*/
-	double rotateTowardObj1(Vector3d pos, double vel, double now);
-	double rotateTowardObj2(Vector3d pos, double vel, double now);
-	//avoid
-	double rotateTowardObj3(Vector3d pos, double vel, double now);
-
-	/* @brief  位置を指定しその方向に進みます
-	* @param  pos   行きたい場所
-	* @param  vel   移動速度
-	* @param  range 半径range以内まで移動
-	* @param  now   現在時間
-	* @return 到着時間
-	*/
-	double goToObj(Vector3d pos, double vel, double range, double now);
-
 private:
 	SimObj *my;
-	// ViewService *m_view;
 
+	FILE* fp;
+	float stepWidth;
+	int sleeptime;
+	const static int SIZE = 30;
+	int motionNum;
+	float HEIGHT[SIZE];
+	float LARM_JOINT1[SIZE]; // left shoulder
+	float LARM_JOINT3[SIZE]; // left elbow
+	float RARM_JOINT1[SIZE]; // right shoulder
+	float RARM_JOINT3[SIZE]; // right elbow
+	float LLEG_JOINT2[SIZE]; // left groin(leg)
+	float LLEG_JOINT4[SIZE]; // left knee
+	float LLEG_JOINT6[SIZE]; // left ankle
+	float RLEG_JOINT2[SIZE]; // right groin
+	float RLEG_JOINT4[SIZE]; // right knee
+	float RLEG_JOINT6[SIZE]; // right ankle
 };
 
 void MyController::onInit(InitEvent &evt)
@@ -52,12 +47,35 @@ void MyController::onInit(InitEvent &evt)
 
 	start = false;
 	sw = false;
-	// 左手を下に下げます  
-	my->setJointAngle("LARM_JOINT2", DEG2RAD(-90));
 
-	// 右手をsageます  
+	// 手を下げる
+	my->setJointAngle("LARM_JOINT2", DEG2RAD(-90));
 	my->setJointAngle("RARM_JOINT2", DEG2RAD(90));
 
+	stepWidth = 70;
+	sleeptime = 300000;
+
+	if((fp = fopen("motion.txt", "r")) == NULL) {
+		LOG_MSG(("File do not exist."));
+	}
+	else{
+		fscanf(fp, "%d", &motionNum);
+		fscanf(fp, "%d", &sleeptime);
+		for(int i=0; i<motionNum; i++){
+			fscanf(fp, "%f %f %f %f %f %f %f %f %f %f %f",
+					   &HEIGHT[i],
+					   &LARM_JOINT1[i],
+					   &LARM_JOINT3[i],
+					   &RARM_JOINT1[i],
+					   &RARM_JOINT3[i],
+					   &LLEG_JOINT2[i],
+					   &LLEG_JOINT4[i],
+					   &LLEG_JOINT6[i],
+					   &RLEG_JOINT2[i],
+					   &RLEG_JOINT4[i],
+					   &RLEG_JOINT6[i]);
+		}
+	}
 }
 
 double MyController::onAction(ActionEvent &evt)
@@ -66,7 +84,54 @@ double MyController::onAction(ActionEvent &evt)
 	Vector3d pos;
 
 	if (start == true){
-		while (count<20){
+		int step = 3;
+		while (count<step){
+			double dx = 0;
+			double dz = -2.5;
+			double addx = 0.0;
+			double addz = 0.0;
+			my->getPosition(pos);
+			for(int i=0; i<motionNum; i++){
+				addx += dx;
+				addz += dz;
+				if(motionNum)
+					usleep(sleeptime);
+				my->setPosition(pos.x()+addx, HEIGHT[i], pos.z()+addz);
+				my->setJointAngle("LARM_JOINT1", DEG2RAD(LARM_JOINT1[i]));
+				my->setJointAngle("LARM_JOINT3", DEG2RAD(LARM_JOINT3[i]));
+				my->setJointAngle("RARM_JOINT1", DEG2RAD(RARM_JOINT1[i]));
+				my->setJointAngle("RARM_JOINT3", DEG2RAD(RARM_JOINT3[i]));
+				my->setJointAngle("LLEG_JOINT2", DEG2RAD(LLEG_JOINT2[i]));
+				my->setJointAngle("LLEG_JOINT4", DEG2RAD(LLEG_JOINT4[i]));
+				my->setJointAngle("LLEG_JOINT6", DEG2RAD(LLEG_JOINT6[i]));
+				my->setJointAngle("RLEG_JOINT2", DEG2RAD(RLEG_JOINT2[i]));
+				my->setJointAngle("RLEG_JOINT4", DEG2RAD(RLEG_JOINT4[i]));
+				my->setJointAngle("RLEG_JOINT6", DEG2RAD(RLEG_JOINT6[i]));
+			}
+			for(int i=0; i<motionNum; i++){
+				addx += dx;
+				addz += dz;
+				usleep(sleeptime);
+				my->setPosition(pos.x()+addx, HEIGHT[i], pos.z()+addz);
+				my->setJointAngle("RARM_JOINT1", DEG2RAD(LARM_JOINT1[i]));
+				my->setJointAngle("RARM_JOINT3", DEG2RAD(-LARM_JOINT3[i]));
+				my->setJointAngle("LARM_JOINT1", DEG2RAD(RARM_JOINT1[i]));
+				my->setJointAngle("LARM_JOINT3", DEG2RAD(-RARM_JOINT3[i]));
+				my->setJointAngle("RLEG_JOINT2", DEG2RAD(LLEG_JOINT2[i]));
+				my->setJointAngle("RLEG_JOINT4", DEG2RAD(LLEG_JOINT4[i]));
+				my->setJointAngle("RLEG_JOINT6", DEG2RAD(LLEG_JOINT6[i]));
+				my->setJointAngle("LLEG_JOINT2", DEG2RAD(RLEG_JOINT2[i]));
+				my->setJointAngle("LLEG_JOINT4", DEG2RAD(RLEG_JOINT4[i]));
+				my->setJointAngle("LLEG_JOINT6", DEG2RAD(RLEG_JOINT6[i]));
+			}
+			count++;
+			if(count==1){
+				usleep(3000000);
+			}
+
+			start = false;
+		}
+		/*while (count<20){
 			if (sw == false){
 				my->getPosition(pos);
 				my->setPosition(pos.x(), pos.y(), pos.z() - 10);
@@ -98,7 +163,7 @@ double MyController::onAction(ActionEvent &evt)
 			}
 
 			start = false;
-		}
+		}*/
 	}
 
 	return 0.1;
@@ -114,7 +179,6 @@ void MyController::onRecvMsg(RecvMsgEvent &evt)
 
 void MyController::onCollision(CollisionEvent &evt)
 {
-
 }
 
 extern "C" Controller * createController() {
