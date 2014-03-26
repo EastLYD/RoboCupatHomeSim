@@ -89,7 +89,7 @@ double MyController::onAction(ActionEvent &evt)
 		stringstream ss;
 		ss << total;
 		string result = ss.str();
-		//sendMsg("SIGViewer", result);
+		sendMsg("SIGViewer", result);
 		std::string msg = "FollowMeReferee/Check point1 clear/300";
 		if(m_ref != NULL){
 			m_ref->sendMsgToSrv(msg.c_str());

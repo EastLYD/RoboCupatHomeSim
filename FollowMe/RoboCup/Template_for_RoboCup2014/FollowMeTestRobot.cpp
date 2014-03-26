@@ -7,7 +7,7 @@
 #include <math.h>
 #include <unistd.h>
 
-//角度からラジアンに変換します
+// Convert degree to radian
 #define DEG2RAD(DEG) ( (M_PI) * (DEG) / 180.0 )
 
 using namespace std;
@@ -22,22 +22,21 @@ public:
 	void onCollision(CollisionEvent &evt);
 
 	/**
-	 * @brief  位置を指定しその方向に回転を開始し、回転終了時間を返します
-	 * @param  pos 回転したい方向の位置
-	 * @param  vel 回転速度
-	 * @param  now 現在時間
-	 * @return 回転終了時間
+	 * @brief  Start rotating toword target position and return rotation time.
+	 * @param  pos target position
+	 * @param  vel velocity
+	 * @param  now current time
+	 * @return end time of rotation
 	 */
 	double rotateTowardObj(Vector3d pos, double vel, double now);
 
-
 	/**
-	 * @brief  位置を指定しその方向に進みます
-	 * @param  pos   行きたい場所
-	 * @param  vel   移動速度
-	 * @param  range 半径range以内まで移動
-	 * @param  now   現在時間
-	 * @return 到着時間
+	 * @brief  Move to target position
+	 * @param  pos   target position
+	 * @param  vel   velocity
+	 * @param  range allowable error range
+	 * @param  now   current time
+	 * @return end time of rotation
 	 */
 	double goToObj(Vector3d pos, double vel, double range, double now);
 
@@ -46,278 +45,287 @@ private:
 
 	/**
 	 * State of robot
-	 *  0  wait
-	 * 10+ 1st section
-	 * 20+ 2nd section
-	 * 30+ 3rd section
-	 * 90+ finish line
+	 *   0  wait
+	 * 100+ 1st section
+	 * 200+ 2nd section
+	 * 300+ 3rd section
+	 * 900+ finish line
 	 */
 	int m_state;
 
-	double m_vel;      // 車輪の角速度
-	double m_radius;   // 車輪半径
-	double m_distance; // 車輪間距離
+	double m_vel;      // angular velocity of wheel
+	double m_radius;   // radius of wheel
+	double m_distance; // distance of wheel
 
-	double m_time; // 移動終了時間
+	double m_time; // time to stop moving
 };
 
 void MyController::onInit(InitEvent &evt) 
 {
 	m_my = getRobotObj(myname());
 
-	// 車輪の半径と車輪間隔距離
+	// radius and distance of wheel
 	m_radius = 10.0;
 	m_distance = 10.0;
 
-	// 移動終了時間
+	// time to stop moving
 	m_time = 0.0;
 
-	// 車輪の半径と車輪間距離設定
+	// set radius and distance of wheel
 	m_my->setWheel(m_radius, m_distance);
 
-	// 車輪の回転速度
+	// angular velocity of wheel
 	m_vel = 0.3;
 
+	// state of robot
 	m_state = 0;
 }
 
 double MyController::onAction(ActionEvent &evt)
 {
 	switch(m_state){
+		// wait
 		case 0:{
 			break;
 		}
 		// 1st section
-		case 10: {
+		case 100: {
 			m_time = rotateTowardObj(Vector3d(-50,60,500),m_vel,evt.time());
-			m_state = 11;
+			m_state = 101;
 			break;
 		}
-		case 11: {
+		case 101: {
 			if(evt.time() >= m_time){
-				// 回転を止める
 				m_my->setWheelVelocity(0.0, 0.0);
 				m_time = goToObj(Vector3d(-50,60,500), m_vel*20, 1.0, evt.time());
-				m_state = 12;
+				m_state = 102;
 			}
 			break;
 		}
-		case 12: {
+		case 102: {
 			if(evt.time() >= m_time){
 				m_my->setWheelVelocity(0.0, 0.0);
 				m_time = goToObj(Vector3d(-50,60,575), m_vel*20, 1.0, evt.time());
-				m_state = 13;
+				m_state = 103;
 			}
 			break;
 		}
-		case 13: {
+		case 103: {
 			if(evt.time() >= m_time){
 				m_my->setWheelVelocity(0.0, 0.0);
 				m_time = rotateTowardObj(Vector3d(-450,60,575),m_vel,evt.time());
-				m_state = 14;
+				m_state = 104;
 				break;
 			}
 		}
-		case 14: {
+		case 104: {
 			if(evt.time() >= m_time){
 				m_my->setWheelVelocity(0.0, 0.0);
 				m_time = goToObj(Vector3d(-450,60,575), m_vel*20, 1.0, evt.time());
-				m_state = 15;
+				m_state = 105;
 			}
 			break;
 		}
-		case 15: {
+		case 105: {
 			if(evt.time() >= m_time){
 				m_my->setWheelVelocity(0.0, 0.0);
+				// wait for a walking person
 				usleep(3200000);
-				m_state = 16;
+				m_state = 106;
 			}
 			break;
 		}
-		case 16: {
+		case 106: {
 			m_time = rotateTowardObj(Vector3d(-525,60,575),m_vel,evt.time());
-			m_state = 17;
+			m_state = 107;
 			break;
 		}
-		case 17: {
+		case 107: {
 			if(evt.time() >= m_time){
 				m_my->setWheelVelocity(0.0, 0.0);
 				m_time = goToObj(Vector3d(-525,60,575), m_vel*20, 1.0, evt.time());
-				m_state = 20;
+				m_state = 200;
 			}
 			break;
 		}
 		// 2nd section
-		case 20: {
+		case 200: {
 			if(evt.time() >= m_time){
 				m_my->setWheelVelocity(0.0, 0.0);
 				m_time = rotateTowardObj(Vector3d(-800,60,575),m_vel,evt.time());
-				m_state = 21;
+				m_state = 201;
 			}
 			break;
 		}
-		case 21: {
+		case 201: {
 			if(evt.time() >= m_time){
 				m_my->setWheelVelocity(0.0, 0.0);
 				m_time = goToObj(Vector3d(-800,60,575), m_vel*20, 1.0, evt.time());
-				m_state = 22;
+				m_state = 202;
 			}
 			break;
 		}
-		case 22: {
+		case 202: {
 			if(evt.time() >= m_time){
 				m_my->setWheelVelocity(0.0, 0.0);
 				m_time = rotateTowardObj(Vector3d(-800,60,275),m_vel,evt.time());
-				m_state = 23;
+				m_state = 203;
 			}
 			break;
 		}
-		case 23: {
+		case 203: {
 			if(evt.time() >= m_time){
 				m_my->setWheelVelocity(0.0, 0.0);
 				m_time = goToObj(Vector3d(-800,60,275), m_vel*20, 1.0, evt.time());
-				m_state = 24;
+				m_state = 204;
 			}
 			break;
 		}
-		case 24: {
+		case 204: {
 			if(evt.time() >= m_time){
 				m_my->setWheelVelocity(0.0, 0.0);
 				m_time = rotateTowardObj(Vector3d(-1100,60,275),m_vel,evt.time());
-				m_state = 25;
+				m_state = 205;
 			}
 			break;
 		}
-		case 25: {
+		case 205: {
 			if(evt.time() >= m_time){
 				m_my->setWheelVelocity(0.0, 0.0);
 				m_time = goToObj(Vector3d(-1100,60,275), m_vel*20, 1.0, evt.time());
-				m_state = 26;
+				m_state = 206;
 			}
 			break;
 		}
-		case 26: {
+		case 206: {
 			if(evt.time() >= m_time){
 				m_my->setWheelVelocity(0.0, 0.0);
-				//std::string msg = "elevator";
-				//broadcastMsg(msg);
+
+				// tell robot entered in an elevator
 				broadcastMsg("entered");
-				//LOG_MSG(("elevator"));
-				//elevator = true;
-				sleep(5);
-				m_state = 27;
+
+				//  wait for a while until a door opened
+				//sleep(5);
+				m_state = 207;
 			}
 			break;
 		}
-		case 27: {
+		case 207: {
+			break;
+		}
+		case 208: {
 			if(evt.time() >= m_time){
 				m_my->setWheelVelocity(0.0, 0.0);
 				m_time = rotateTowardObj(Vector3d(-800,60,275),m_vel,evt.time());
-				m_state = 28;
+				m_state = 209;
 			}
 			break;
 		}
-		case 28: {
+		case 209: {
 			if(evt.time() >= m_time){
 				m_my->setWheelVelocity(0.0, 0.0);
 				m_time = goToObj(Vector3d(-800,60,275), m_vel*20, 1.0, evt.time());
-				m_state = 29;
+				m_state = 210;
 			}
 			break;
 		}
-		case 29: {
+		case 210: {
 			if(evt.time() >= m_time){
 				m_my->setWheelVelocity(0.0, 0.0);
+
+				// 
 				std::string msg = "ok";
 				broadcastMsg(msg);
+
+				// 
 				sleep(10);
-				m_state = 30;
+				m_state = 300;
 			}
 			break;
 		}
 		// 3rd section
-		case 30: {
+		case 300: {
 			m_time = rotateTowardObj(Vector3d(-800,60,-200),m_vel,evt.time());
-			m_state = 31;
+			m_state = 301;
 			break;
 		}
-		case 31: {
+		case 301: {
 			if(evt.time() >= m_time){
 				m_my->setWheelVelocity(0.0, 0.0);
 				m_time = goToObj(Vector3d(-800,60,-200), m_vel*20, 1.0, evt.time());
-				m_state = 32;
+				m_state = 302;
 			}
 			break;
 		}
-		case 32: {
+		case 302: {
 			if(evt.time() >= m_time){
 				m_my->setWheelVelocity(0.0, 0.0);
 				m_time = rotateTowardObj(Vector3d(-970,60,-200),m_vel,evt.time());
-				m_state = 33;
+				m_state = 303;
 			}
 			break;
 		}
-		case 33: {
+		case 303: {
 			if(evt.time() >= m_time){
 				m_my->setWheelVelocity(0.0, 0.0);
 				m_time = goToObj(Vector3d(-970,60,-200), m_vel*20, 1.0, evt.time());
-				m_state = 34;
+				m_state = 304;
 			}
 			break;
 		}
-		case 34: {
+		case 304: {
 			if(evt.time() >= m_time){
 				m_my->setWheelVelocity(0.0, 0.0);
 				m_time = rotateTowardObj(Vector3d(-970,60,-400),m_vel,evt.time());
-				m_state = 35;
+				m_state = 305;
 			}
 			break;
 		}
-		case 35: {
+		case 305: {
 			if(evt.time() >= m_time){
 				m_my->setWheelVelocity(0.0, 0.0);
 				m_time = goToObj(Vector3d(-970,60,-400), m_vel*20, 1.0, evt.time());
-				m_state = 36;
+				m_state = 306;
 			}
 			break;
 		}
-		case 36: {
+		case 306: {
 			if(evt.time() >= m_time){
 				m_my->setWheelVelocity(0.0, 0.0);
 				m_time = rotateTowardObj(Vector3d(-800,60,-550),m_vel,evt.time());
-				m_state = 37;
+				m_state = 307;
 			}
 			break;
 		}
-		case 37: {
+		case 307: {
 			if(evt.time() >= m_time){
 				m_my->setWheelVelocity(0.0, 0.0);
 				m_time = goToObj(Vector3d(-800,60,-550), m_vel*20, 1.0, evt.time());
-				m_state = 90;
+				m_state = 900;
 			}
 			break;
 		}
 		// finish line
-		case 90: {
+		case 900: {
 			if(evt.time() >= m_time){
 				m_my->setWheelVelocity(0.0, 0.0);
 				m_time = rotateTowardObj(Vector3d(-800,60,-750),m_vel,evt.time());
-				m_state = 91;
+				m_state = 901;
 			}
 			break;
 		}
-		case 91: {
+		case 901: {
 			if(evt.time() >= m_time){
 				m_my->setWheelVelocity(0.0, 0.0);
 				m_time = goToObj(Vector3d(-800,60,-750), m_vel*20, 1.0, evt.time());
-				m_state = 99;
+				m_state = 999;
 			}
 			break;
 		}
-		case 99: {
+		case 999: {
 			if(evt.time() >= m_time){
 				m_my->setWheelVelocity(0.0, 0.0);
-				broadcastMsg("end");
+				//broadcastMsg("end");
 				m_state = 0;
 			}
 			break;
@@ -328,12 +336,19 @@ double MyController::onAction(ActionEvent &evt)
 
 void MyController::onRecvMsg(RecvMsgEvent &evt)
 {
-	string msg = evt.getMsg();
+	std::string msg = evt.getMsg();
 	if(msg == "start"){
-		m_state = 10;
+		m_state = 100;
+		broadcastMsg("get message: start");
 	}
 	else if(msg == "end"){
-		m_my->setWheelVelocity(0.0, 0.0);
+		//m_my->setWheelVelocity(0.0, 0.0);
+		m_state = 999;
+		broadcastMsg("get message: end");
+	}
+	else if(m_state == 207 && msg == "leave the elevator"){
+		broadcastMsg("get message: leave the elevator");
+		m_state = 208;
 	}
 }
 
@@ -343,39 +358,38 @@ void MyController::onCollision(CollisionEvent &evt)
 
 double MyController::rotateTowardObj(Vector3d pos, double velocity, double now)
 {
-	// 自分の位置の取得
+	// get own position
 	Vector3d myPos;
 	m_my->getPosition(myPos);
 
-	// 自分の位置からターゲットを結ぶベクトル
+	// vector from own position to a target position
 	Vector3d tmpp = pos;
 	tmpp -= myPos;
 
-	// y方向は考えない
+	// rotation about y-axis is always 0
 	tmpp.y(0);
 
-	// 自分の回転を得る
+	// get own rotation
 	Rotation myRot;
 	m_my->getRotation(myRot);
 
-	// エンティティの初期方向
+	// initial direction
 	Vector3d iniVec(0.0, 0.0, 1.0);
 
-	// y軸の回転角度を得る(x,z方向の回転は無いと仮定)
+	// get rotation angle about y-axis
 	double qw = myRot.qw();
 	double qy = myRot.qy();
-
 	double theta = 2*acos(fabs(qw));
 
 	if(qw*qy < 0){
 		theta = -theta;
 	}
 
-	// z方向からの角度
+	// angle from z-axis
 	double tmp = tmpp.angle(Vector3d(0.0, 0.0, 1.0));
 	double targetAngle = acos(tmp);
 
-	// 方向
+	// calcurate target angle
 	if(tmpp.x() > 0){
 		targetAngle = -1*targetAngle;
 	}
@@ -392,16 +406,16 @@ double MyController::rotateTowardObj(Vector3d pos, double velocity, double now)
 		return 0.0;
 	}
 	else {
-		// 回転すべき円周距離
+		// circumference length for rotation
 		double distance = m_distance*M_PI*fabs(targetAngle)/(2*M_PI);
 
-		// 車輪の半径から移動速度を得る
+		// calcurate velocity from radius of wheels
 		double vel = m_radius*velocity;
 
-		// 回転時間(u秒)
+		// rotation time (micro second)
 		double time = distance / vel;
 
-		// 車輪回転開始
+		// start rotating
 		if(targetAngle > 0.0){
 			m_my->setWheelVelocity(velocity, -velocity);
 		}
@@ -413,29 +427,28 @@ double MyController::rotateTowardObj(Vector3d pos, double velocity, double now)
 	}
 }
 
-// object まで移動
+// move to a target point
 double MyController::goToObj(Vector3d pos, double velocity, double range, double now)
 {
-	// 自分の位置の取得
+	// get own position
 	Vector3d myPos;
 	m_my->getPosition(myPos);
 
-	// 自分の位置からターゲットを結ぶベクトル
+	// vector from own position to a target position
 	pos -= myPos;
 
-	// y方向は考えない
 	pos.y(0);
 
-	// 距離計算
+	// distance to a target position
 	double distance = pos.length() - range;
 
-	// 車輪の半径から移動速度を得る
+	// calcurate veloocity from radius of wheels
 	double vel = m_radius*velocity;
 
-	// 移動開始
+	// start moving
 	m_my->setWheelVelocity(velocity, velocity);
 
-	// 到着時間取得
+	// calcurate time of arrival
 	double time = distance / vel;
 
 	return now + time;

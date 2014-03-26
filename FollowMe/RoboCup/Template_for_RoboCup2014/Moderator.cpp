@@ -119,6 +119,7 @@ double MyController::onAction(ActionEvent &evt)
 
 		// broadcast start message
 		broadcastMsg(start_msg);
+		LOG_MSG(("trial count: %d",trialCount));
 
 		//startTime = evt.time() + deadTime;
 		task = true;
@@ -201,7 +202,7 @@ void MyController::onRecvMsg(RecvMsgEvent &evt)
 	std::string msg    = evt.getMsg();
 	LOG_MSG(("%s: %s",sender.c_str(), msg.c_str()));
 
-	if(sender == roboName.c_str() && msg == end_msg){
+	if(/*sender == roboName.c_str() &&*/ msg == end_msg){
 		breakTask();
 	}
 	if(msg == giveup_msg){
