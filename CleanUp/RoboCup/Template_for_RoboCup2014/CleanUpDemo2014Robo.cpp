@@ -28,6 +28,7 @@ private:
 	RobotObj *m_robotObject;
 	ViewService *m_view;
 
+	int m_task;
 	int m_state; 
 	double refreshRateOnAction;
 
@@ -53,8 +54,7 @@ private:
 	Vector3d m_frontTrashBox1;
 	Vector3d m_frontTrashBox2;
 	Vector3d m_relayPoint1;
-	Vector3d m_frontTrash1;
-	Vector3d m_frontTrash2;
+	Vector3d m_frontDesk1;
 
 	// condition flag for grasping trash
 	bool m_grasp;
@@ -78,6 +78,7 @@ void DemoRobotController::onInit(InitEvent &evt)
 	m_time1 = 0.0;
 	m_time4 = 0.0;
 
+	m_task = 0;		// number of taks
 	m_state = 0;  // switch of initial behavior
 	refreshRateOnAction = 0.1;     // refresh-rate for onAction proc.
 
@@ -88,18 +89,17 @@ void DemoRobotController::onInit(InitEvent &evt)
 	// rotation speed of joint
 	m_jointVelocity = 0.5;
 
-	m_trashName1 = "petbottle_1";
-	m_trashName2 = "can_0";
+	m_trashName1 = "petbottle_2";
+	m_trashName2 = "can_1";
 
 	m_trashBoxName1 = "trashbox_0";  // for recycle
-	m_trashBoxName2 = "trashbox_1";  // for burnable
+	m_trashBoxName2 = "trashbox_2";  // for can
 
 	// set positions;
 	m_frontTrashBox1  = Vector3d(-80.0, 0.0, -90);  // for recycle material
-	m_frontTrashBox2  = Vector3d( 20.0, 0.0, -90);  // for burnable material
+	m_frontTrashBox2  = Vector3d( 120.0, 0.0, -90);  // for can material
 	m_relayPoint1     = Vector3d(190.0, 0.0, -65.0);
-	m_frontTrash1     = Vector3d(273.0, 0.0, -65.0);
-	m_frontTrash2     = Vector3d(305.0, 0.0, -80.0);
+	m_frontDesk1			= Vector3d(270.0, 0.0, -65.0);
 
 	m_grasp = false;
 }
@@ -116,7 +116,7 @@ double DemoRobotController::onAction(ActionEvent &evt)
 			break;
 		}
 		case 50: {  // detour: rotate toward relay point 1
-			if(evt.time() >= m_time && m_state==50) {
+			if(evt.time() >= m_time) {
 				this->stopRobotMove();
 
 				double l_moveTime = rotateTowardObj(m_relayPoint1);
@@ -127,7 +127,7 @@ double DemoRobotController::onAction(ActionEvent &evt)
 			break;
 		}
 		case 60: {  // detour: go toward relay point 1
-			if(evt.time() >= m_time && m_state==60) {
+			if(evt.time() >= m_time) {
 				this->stopRobotMove();
 
 				double l_moveTime = goToObj(m_relayPoint1, 0.0);
@@ -138,10 +138,10 @@ double DemoRobotController::onAction(ActionEvent &evt)
 			break;
 		}
 		case 70: {  // rotate toward the position in front of trash
-			if(evt.time() >= m_time && m_state==70) {
+			if(evt.time() >= m_time) {
 				this->stopRobotMove();
 
-				double l_moveTime = rotateTowardObj(m_frontTrash1);
+				double l_moveTime = rotateTowardObj(m_frontDesk1);
 
 				m_time = l_moveTime+evt.time();
 				m_state = 80;
@@ -149,10 +149,10 @@ double DemoRobotController::onAction(ActionEvent &evt)
 			break;
 		}
 		case 80: {  // go toward the position in front of trash
-			if(evt.time() >= m_time && m_state==80) {
+			if(evt.time() >= m_time) {
 				this->stopRobotMove();
 
-				double l_moveTime = goToObj(m_frontTrash1, 0.0);
+				double l_moveTime = goToObj(m_frontDesk1, 0.0);
 
 				m_time = l_moveTime+evt.time();
 				m_state = 90;
@@ -160,11 +160,16 @@ double DemoRobotController::onAction(ActionEvent &evt)
 			break;
 		}
 		case 90: {  // rotate toward the trash
-			if(evt.time() >= m_time && m_state==90) {
+			if(evt.time() >= m_time) {
 				this->stopRobotMove();
 
 				Vector3d l_tpos;
-				this->recognizeObjectPosition(l_tpos, m_trashName2);
+
+				if(m_task == 1)
+					this->recognizeObjectPosition(l_tpos, m_trashName1);
+				else
+					this->recognizeObjectPosition(l_tpos, m_trashName2);
+
 				double l_moveTime = rotateTowardObj(l_tpos);
 
 				m_time = l_moveTime+evt.time();
@@ -173,7 +178,7 @@ double DemoRobotController::onAction(ActionEvent &evt)
 			break;
 		}
 		case 100: {  // prepare the robot arm to grasping the trash
-			if(evt.time() >= m_time && m_state==100) {
+			if(evt.time() >= m_time) {
 				this->stopRobotMove();
 				this->neutralizeArms(evt.time());
 
@@ -182,11 +187,14 @@ double DemoRobotController::onAction(ActionEvent &evt)
 			break;
 		}
 		case 105: {  // fix robot direction for grasping
-			if(evt.time() >= m_time1 && m_state==105) m_robotObject->setJointVelocity("RARM_JOINT1", 0.0, 0.0);
-			if(evt.time() >= m_time4 && m_state==105) m_robotObject->setJointVelocity("RARM_JOINT4", 0.0, 0.0);
-			if(evt.time() >= m_time1 && evt.time() >= m_time4 && m_state==105) {
+			if(evt.time() >= m_time1) m_robotObject->setJointVelocity("RARM_JOINT1", 0.0, 0.0);
+			if(evt.time() >= m_time4) m_robotObject->setJointVelocity("RARM_JOINT4", 0.0, 0.0);
+			if(evt.time() >= m_time1 && evt.time() >= m_time4) {
 				Vector3d l_tpos;
-				this->recognizeObjectPosition(l_tpos, m_trashName2);
+				if(m_task == 1)
+					this->recognizeObjectPosition(l_tpos, m_trashName1);
+				else
+					this->recognizeObjectPosition(l_tpos, m_trashName2);
 				double l_moveTime = rotateTowardObj(l_tpos);
 
 				m_time = l_moveTime+evt.time();
@@ -196,11 +204,16 @@ double DemoRobotController::onAction(ActionEvent &evt)
 			break;
 		}
 		case 110: {  // approach to the trash
-			if(evt.time() >= m_time && m_state==110) {
+			if(evt.time() >= m_time) {
 				this->stopRobotMove();
 
 				Vector3d l_tpos;
-				this->recognizeObjectPosition(l_tpos, m_trashName2);
+				
+				if(m_task == 1)
+					this->recognizeObjectPosition(l_tpos, m_trashName1);
+				else
+					this->recognizeObjectPosition(l_tpos, m_trashName2);
+
 				double l_moveTime = goToObj(l_tpos, 30.0);
 				m_time = l_moveTime+evt.time();
 
@@ -209,10 +222,16 @@ double DemoRobotController::onAction(ActionEvent &evt)
 			break;
 		}
 		case 120: {  // try to grasp trash
-			if(evt.time() >= m_time && m_state==120) {
+			if(evt.time() >= m_time) {
 				this->stopRobotMove();
+				
 				Vector3d l_tpos;
-				this->recognizeObjectPosition(l_tpos, m_trashName2);
+
+				if(m_task == 1)
+					this->recognizeObjectPosition(l_tpos, m_trashName1);
+				else
+					this->recognizeObjectPosition(l_tpos, m_trashName2);
+					
 				double l_moveTime = goGraspingObject(l_tpos);
 				m_time = l_moveTime+evt.time();
 
@@ -221,7 +240,7 @@ double DemoRobotController::onAction(ActionEvent &evt)
 			break;
 		}
 		case 125: {
-			if(evt.time() >= m_time && m_state==125) {
+			if(evt.time() >= m_time) {
 				m_robotObject->setJointVelocity("RARM_JOINT4", 0.0, 0.0);
 				this->neutralizeArms(evt.time());
 
@@ -230,9 +249,9 @@ double DemoRobotController::onAction(ActionEvent &evt)
 			break;
 		}
 		case 130: {
-			if(evt.time() >= m_time1 && m_state==130) m_robotObject->setJointVelocity("RARM_JOINT1", 0.0, 0.0);
-			if(evt.time() >= m_time4 && m_state==130) m_robotObject->setJointVelocity("RARM_JOINT4", 0.0, 0.0);
-			if(evt.time() >= m_time1 && evt.time() >= m_time4 && m_state==130) {
+			if(evt.time() >= m_time1) m_robotObject->setJointVelocity("RARM_JOINT1", 0.0, 0.0);
+			if(evt.time() >= m_time4) m_robotObject->setJointVelocity("RARM_JOINT4", 0.0, 0.0);
+			if(evt.time() >= m_time1 && evt.time() >= m_time4) {
 
 				m_robotObject->setWheelVelocity(-m_angularVelocity, -m_angularVelocity);
 				m_time = 20./m_movingSpeed + evt.time();
@@ -242,9 +261,13 @@ double DemoRobotController::onAction(ActionEvent &evt)
 			break;
 		}
 		case 150: {
-			if(evt.time() >= m_time && m_state==150) {
+			if(evt.time() >= m_time) {
 				this->stopRobotMove();
-				double l_moveTime = rotateTowardObj(m_frontTrashBox2);
+				double l_moveTime;
+				if(m_task == 1)
+					l_moveTime = rotateTowardObj(m_frontTrashBox1);
+				else
+					l_moveTime = rotateTowardObj(m_frontTrashBox2);
 
 				m_time = l_moveTime + evt.time();
 				m_state = 160;
@@ -252,16 +275,20 @@ double DemoRobotController::onAction(ActionEvent &evt)
 			break;
 		}
 		case 160: {
-			if(evt.time() >= m_time && m_state==160) {
+			if(evt.time() >= m_time) {
 				this->stopRobotMove();
-				double l_moveTime = goToObj(m_frontTrashBox2,0.0);
+				double l_moveTime;
+				if(m_task == 1)
+					l_moveTime = goToObj(m_frontTrashBox1,0.0);
+				else
+					l_moveTime = goToObj(m_frontTrashBox2,0.0);
 				m_time = l_moveTime + evt.time();
 				m_state = 161;
 			}
 			break;
 		}
 		case 161: {
-			if(evt.time() >= m_time && m_state==161) {
+			if(evt.time() >= m_time) {
 				this->stopRobotMove();
 				this->prepareThrowing(evt.time());
 
@@ -270,12 +297,15 @@ double DemoRobotController::onAction(ActionEvent &evt)
 			break;
 		}
 		case 165: {
-			if(evt.time() >= m_time1 && m_state==165) m_robotObject->setJointVelocity("RARM_JOINT1", 0.0, 0.0);
-			if(evt.time() >= m_time4 && m_state==165) m_robotObject->setJointVelocity("RARM_JOINT4", 0.0, 0.0);
-			if(evt.time() >= m_time1 && evt.time() >= m_time4 && m_state==165) {
+			if(evt.time() >= m_time1) m_robotObject->setJointVelocity("RARM_JOINT1", 0.0, 0.0);
+			if(evt.time() >= m_time4) m_robotObject->setJointVelocity("RARM_JOINT4", 0.0, 0.0);
+			if(evt.time() >= m_time1 && evt.time() >= m_time4) {
 
 				Vector3d l_tpos;
-				this->recognizeObjectPosition(l_tpos, m_trashBoxName2);
+				if(m_task == 1)
+					this->recognizeObjectPosition(l_tpos, m_trashBoxName1);
+				else
+					this->recognizeObjectPosition(l_tpos, m_trashBoxName2);
 				double l_moveTime = rotateTowardObj(l_tpos);
 				m_time = l_moveTime + evt.time();
 
@@ -284,11 +314,14 @@ double DemoRobotController::onAction(ActionEvent &evt)
 			break;
 		}
 		case 170: {
-			if(evt.time() >= m_time && m_state==170) {
+			if(evt.time() >= m_time) {
 
 				this->stopRobotMove();
 				Vector3d l_tpos;
-				this->recognizeObjectPosition(l_tpos, m_trashBoxName2);
+				if(m_task == 1)
+					this->recognizeObjectPosition(l_tpos, m_trashBoxName1);
+				else
+					this->recognizeObjectPosition(l_tpos, m_trashBoxName2);
 				double l_moveTime = goToObj(l_tpos, 50.0);
 				m_time = l_moveTime + evt.time();
 
@@ -297,10 +330,13 @@ double DemoRobotController::onAction(ActionEvent &evt)
 			break;
 		}
 		case 180: {
-			if(evt.time() >= m_time && m_state==180) {
+			if(evt.time() >= m_time) {
 				this->stopRobotMove();
 				Vector3d l_tpos;
-				this->recognizeObjectPosition(l_tpos, m_trashBoxName2);
+				if(m_task == 1)
+					this->recognizeObjectPosition(l_tpos, m_trashBoxName1);
+				else
+					this->recognizeObjectPosition(l_tpos, m_trashBoxName2);
 				double l_moveTime = rotateTowardObj(l_tpos);
 				m_time = l_moveTime + evt.time();
 
@@ -309,7 +345,7 @@ double DemoRobotController::onAction(ActionEvent &evt)
 			break;
 		}
 		case 200: {  // throw trash and get back a bit
-			if(evt.time() >= m_time && m_state==200) {
+			if(evt.time() >= m_time) {
 				this->stopRobotMove();
 				this->throwTrash();
 
@@ -323,7 +359,7 @@ double DemoRobotController::onAction(ActionEvent &evt)
 			break;
 		}
 		case 225: {  // recover robot arms
-			if(evt.time() >= m_time && m_state==225) {
+			if(evt.time() >= m_time) {
 				this->stopRobotMove();
 				this->neutralizeArms(evt.time());
 
@@ -332,20 +368,13 @@ double DemoRobotController::onAction(ActionEvent &evt)
 			break;
 		}
 		case 240: {  // go next
-			if(evt.time() >= m_time1 && m_state==240) m_robotObject->setJointVelocity("RARM_JOINT1", 0.0, 0.0);
-			if(evt.time() >= m_time4 && m_state==240) m_robotObject->setJointVelocity("RARM_JOINT4", 0.0, 0.0);
-			if(evt.time() >= m_time1 && evt.time() >= m_time4 && m_state==240) {
+			if(evt.time() >= m_time1) m_robotObject->setJointVelocity("RARM_JOINT1", 0.0, 0.0);
+			if(evt.time() >= m_time4) m_robotObject->setJointVelocity("RARM_JOINT4", 0.0, 0.0);
+			if(evt.time() >= m_time1 && evt.time() >= m_time4) {
 				this->stopRobotMove();
 
-				//m_graspObjectName = m_trashName1;  // set next target
-
-				//double l_moveTime = rotateTowardObj(m_frontTrash2);
-				//m_time = l_moveTime + evt.time();
-
-				//sendMsg("moderator_0", "End_of_task");
-
-				broadcastMsg("End_of_task");
-
+				broadcastMsg("Task_finished");
+				//broadcastMsg("Give_up");
 				m_state = 0;
 			}
 			break;
@@ -355,7 +384,6 @@ double DemoRobotController::onAction(ActionEvent &evt)
 	return refreshRateOnAction;
 }
 
-
 void DemoRobotController::onRecvMsg(RecvMsgEvent &evt)
 {
 	std::string sender = evt.getSender();
@@ -364,18 +392,22 @@ void DemoRobotController::onRecvMsg(RecvMsgEvent &evt)
 
 	if(sender == "moderator_0"){
 		if(msg == "Task_start"){
+			m_task++;
 			m_time = 0.0;
 			m_state = 50;
+			if(m_task == 1)	m_graspObjectName = m_trashName1;
+			else	m_graspObjectName = m_trashName2;
 		}
 		if(msg == "Time_over"){
 			m_time = 0.0;
 			m_state = 0;
 		}
+		if(msg == "Task_end"){
+			m_time = 0.0;
+			m_state = 0;
+		}
 	}
-
-
 }
-
 
 void DemoRobotController::onCollision(CollisionEvent &evt)
 {
@@ -404,15 +436,6 @@ void DemoRobotController::onCollision(CollisionEvent &evt)
 void DemoRobotController::stopRobotMove(void) {
 	m_robotObject->setWheelVelocity(0.0, 0.0);
 }
-
-
-/*
-void DemoRobotController::stopRobotArmMove(void) {
-	m_robotObject->setJointVelocity("RARM_JOINT1", 0.0, 0.0);
-	m_robotObject->setJointVelocity("RARM_JOINT4", 0.0, 0.0);
-}
-*/
-
 
 double DemoRobotController::goToObj(Vector3d pos, double range)
 {
@@ -543,7 +566,7 @@ void DemoRobotController::throwTrash(void)
 double DemoRobotController::goGraspingObject(Vector3d &pos)
 {
 	double l_time;
-	double thetaJoint4 = 20.0;
+	double thetaJoint4 = 30.0;
 
 	m_robotObject->setJointVelocity("RARM_JOINT4", m_jointVelocity, 0.0);
 
