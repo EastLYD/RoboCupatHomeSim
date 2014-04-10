@@ -3,6 +3,7 @@
 #include "Logger.h"
 #include <sstream>
 #include <iomanip>
+#include <unistd.h>
 
 class MyController : public Controller {  
 public:
@@ -37,6 +38,7 @@ private:
 	double rsLen;
 
 	int trialCount;
+	int trialMax;
 
 	bool   isCleaningUp;
 	double startTime;
@@ -100,6 +102,7 @@ void MyController::onInit(InitEvent &evt)
 	entNum = m_entNames.size();
 
 	trialCount = 0;
+	trialMax = 2;
 
 	isCleaningUp = false;
 
@@ -107,20 +110,18 @@ void MyController::onInit(InitEvent &evt)
 	endTime   = 70.0; // [sec]
 
 	// push target entitiy information
-	targetEntities.push_back("can_0");
-	targetEntitiesHeight.push_back(5.6);
-	targetEntities.push_back("petbottle_1");
-	targetEntitiesHeight.push_back(11.2);
-	targetEntities.push_back("apple");
-	targetEntitiesHeight.push_back(3.925);
-
+	targetEntities.push_back("petbottle_2");
+	targetEntitiesHeight.push_back(17.7);
+	targetEntities.push_back("can_1");
+	targetEntitiesHeight.push_back(7.3);
+	
 	//srand(time(NULL));
 	srand(2);
 }
 
 double MyController::onAction(ActionEvent &evt)
 {
-	if(trialCount >= 10){
+	if(trialCount >= trialMax){
 		return retValue;
 	}
 
@@ -133,6 +134,7 @@ double MyController::onAction(ActionEvent &evt)
 		usleep(deadTime * 1000000);
 
 		// broadcast start message
+		LOG_MSG(("Task_start"));
 		broadcastMsg("Task_start");
 
 		startTime = evt.time() + deadTime;
@@ -222,7 +224,7 @@ double MyController::onAction(ActionEvent &evt)
 		//time_ss << std::setw(2) << std::setfill('0') << msec;
 	}
 	if(m_ref != NULL){
-		m_ref->sendMsgToSrv(time_ss.str().c_str());
+		//m_ref->sendMsgToSrv(time_ss.str().c_str());
 	}
 	else{
 		LOG_MSG((time_ss.str().c_str()));
@@ -237,16 +239,17 @@ void MyController::onRecvMsg(RecvMsgEvent &evt)
 	std::string msg    = evt.getMsg();
 	LOG_MSG(("%s: %s",sender.c_str(), msg.c_str()));
 
-	if(sender == "robot_000" && msg == "End_of_task"){
+	if(sender == "robot_000" && msg == "Task_finished"){
+		LOG_MSG(("Task_end"));
+		broadcastMsg("Task_end");
+		breakTask();
+	}
+	if(sender == "robot_000" && msg == "Give_up"){
+		LOG_MSG(("Task_end"));
+		broadcastMsg("Task_end");
 		breakTask();
 	}
 }
-
-
-/*
-void MyController::onCollision(CollisionEvent &evt) {
-}
-*/
 
 void MyController::resetRobotCondition()
 {
@@ -268,7 +271,7 @@ void MyController::resetEntitiesPosition()
 	SimObj   *obj;
 	double table1_x_min = 240.0; // right edge of a glass table
 	double table1_x_max = 330.0; // left edge of a glass table
-	double table1_y     =  62.4; // height of table
+	double table1_y     =  60.0; // height of table
 	double table1_z     =  -5.0;
 	double pos_x, pos_y, pos_z;
 
@@ -282,7 +285,7 @@ void MyController::resetEntitiesPosition()
 	usleep(100000);
 
 	// select a target entity, set its position at random
-	int index = rand() % numberEntities;
+	int index = trialCount;//rand() % numberEntities;
 	obj = getObj(targetEntities[index].c_str());
 	pos_x = table1_x_min + rand() % (int)(table1_x_max - table1_x_min);
 	pos_y = table1_y + targetEntitiesHeight[index];
@@ -290,9 +293,9 @@ void MyController::resetEntitiesPosition()
 	obj->setPosition(pos_x, pos_y, pos_z);
 
 	LOG_MSG(("Entities were relocated."));
+	broadcastMsg("Entities were relocated.");
 	
-	std::string msg = "Target_name " + targetEntities[index];
-	broadcastMsg(msg);
+
 }
 
 void MyController::startTask()
@@ -306,7 +309,7 @@ void MyController::breakTask()
 	isCleaningUp = false;
 	trialCount++;
 
-	if(trialCount == 10){
+	if(trialCount == trialMax){
 		resetRobotCondition();
 		LOG_MSG(("End of all tasks"));
 		broadcastMsg("End of all tasks");
