@@ -290,7 +290,9 @@ void MyController::resetEntitiesPosition()
 	obj->setPosition(pos_x, pos_y, pos_z);
 
 	LOG_MSG(("Entities were relocated."));
-
+	
+	std::string msg = "Target_name " + targetEntities[index];
+	broadcastMsg(msg);
 }
 
 void MyController::startTask()

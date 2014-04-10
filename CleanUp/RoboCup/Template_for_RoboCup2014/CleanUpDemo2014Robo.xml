@@ -58,6 +58,7 @@
     <set-attr-value name="y" value="68.0"/>  
     <set-attr-value name="z" value="-5.0"/>  
     <set-attr-value name="collision" value="true"/>
+		<set-attr-value name="graspable" value="true"/>
   </instanciate>
   <instanciate class="seApple.xml">
     <set-attr-value name="name" value="apple"/>
