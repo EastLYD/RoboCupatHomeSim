@@ -325,7 +325,7 @@ double MyController::onAction(ActionEvent &evt)
 		case 999: {
 			if(evt.time() >= m_time){
 				m_my->setWheelVelocity(0.0, 0.0);
-				//broadcastMsg("end");
+				broadcastMsg("Task_finished");
 				m_state = 0;
 			}
 			break;
@@ -337,14 +337,14 @@ double MyController::onAction(ActionEvent &evt)
 void MyController::onRecvMsg(RecvMsgEvent &evt)
 {
 	std::string msg = evt.getMsg();
-	if(msg == "start"){
+	if(msg == "Task_start"){
 		m_state = 100;
-		broadcastMsg("get message: start");
+		broadcastMsg("get message: Task_start");
 	}
-	else if(msg == "end"){
-		//m_my->setWheelVelocity(0.0, 0.0);
-		m_state = 999;
-		broadcastMsg("get message: end");
+	else if(msg == "Task_end"){
+		m_my->setWheelVelocity(0.0, 0.0);
+		m_state = 0;
+		broadcastMsg("get message: Task_end");
 	}
 	else if(m_state == 207 && msg == "leave the elevator"){
 		broadcastMsg("get message: leave the elevator");

@@ -339,7 +339,7 @@ double MyController::onAction(ActionEvent &evt)
 		// 終了点に着いた
 		if(checkPoint==END && follow){
 			end = true;
-			broadcastMsg("end");
+			//broadcastMsg("end");
 		}
 	}
 
@@ -356,7 +356,7 @@ void MyController::onRecvMsg(RecvMsgEvent &evt)
 	string msg = evt.getMsg();
 
 	// タスク開始
-	if(msg == "start"){
+	if(msg == "Task_start"){
 		initCondition();
 		start = true;
 		stop = false;

@@ -1,11 +1,15 @@
 #include "ControllerEvent.h"
 #include "Controller.h"
 #include "Logger.h"
-#include <sys/time.h>
+#include <sstream>
+#include <iomanip>
+//#include <sys/time.h>
+#include <unistd.h>
 
-char start_msg[]  = "start";
-char end_msg[]    = "end";
-char giveup_msg[] = "giveup";
+char start_msg[]  = "Task_start";
+char end_msg[]    = "Task_end";
+char finish_msg[] = "Task_finished";
+char giveup_msg[] = "Give_up";
 
 class MyController : public Controller {  
 public:
@@ -52,6 +56,8 @@ private:
 	void breakTask();
 
 	// 
+	double startTime;
+	double endTime;
 	struct timeval t0, t1;
 };
 
@@ -69,10 +75,13 @@ void MyController::onInit(InitEvent &evt)
 	prv1Pos = Vector3d(0,0,0);
 
 	//
-	gettimeofday(&t1, NULL);
+	//gettimeofday(&t1, NULL);
 
 	task = false;
 	trialCount = 0;
+	
+	startTime =  0.0;
+	endTime   = 240.0; // [sec]
 
 	SimObj *obj;
 	obj = getObj(roboName.c_str());
@@ -106,13 +115,12 @@ double MyController::onAction(ActionEvent &evt)
 		sec = t0.tv_sec - t1.tv_sec;
 		msec = t0.tv_usec - t1.tv_usec;
 	}
-	//LOG_MSG(("%d.%d",sec,msec));
+	LOG_MSG(("%d.%d",sec,msec));
 	t1 = t0;
 	*/
-
 	// reset task
 	if(!task){
-		double deadTime = 3.0;
+		double deadTime = 3.0; // ??
 		resetCondition();
 
 		usleep(deadTime * 1000000);
@@ -121,7 +129,7 @@ double MyController::onAction(ActionEvent &evt)
 		broadcastMsg(start_msg);
 		LOG_MSG(("trial count: %d",trialCount));
 
-		//startTime = evt.time() + deadTime;
+		startTime = evt.time() + deadTime;
 		task = true;
 	}
 
@@ -192,6 +200,34 @@ double MyController::onAction(ActionEvent &evt)
 		//LOG_MSG((colPtName.c_str()));
 		colState = false;
 	}
+	
+	std::stringstream time_ss;
+	double elapsedTime = evt.time() - startTime;
+	//if(evt.time() - startTime > endTime){
+	if(elapsedTime > endTime){
+		LOG_MSG(("Time_over"));
+		broadcastMsg("Time_over");
+		breakTask();
+		time_ss << "FollowMeReferee/time/00:00:00";
+	}
+	else{
+		double remainedTime = endTime - elapsedTime;
+		int min, sec, msec;
+		sec = (int)remainedTime;
+		min = sec / 60;
+		sec %= 60;
+		msec = (int)((remainedTime - sec) * 100);
+		time_ss <<  "FollowMeReferee/time/";
+		time_ss << std::setw(2) << std::setfill('0') << min << ":";
+		time_ss << std::setw(2) << std::setfill('0') << sec;// << ":";
+		//time_ss << std::setw(2) << std::setfill('0') << msec;
+	}
+	if(m_ref != NULL){
+		//m_ref->sendMsgToSrv(time_ss.str().c_str());
+	}
+	else{
+		LOG_MSG((time_ss.str().c_str()));
+	}
 
 	return retValue;
 }
@@ -206,8 +242,13 @@ void MyController::onRecvMsg(RecvMsgEvent &evt)
 		breakTask();
 	}
 	if(msg == giveup_msg){
-		broadcastMsg(giveup_msg);
-		sendMsg(operatorName, giveup_msg);
+		broadcastMsg(end_msg);
+		//sendMsg(operatorName, giveup_msg);
+		breakTask();
+	}
+	if(msg == finish_msg){
+		broadcastMsg(end_msg);
+		//sendMsg(operatorName, finish_msg);
 		breakTask();
 	}
 }
