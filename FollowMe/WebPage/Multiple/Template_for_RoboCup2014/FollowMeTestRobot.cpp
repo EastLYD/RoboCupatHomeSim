@@ -202,7 +202,8 @@ double MyController::onAction(ActionEvent &evt)
 				m_my->setWheelVelocity(0.0, 0.0);
 
 				// tell robot entered in an elevator
-				broadcastMsg("entered");
+				//broadcastMsg("entered");
+				broadcastMsg("Door_close");
 
 				//  wait for a while until a door opened
 				//sleep(5);
@@ -211,6 +212,8 @@ double MyController::onAction(ActionEvent &evt)
 			break;
 		}
 		case 207: {
+			sleep(5);
+			m_state = 208;
 			break;
 		}
 		case 208: {
@@ -234,11 +237,11 @@ double MyController::onAction(ActionEvent &evt)
 				m_my->setWheelVelocity(0.0, 0.0);
 
 				// 
-				std::string msg = "ok";
+				std::string msg = "Get_off";
 				broadcastMsg(msg);
 
 				// 
-				sleep(10);
+				sleep(7);
 				m_state = 300;
 			}
 			break;
@@ -346,14 +349,21 @@ void MyController::onRecvMsg(RecvMsgEvent &evt)
 		m_state = 0;
 		broadcastMsg("get message: Task_end");
 	}
-	else if(m_state == 207 && msg == "leave the elevator"){
+	else if(msg == "Time_over"){
+		m_my->setWheelVelocity(0.0, 0.0);
+		m_state = 0;
+	}
+	/*else if(m_state == 207 && msg == "leave the elevator"){
 		broadcastMsg("get message: leave the elevator");
 		m_state = 208;
-	}
+	}*/
 }
 
 void MyController::onCollision(CollisionEvent &evt) 
 {
+	m_my->setWheelVelocity(0.0, 0.0);
+	m_state = 0;
+	broadcastMsg("Give_up");
 }
 
 double MyController::rotateTowardObj(Vector3d pos, double velocity, double now)

@@ -84,7 +84,7 @@ double MyController::onAction(ActionEvent &evt)
 		m_ref = connectToService("FollowMeReferee");
 	}
 	
-	if (check1 == true && check1_clear == true && a == false){
+	if (check1 == true /*&& check1_clear == true*/ && a == false){
 		total = total + 300;
 		stringstream ss;
 		ss << total;
@@ -107,12 +107,12 @@ double MyController::onAction(ActionEvent &evt)
 		std::string msg = "FollowMeReferee/Elevator" "/-100";
 		if(m_ref != NULL){
 			m_ref->sendMsgToSrv(msg.c_str());
-		LOG_MSG((msg.c_str()));
 		}
+		LOG_MSG((msg.c_str()));
 		elevator = false;
 	}
 
-	if (elevator == true && elevator_clear == true && b == false){
+	if (elevator == true /*&& elevator_clear == true*/ && b == false){
 		total = total + 300;
 		stringstream ss2;
 		ss2 << total;
@@ -176,7 +176,7 @@ void MyController::onRecvMsg(RecvMsgEvent &evt) {
 	else if (msg == "crowd"){
 		crowd = true;
 	}
-	else if(msg == "start"){
+	else if(msg == "Task_start"){
 		check1 = false;
 		elevator = false;
 		crowd = false;

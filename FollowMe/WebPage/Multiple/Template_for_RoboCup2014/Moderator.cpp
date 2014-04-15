@@ -120,16 +120,16 @@ double MyController::onAction(ActionEvent &evt)
 	*/
 	// reset task
 	if(!task){
-		double deadTime = 3.0; // ??
+		int intervalTime = 3; // ??
 		resetCondition();
 
-		usleep(deadTime * 1000000);
+		sleep(intervalTime);
 
 		// broadcast start message
 		broadcastMsg(start_msg);
 		LOG_MSG(("trial count: %d",trialCount));
 
-		startTime = evt.time() + deadTime;
+		startTime = evt.time() + intervalTime;
 		task = true;
 	}
 
@@ -238,13 +238,15 @@ void MyController::onRecvMsg(RecvMsgEvent &evt)
 	std::string msg    = evt.getMsg();
 	LOG_MSG(("%s: %s",sender.c_str(), msg.c_str()));
 
-	if(/*sender == roboName.c_str() &&*/ msg == end_msg){
-		breakTask();
-	}
+	//if(/*sender == roboName.c_str() &&*/ msg == end_msg){
+	//	breakTask();
+	//}
 	if(msg == giveup_msg){
-		broadcastMsg(end_msg);
 		//sendMsg(operatorName, giveup_msg);
-		breakTask();
+		if(task){
+			broadcastMsg(end_msg);
+			breakTask();
+		}
 	}
 	if(msg == finish_msg){
 		broadcastMsg(end_msg);

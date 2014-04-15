@@ -128,7 +128,9 @@ double MyController::onAction(ActionEvent &evt)
 			if(count==1){
 				usleep(3000000);
 			}
-
+			if(count==2){
+				sendMsg("operator","Passed_through");
+			}
 			start = false;
 		}
 		/*while (count<20){
@@ -172,7 +174,7 @@ double MyController::onAction(ActionEvent &evt)
 void MyController::onRecvMsg(RecvMsgEvent &evt)
 {
 	string msg = evt.getMsg();
-	if (msg == "point1"){
+	if (msg == "walk"){
 		start = true;
 	}
 }
