@@ -10,6 +10,7 @@
 // Convert degree to radian
 #define DEG2RAD(DEG) ( (M_PI) * (DEG) / 180.0 )
 
+#define WAIT_PERSON       0.5 //人が歩き始める場所
 #define WALKING_PERSON    1.0 //人が歩き始める場所
 #define CHECK_POINT1      2.0 //1st Sectionの点数が入る場所
 #define FRONT_OF_ELEVATOR 2.5 //エレベータ内の待機場所
@@ -45,7 +46,7 @@ private:
 
 	coordinate node; 
 
-	bool first;
+	//bool first;
 	bool start;
 	bool passed;
 	bool elevator;
@@ -55,6 +56,7 @@ private:
 	bool doorClose;
 	bool getoff;
 	bool elevator_end;
+	bool waitForHuman;
 	bool waitForCrowd;
 	bool waitForElevator;
 
@@ -70,6 +72,8 @@ private:
 
 	//bool follow;
 	bool walking;
+
+	int trialCount;
 
 	FILE* fp;
 	float stepWidth;
@@ -98,7 +102,10 @@ private:
 
 void MyController::onInit(InitEvent &evt) 
 {
-	initCondition();
+	//first = true;
+	trialCount = 0;
+
+	//initCondition();
 
 	my = getObj(myname());
 
@@ -106,7 +113,7 @@ void MyController::onInit(InitEvent &evt)
 	my->setJointAngle("LARM_JOINT2", DEG2RAD(-90));
 	my->setJointAngle("RARM_JOINT2", DEG2RAD(90));
 
-	stepWidth = 85;
+	stepWidth = 45;
 
 	if((fp = fopen("motion.txt", "r")) == NULL) {
 		printf("File do not exist.\n");
@@ -136,7 +143,6 @@ void MyController::onInit(InitEvent &evt)
 
 void MyController::initCondition()
 {
-	//first = false;
 	start = false;
 	passed = false;
 	elevator = false;
@@ -146,6 +152,7 @@ void MyController::initCondition()
 	doorClose = false;
 	getoff=false;
 	elevator_end = false;
+	waitForHuman = false;
 	waitForCrowd = false;
 	waitForElevator = false;
 
@@ -180,9 +187,17 @@ void MyController::initCondition()
 		node.flag[k] = 0.0;
 	}
 
-	if((fp = fopen("node.txt", "r")) == NULL) {
-		LOG_MSG(("File do not exist."));
-		exit(0);
+	if(trialCount==0){
+		if((fp = fopen("node.txt", "r")) == NULL) {
+			LOG_MSG(("File do not exist."));
+			exit(0);
+		}
+	}
+	else{
+		if((fp = fopen("node2.txt", "r")) == NULL) {
+			LOG_MSG(("File do not exist."));
+			exit(0);
+		}
 	}
 	while(fscanf(fp, "%lf,%lf,%lf,%lf", &x,&y,&z,&flag) != EOF) {
 		node.x[i]=x;
@@ -277,20 +292,31 @@ double MyController::onAction(ActionEvent &evt)
 
 		double checkPoint = node.flag[i-1];
 
+		/*// 人が歩き始める前に待機
+		if(checkPoint == WAIT_PERSON && !waitForHuman){
+			stop = true;
+			if(getDistaceToRobot() < 150){
+				stop = false;
+				waitForHuman = true;
+			}
+		}*/
 		// 人が歩き始める
 		if(checkPoint == WALKING_PERSON && !sentMsg_Man){
 			//sendMsg("man_001", "point1");
-			sendMsg("man_001", "walk");
+			
 			//LOG_MSG(("walk"));
 			stop = true;
-			sentMsg_Man = true;
+			if(getDistaceToRobot() < 200){
+				sendMsg("man_001", "walk");
+				sentMsg_Man = true;
+			}
 		}
 		// チェックポイント1
-		else if(checkPoint == CHECK_POINT1 && !sendMsg_CheckPoint1){
-			sendMsg("score","check1");
-			LOG_MSG(("check point 1"));
+		/*else if(checkPoint == CHECK_POINT1 && !sendMsg_CheckPoint1){
+			//sendMsg("score","checkpoint1_clear");
+			//LOG_MSG(("check point1 clear"));
 			sendMsg_CheckPoint1 = true;
-		}
+		}*/
 		// エレベータ前待機
 		else if(checkPoint == FRONT_OF_ELEVATOR && !waitForElevator){
 			stop = true;
@@ -315,8 +341,8 @@ double MyController::onAction(ActionEvent &evt)
 		// エレベータクリア
 		if(checkPoint==ELEVATOR_CLEAR && !sentMsg_CheckPoint2){
 			getoff = false;
-			sendMsg("score","elevator");
-			LOG_MSG(("elevator_clear"));
+			//sendMsg("score","elevator_clear");
+			//LOG_MSG(("elevator_clear"));
 			sentMsg_CheckPoint2 = true;
 		}
 		// 人ごみを通過後待機
@@ -329,9 +355,9 @@ double MyController::onAction(ActionEvent &evt)
 		}
 		// 人ごみを通過
 		else if(checkPoint == CROWD_END && !sentMsg_Crowd){
-			std::string msg5 = "crowd";
-			sendMsg("score", msg5);
-			LOG_MSG(("crowd"));
+			//std::string msg5 = "crowd";
+			//sendMsg("score", msg5);
+			//LOG_MSG(("crowd"));
 			sentMsg_Crowd = true;
 		}
 
@@ -351,9 +377,12 @@ void MyController::onRecvMsg(RecvMsgEvent &evt)
 
 	// タスク開始
 	if(msg == "Task_start"){
+		count = 0;
 		initCondition();
 		start = true;
 		stop = false;
+		trialCount++;
+
 	}
 	else if(msg == "Passed_through" && sentMsg_Man){
 		passed = true;

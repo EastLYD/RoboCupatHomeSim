@@ -1,6 +1,6 @@
-#include "ControllerEvent.h"
-#include "Controller.h"
-#include "Logger.h"
+#include "ControllerEvent.h"  
+#include "Controller.h"  
+#include "Logger.h"  
 
 char robotName[]    = "robot_004";
 char operatorName[] = "operator";
@@ -14,7 +14,6 @@ public:
 
 private:
 	SimObj *m_my;
-	std::vector<std::string> m_entities;
 
 	// 判定のサイズ
 	double checkSize_x, checkSize_z;
@@ -28,11 +27,13 @@ private:
 
 void MyController::onInit(InitEvent &evt) {  
 	m_my = getObj(myname());
-	m_my->getPosition(myPos);
 
 	// この範囲で判定
-	checkSize_x  = 80.0;
-	checkSize_z  = 40.0; 
+	checkSize_x  = 40.0;
+	checkSize_z  = 80.0; 
+
+	// 自分の位置取得
+	m_my->getPosition(myPos);
 
 	sentMsg = false;
 	flag1 = false;
@@ -41,7 +42,6 @@ void MyController::onInit(InitEvent &evt) {
 
 double MyController::onAction(ActionEvent &evt) 
 {
-	// 位置
 	Vector3d robotPos;
 	Vector3d operatorPos;
 
@@ -67,8 +67,8 @@ double MyController::onAction(ActionEvent &evt)
 	}
 
 	if(flag1 && flag2 && !sentMsg){
-		LOG_MSG(("Check Point1"));
-		sendMsg("score", "checkpoint1");
+		LOG_MSG(("crowd_clear"));
+		sendMsg("score", "crowd_clear");
 		sentMsg = true;
 	}
 
@@ -86,8 +86,8 @@ void MyController::onRecvMsg(RecvMsgEvent &evt) {
 
 void MyController::onCollision(CollisionEvent &evt) { 
 }
-  
+
 extern "C" Controller * createController() {  
-  return new MyController;  
-}  
+	return new MyController;  
+}
 

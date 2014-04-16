@@ -118,6 +118,7 @@ double MyController::onAction(ActionEvent &evt)
 	LOG_MSG(("%d.%d",sec,msec));
 	t1 = t0;
 	*/
+
 	// reset task
 	if(!task){
 		int intervalTime = 3; // ??
@@ -127,7 +128,7 @@ double MyController::onAction(ActionEvent &evt)
 
 		// broadcast start message
 		broadcastMsg(start_msg);
-		LOG_MSG(("trial count: %d",trialCount));
+		LOG_MSG(("trial count: %d",trialCount+1));
 
 		startTime = evt.time() + intervalTime;
 		task = true;
