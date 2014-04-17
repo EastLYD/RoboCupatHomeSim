@@ -6,6 +6,8 @@
 //#include <sys/time.h>
 #include <unistd.h>
 
+#define MAX_TRIAL 2
+
 char start_msg[]  = "Task_start";
 char end_msg[]    = "Task_end";
 char finish_msg[] = "Task_finished";
@@ -99,7 +101,7 @@ void MyController::onInit(InitEvent &evt)
 
 double MyController::onAction(ActionEvent &evt)
 {
-	if(trialCount >= 10){
+	if(trialCount >= MAX_TRIAL){
 		return retValue;
 	}
 
@@ -224,7 +226,7 @@ double MyController::onAction(ActionEvent &evt)
 		//time_ss << std::setw(2) << std::setfill('0') << msec;
 	}
 	if(m_ref != NULL){
-		//m_ref->sendMsgToSrv(time_ss.str().c_str());
+		m_ref->sendMsgToSrv(time_ss.str().c_str());
 	}
 	else{
 		LOG_MSG((time_ss.str().c_str()));
@@ -270,7 +272,7 @@ void MyController::breakTask()
 	task = false;
 	trialCount++;
 
-	if(trialCount == 10){
+	if(trialCount == MAX_TRIAL){
 		resetCondition();
 		LOG_MSG(("End of all tasks"));
 		broadcastMsg("End of all tasks");

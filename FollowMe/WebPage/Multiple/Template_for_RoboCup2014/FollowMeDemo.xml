@@ -28,7 +28,6 @@
     <set-attr-value name="collision" value="true"/>
   </instanciate>
 
-
 	<instanciate class="seModerator.xml">  
     <set-attr-value name="name" value="checkpoint_001"/> 
     <set-attr-value name="language" value="c++"/>
@@ -51,7 +50,6 @@
     <set-attr-value name="z" value="275.0"/>
     <set-attr-value name="collision" value="false"/>
   </instanciate>
-
 	<instanciate class="CheckPoint.xml">  
     <set-attr-value name="name" value="ITP_01"/> 
     <set-attr-value name="language" value="c++"/>
@@ -574,6 +572,7 @@
   </instanciate>
 
 <!--Referee-->
+<!--
   <instanciate class="seModerator.xml">
     <set-attr-value name="name" value="referee"/>
     <set-attr-value name="dynamics" value="false"/>
@@ -586,4 +585,5 @@
     <set-attr-value name="collision" value="false"/>
     <set-attr-value name="graspable" value="false"/>
   </instanciate>
+-->
 </world>

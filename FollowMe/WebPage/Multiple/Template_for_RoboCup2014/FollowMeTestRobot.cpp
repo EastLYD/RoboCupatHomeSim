@@ -634,9 +634,11 @@ void MyController::onRecvMsg(RecvMsgEvent &evt)
 
 void MyController::onCollision(CollisionEvent &evt) 
 {
+	/*
 	m_my->setWheelVelocity(0.0, 0.0);
 	m_state = 0;
 	broadcastMsg("Give_up");
+	*/
 }
 
 double MyController::rotateTowardObj(Vector3d pos, double velocity, double now)
