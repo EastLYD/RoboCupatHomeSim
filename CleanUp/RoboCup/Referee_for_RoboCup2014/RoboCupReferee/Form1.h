@@ -1,8 +1,8 @@
 #pragma once
 
-#include "CleanUpReferee.h"
+#include "RoboCupReferee.h"
 
-namespace CleanUpReferee {
+namespace RoboCupReferee {
 
 	using namespace System;
 	using namespace System::ComponentModel;
@@ -27,7 +27,7 @@ namespace CleanUpReferee {
 			m_connected = false;
 
 			// Ú‘±‚ğ‚İ‚é
-			m_srv = gcnew Referee("CleanUpReferee");
+			m_srv = gcnew Referee("RoboCupReferee");
 			cli::array<System::String^>^ args = System::Environment::GetCommandLineArgs();
 
 			//if(m_srv->connect("socio4.iir.nii.ac.jp", 9333)){
@@ -291,7 +291,7 @@ namespace CleanUpReferee {
 			 }
 	private: System::Void button1_Click_1(System::Object^  sender, System::EventArgs^  e) {
 				 if(m_srv == nullptr){
-					 m_srv = gcnew Referee("CleanUpReferee");
+					 m_srv = gcnew Referee("RoboCupReferee");
 					 if(m_srv->connect("socio4.iir.nii.ac.jp", 9333)){
 						 m_connected = true;
 						 m_srv->connectToViewer();

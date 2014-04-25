@@ -47,14 +47,14 @@ void MyController::onInit(InitEvent &evt) {
 double MyController::onAction(ActionEvent &evt)
 {
 	// サービスが使用可能か定期的にチェックする
-	bool available = checkService("CleanUpReferee");
+	bool available = checkService("RoboCupReferee");
 
 	if(!available && m_ref != NULL) m_ref = NULL;
 
 	// 使用可能  
 	else if(available && m_ref == NULL){
 		// サービスに接続  
-		m_ref = connectToService("CleanUpReferee");
+		m_ref = connectToService("RoboCupReferee");
 	}
 
 	// 自分の位置取得
@@ -103,15 +103,16 @@ double MyController::onAction(ActionEvent &evt)
 				bool success = false;
 				// 台の上に置く(成功)
 				if(strcmp(ent->name(), "mayonaise_0") == 0 && tpos.y() != 57.85) {tpos.y(57.85); success = true;}
-				else if(strcmp(ent->name(), "chigarette") == 0 && tpos.y() != 54.04){ tpos.y(54.04); success = true;}
-				else if(strcmp(ent->name(), "chocolate") == 0 && tpos.y() != 51.15){ tpos.y(51.15); success = true;}
+				else if(strcmp(ent->name(), "unknown_3") == 0 && tpos.y() != 54.04){ tpos.y(54.04); success = true;}
+				else if(strcmp(ent->name(), "unknown_0") == 0 && tpos.y() != 51.15){ tpos.y(51.15); success = true;}
 				else if(strcmp(ent->name(), "mugcup") == 0 && tpos.y() != 54.79){ tpos.y(54.79); success = true;}
 				else if(strcmp(ent->name(), "banana") == 0 && tpos.y() != 51.69){ tpos.y(51.69); success = true;}
 				else if(strcmp(ent->name(), "petbottle_0") == 0 && tpos.y() != 67.45){ tpos.y(67.45); success = true;}
-				else if(strcmp(ent->name(), "petbottle_3") == 0 && tpos.y() != 61.95){ tpos.y(61.95); success = true;}
-				else if(strcmp(ent->name(), "apple") == 0 && tpos.y() != 54.675){ tpos.y(54.675); success = true;}
-				else if(strcmp(ent->name(), "clock") == 0 && tpos.y() != 56.150){ tpos.y(56.150); success = true;}
-				else if(strcmp(ent->name(), "kettle") == 0 && tpos.y() != 60.650){ tpos.y(60.650); success = true;}
+				else if(strcmp(ent->name(), "petbottle_2") == 0 && tpos.y() != 67.45){ tpos.y(67.45); success = true;}
+				else if(strcmp(ent->name(), "petbottle_4") == 0 && tpos.y() != 61.95){ tpos.y(61.95); success = true;}
+				else if(strcmp(ent->name(), "unknown_4") == 0 && tpos.y() != 52.04){ tpos.y(52.04); success = true;}
+				else if(strcmp(ent->name(), "unknown_1") == 0 && tpos.y() != 56.150){ tpos.y(56.150); success = true;}
+				else if(strcmp(ent->name(), "unknown_2") == 0 && tpos.y() != 60.650){ tpos.y(60.650); success = true;}
 				// 台の上に置く(失敗)
 				else if(strcmp(ent->name(), "petbottle_1") == 0 && tpos.y() != 67.45){ tpos.y(67.45);}
 				else if(strcmp(ent->name(), "petbottle_2") == 0 && tpos.y() != 67.45){ tpos.y(67.45);}
@@ -121,6 +122,7 @@ double MyController::onAction(ActionEvent &evt)
 				else if(strcmp(ent->name(), "can_1") == 0 && tpos.y() != 55.335){ tpos.y(55.335);}
 				else if(strcmp(ent->name(), "can_2") == 0 && tpos.y() != 57.050){ tpos.y(57.050);}
 				else if(strcmp(ent->name(), "can_3") == 0 && tpos.y() != 57.050){ tpos.y(57.050);}
+				else if(strcmp(ent->name(), "apple") == 0 && tpos.y() != 54.675){ tpos.y(54.675);}
 				else{continue;}
 
 				ent->setAxisAndAngle(1.0, 0.0, 0.0, 0.0);
@@ -173,14 +175,14 @@ double MyController::onAction(ActionEvent &evt)
 				usleep(100000);
 
 				if(success){
-					msg = "CleanUpReferee/";
+					msg = "RoboCupReferee/";
 					msg += ent->name();
 					msg += " succeeded/1000";
 				}
 				else{
-					msg = "CleanUpReferee/";
+					msg = "RoboCupReferee/";
 					msg += ent->name();
-					msg += " failed/-600";
+					msg += " target failed/400";
 
 				}
 	
@@ -196,35 +198,7 @@ double MyController::onAction(ActionEvent &evt)
 
 	return retValue;
 }
-
-
-/*
-void MyController::onRecvMsg(RecvMsgEvent &evt) {  
-}  
-
-void MyController::onCollision(CollisionEvent &evt) { 
-  // 衝突していない状態のときのみ衝突をチェック
-  //  if(!colState) {
-  if(1) {
-    const std::vector<std::string> & wname= evt.getWith();
-    int csize = wname.size();
-    for(int i = 0; i < csize; i++){
-      // robotと衝突
-      if(wname[i] == roboName){
-	colState = true;
-	std::string msg = "CleanUpReferee/Collision with [" + std::string(myname()) + "]" "/-1";
-	if(m_ref != NULL){
-	  m_ref->sendMsgToSrv(msg.c_str());
-	}
-	else{
-	  LOG_MSG((msg.c_str()));
-	}
-      }
-    }
-  }
-}
-*/
-  
+ 
 extern "C" Controller * createController() {  
   return new MyController;  
 }  

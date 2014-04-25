@@ -2,9 +2,9 @@
 
 #include "stdafx.h"
 #include "Form1.h"
-#include "CleanUpReferee.h"
+#include "RoboCupReferee.h"
 
-using namespace CleanUpReferee;
+using namespace RoboCupReferee;
 
 [STAThreadAttribute]
 int main(array<System::String ^> ^args)
