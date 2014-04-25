@@ -264,6 +264,13 @@ void MyController::resetRobotCondition()
 	robot->setJointVelocity("RARM_JOINT4", 0.0, 0.0);
 	robot->setJointAngle("RARM_JOINT1", 0.0);
 	robot->setJointAngle("RARM_JOINT4", 0.0);
+
+	// 
+	std::map<std::string, CParts *> partsm = robot->getPartsCollection();
+	for (SimObj::PartsM::const_iterator i=partsm.begin(); i!=partsm.end(); i++) {
+		CParts *parts = robot->getParts(i->first.c_str());
+		parts->releaseObj();
+	}
 }
 
 void MyController::resetEntitiesPosition()
