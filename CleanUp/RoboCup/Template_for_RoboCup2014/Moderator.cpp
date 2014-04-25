@@ -83,9 +83,10 @@ void MyController::onInit(InitEvent &evt)
 		   (m_entities[i] != "petbottle_2") &&
 		   (m_entities[i] != "petbottle_3") &&
 		   (m_entities[i] != "petbottle_4") &&
+		   (m_entities[i] != "petbottle_5") &&
 		   (m_entities[i] != "banana") &&
-		   (m_entities[i] != "chigarette") &&
-		   (m_entities[i] != "chocolate") &&
+		   (m_entities[i] != "unknown_3") &&
+		   (m_entities[i] != "unknown_0") &&
 		   (m_entities[i] != "mayonaise_0") &&
 		   (m_entities[i] != "mayonaise_1") &&
 		   (m_entities[i] != "mugcup") &&
@@ -94,8 +95,9 @@ void MyController::onInit(InitEvent &evt)
 		   (m_entities[i] != "can_2") &&
 		   (m_entities[i] != "can_3") &&
 		   (m_entities[i] != "apple") &&
-		   (m_entities[i] != "clock") &&
-		   (m_entities[i] != "kettle") ){
+		   (m_entities[i] != "unknown_1") &&
+		   (m_entities[i] != "unknown_2") &&
+		   (m_entities[i] != "unknown_4") ){
 			m_entNames.push_back(m_entities[i]);
 		}
 	}
@@ -142,10 +144,10 @@ double MyController::onAction(ActionEvent &evt)
 	}
 
 	// check whether Referee service is available or not
-	bool available = checkService("CleanUpReferee");
+	bool available = checkService("RoboCupReferee");
 	if(!available && m_ref != NULL) m_ref = NULL;
 	else if(available && m_ref == NULL){
-		m_ref = connectToService("CleanUpReferee");
+		m_ref = connectToService("RoboCupReferee");
 	}
 
 	// get information about the robot and renew it
@@ -177,7 +179,7 @@ double MyController::onAction(ActionEvent &evt)
 				r_my->setPosition(prv1Pos);
 			}
 
-			std::string msg = "CleanUpReferee/Collision with [" + m_entNames[k] + "]" "/-100";
+			std::string msg = "RoboCupReferee/Collision with [" + m_entNames[k] + "]" "/-100";
 			if(m_ref != NULL){
 				m_ref->sendMsgToSrv(msg.c_str());
 			}
@@ -209,7 +211,7 @@ double MyController::onAction(ActionEvent &evt)
 		LOG_MSG(("Time_over"));
 		broadcastMsg("Time_over");
 		breakTask();
-		time_ss << "CleanUpReferee/time/00:00:00";
+		time_ss << "RoboCupReferee/time/00:00:00";
 	}
 	else{
 		double remainedTime = endTime - elapsedTime;
@@ -218,13 +220,13 @@ double MyController::onAction(ActionEvent &evt)
 		min = sec / 60;
 		sec %= 60;
 		msec = (int)((remainedTime - sec) * 100);
-		time_ss <<  "CleanUpReferee/time/";
+		time_ss <<  "RoboCupReferee/time/";
 		time_ss << std::setw(2) << std::setfill('0') << min << ":";
 		time_ss << std::setw(2) << std::setfill('0') << sec;// << ":";
 		//time_ss << std::setw(2) << std::setfill('0') << msec;
 	}
 	if(m_ref != NULL){
-		//m_ref->sendMsgToSrv(time_ss.str().c_str());
+		m_ref->sendMsgToSrv(time_ss.str().c_str());
 	}
 	else{
 		LOG_MSG((time_ss.str().c_str()));
