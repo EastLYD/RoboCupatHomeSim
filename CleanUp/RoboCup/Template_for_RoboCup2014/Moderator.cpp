@@ -127,23 +127,25 @@ void MyController::onInit(InitEvent &evt)
 	m_targets = parseFileTargets("object_list.txt");
 	m_trialsObjects = parseFileTrials("trials_object.txt");
 
-/*
-	for(int i=0; i<10; i++){
-		for (int j = 0; j < m_trialsobjects[i].size(); ++j){
-			std::cout << "trials_object: " << m_trialsobjects[i][j] << std::endl;
-		}
-	}
-*/
+
+	//for(int i=0; i<m_targets.size(); i++){
+			//std::cout << "m_target: " << m_targets[i].name << std::endl;
+		
+	//}
+
+
 	for(std::map< int, std::vector<std::string> >::iterator it = m_trialsObjects.begin(); it != m_trialsObjects.end(); ++it){
 
 		std::cout << "it first: " << it->first << std::endl;
-		//std::cout << "it second size: " << contains(m_targets, it->second[i]) << std::endl;
+		std::cout << "it second size: " << it->second.size()<< std::endl;
 
 		for(int i=0; i<it->second.size(); i++){
 			m_targetsOnTrial[it->first].push_back(m_targets[contains(m_targets, it->second[i])]);
+			//std::cout << "contains: " << contains(m_targets, it->second[i]) << std::endl;
+			//std::cout << "it second[i]: " << it->second[i] << std::endl;
 		}
-	}
 
+	}
 	getAllEntities(m_entities);
 
 	// select objects to be observed
@@ -191,12 +193,12 @@ void MyController::onInit(InitEvent &evt)
 	entNum = m_entNames.size();
 
 	trialCount = 0;
-	trialMax = 2;
+	trialMax = 10;
 
 	isCleaningUp = false;
 
 	startTime =  0.0;
-	endTime   = 70.0; // [sec]
+	endTime   = 480.0; // [sec]
 	srand(2);
 	//srand(time(NULL));
 }
@@ -510,9 +512,11 @@ void MyController::reposObjects(){
 			if( indPosOnTable == DOWN || indPosOnTable == UP ){
 				yObj = table.y + 0.5 * table.height + 0.5 * it->height + 1.75;
 				float xOffset = it->length;
+				//float xOffset = 20;
 				float xInf = table.x - 0.5 * table.length + xOffset;
 				float xSup = table.x + 0.5 * table.length - xOffset;
 				float zOffset = it->width;
+				//float zOffset = 20;
 
 				do{
 					xObj = mapRange(rand(), 0,  RAND_MAX, xInf, xSup);
@@ -598,7 +602,7 @@ std::vector<Table> MyController::parseFileTables(std::string fileName){
 		obj.name = buf.substr(0, found_name);
 		obj.height = atof( buf.substr(found_name + 1, found_height - found_name - 1).c_str() );
 		obj.width = atof( buf.substr(found_height + 1, found_width - found_height - 1).c_str() );
-		obj.length = atof( buf.substr(found_width + 1).c_str() );
+		obj.length = atof( buf.substr(found_width + 1, buf.size() - found_width - 2).c_str() );
 
 		vecObj.push_back(obj);
 	}
@@ -624,7 +628,7 @@ std::vector<Target> MyController::parseFileTargets(std::string fileName){
 		obj.name = buf.substr(0, found_name);
 		obj.height = atof( buf.substr(found_name + 1, found_height - found_name - 1).c_str() );
 		obj.width = atof( buf.substr(found_height + 1, found_width - found_height - 1).c_str() );
-		obj.length = atof( buf.substr(found_width + 1).c_str() );
+		obj.length = atof( buf.substr(found_width + 1, buf.size() - found_width - 2).c_str() );
 
 		vecObj.push_back(obj);
 	}
@@ -663,7 +667,7 @@ std::map< int, std::vector<std::string> > MyController::parseFileTrials(std::str
 		vec.push_back(buf.substr(found_name1 + 1, found_name2 - found_name1 - 1));
 		vec.push_back(buf.substr(found_name2 + 1, found_name3 - found_name2 - 1));
 		vec.push_back(buf.substr(found_name3 + 1, found_name4 - found_name3 - 1));
-		vec.push_back(buf.substr(found_name4 + 1));
+		vec.push_back(buf.substr(found_name4 + 1, buf.size() - found_name4 - 2));
 
 		trialsObj[i] = vec;
 		i++;
@@ -678,9 +682,14 @@ template<typename Type>
 int MyController::contains(std::vector<Type> vec, std::string key){
 	bool found = false;
 	int i;
-
+	//std::cout << "\tcontains key: " << key << std::endl;
+	//std::cout << "\tcontains key length: " << key.size() << std::endl;
+	
 	for(i = 0 ; i < vec.size() && !found; i++){
-		found = vec[i].name == key;
+		//std::cout << "\tcontains vec[i]: " << vec[i].name << std::endl;
+		//std::cout << "\tcontains vec[i] length: " << vec[i].name.size() << std::endl;
+		
+ 		found = vec[i].name == key;
 	}
 
 	if(!found)
