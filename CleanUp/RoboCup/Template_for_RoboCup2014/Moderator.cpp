@@ -174,8 +174,6 @@ void MyController::onInit(InitEvent &evt)
 		   (m_entities[i] != "petbottle_4") &&
 		   (m_entities[i] != "petbottle_5") &&
 		   (m_entities[i] != "banana") &&
-		   (m_entities[i] != "unknown_3") &&
-		   (m_entities[i] != "unknown_0") &&
 		   (m_entities[i] != "mayonaise_0") &&
 		   (m_entities[i] != "mayonaise_1") &&
 		   (m_entities[i] != "mugcup") &&
@@ -183,10 +181,7 @@ void MyController::onInit(InitEvent &evt)
 		   (m_entities[i] != "can_1") &&
 		   (m_entities[i] != "can_2") &&
 		   (m_entities[i] != "can_3") &&
-		   (m_entities[i] != "apple") &&
-		   (m_entities[i] != "unknown_1") &&
-		   (m_entities[i] != "unknown_2") &&
-		   (m_entities[i] != "unknown_4") ){
+		   (m_entities[i] != "apple")) {
 			m_entNames.push_back(m_entities[i]);
 		}
 	}

@@ -231,60 +231,6 @@
 		<set-attr-value name="graspable" value="true"/>
   </instanciate>
 
-  <!-- Unknown Objects -->
-
-  <instanciate class="seChocolate.xml">  
-    <set-attr-value name="name" value="unknown_0"/>  
-    <set-attr-value name="dynamics" value="false"/>
-    <set-attr-value name="x" value="1000.0"/>
-    <set-attr-value name="y" value="1000.0"/>
-    <set-attr-value name="z" value="1000.0"/>
-    <set-attr-value name="collision" value="true"/>
-		<set-attr-value name="graspable" value="true"/>
-  </instanciate>  
-
-  <instanciate class="seClock.xml">  
-    <set-attr-value name="name" value="unknown_1"/>
-    <set-attr-value name="x" value="1000.0"/>
-    <set-attr-value name="y" value="1000.0"/>
-    <set-attr-value name="z" value="1000.0"/> 
-    <set-attr-value name="dynamics" value="false"/>
-    <set-attr-value name="collision" value="true"/>
-		<set-attr-value name="graspable" value="true"/>
-  </instanciate>
-
-  <instanciate class="seKettle.xml">  
-    <set-attr-value name="name" value="unknown_2"/>  
-    <set-attr-value name="dynamics" value="false"/>
-    <set-attr-value name="x" value="1000.0"/>
-    <set-attr-value name="y" value="1000.0"/>
-    <set-attr-value name="z" value="1000.0"/>
-    <set-attr-value name="collision" value="true"/>
-		<set-attr-value name="graspable" value="true"/>
-  </instanciate>
-
-  <instanciate class="seChigarette.xml">  
-    <set-attr-value name="name" value="unknown_3"/>  
-    <set-attr-value name="dynamics" value="false"/>
-    <set-attr-value name="x" value="1000.0"/>
-    <set-attr-value name="y" value="1000.0"/>
-    <set-attr-value name="z" value="1000.0"/>
-    <set-attr-value name="collision" value="true"/>
-		<set-attr-value name="graspable" value="true"/>
-  </instanciate>
-
-  <instanciate class="seBook_A.xml">  
-    <set-attr-value name="name" value="unknown_4"/>  
-    <set-attr-value name="dynamics" value="false"/>
-    <set-attr-value name="x" value="1000.0"/>
-    <set-attr-value name="y" value="1000.0"/>
-    <set-attr-value name="z" value="1000.0"/>
-    <set-attr-value name="collision" value="true"/>
-		<set-attr-value name="graspable" value="true"/>
-  </instanciate>
-
-  
-
 
 <!-- faniture -->
 	<instanciate class="A1_rug.xml">
