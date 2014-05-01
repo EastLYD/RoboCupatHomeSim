@@ -1,0 +1,10 @@
+petbottle_0,petbottle_5,can_0,mayonaise_0,apple
+petbottle_1,petbottle_4,can_1,mugcup,banana
+petbottle_0,petbottle_2,can_2,mayonaise_1,apple
+petbottle_2,petbottle_3,can_3,mugcup,banana
+petbottle_4,petbottle_5,can_2,can_3,mayonaise_0
+petbottle_1,mayonaise_0,mayonaise_1,apple,banana
+petbottle_3,can_0,can_1,mugcup,unknown_0
+petbottle_0,petbottle_4,banana,unknown_1,unknown_0
+can_3,petbottle_5,unknown_2,unknown_1,unknown_0
+can_2,unknown_3,unknown_2,unknown_1,unknown_4
