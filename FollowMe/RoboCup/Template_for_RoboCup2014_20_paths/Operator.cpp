@@ -176,7 +176,7 @@ void MyController::initCondition()
 	std::cout << "[HUMAN]" << " load file : " << nodePath.str() << std::endl;
 
 	if((fp = fopen(nodePath.str().c_str(), "r")) == NULL) {
-		LOG_MSG(("File do not exist."));
+		LOG_MSG(("File does not exist."));
 		exit(0);
 	}
 	while(fscanf(fp, "%lf,%lf,%lf,%lf", &x,&y,&z,&flag) != EOF) {
@@ -185,10 +185,8 @@ void MyController::initCondition()
 		node.z[i]=z;
 		node.flag[i++]=flag;
 	}
-	std::cout << "node.x[0] " << node.x[0] << "; node.z[0] " << node.z[0] << std::endl;
-	my->setPosition(node.x[0], HEIGHT[i], node.z[0]);
-	// i++;
 	fclose(fp);
+	my->setPosition(node.x[0], HEIGHT[i], node.z[0]);
 	i=1;
 
 }
