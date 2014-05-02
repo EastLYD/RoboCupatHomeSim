@@ -1,2 +1,0 @@
-petbottle_1,petbottle_4,can_1,mugcup,banana
-petbottle_2,petbottle_3,can_3,mugcup,banana
