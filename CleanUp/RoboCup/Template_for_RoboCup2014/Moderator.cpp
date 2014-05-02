@@ -293,7 +293,7 @@ double MyController::onAction(ActionEvent &evt)
 		LOG_MSG(("Time_over"));
 		broadcastMsg("Time_over");
 		breakTask();
-		time_ss << "RoboCupReferee/time/00:00:00";
+		//time_ss << "RoboCupReferee/time/00:00:00";
 	}
 	else{
 		double remainedTime = endTime - elapsedTime;
@@ -304,8 +304,7 @@ double MyController::onAction(ActionEvent &evt)
 		msec = (int)((remainedTime - sec) * 100);
 		time_ss <<  "RoboCupReferee/time/";
 		time_ss << std::setw(2) << std::setfill('0') << min << ":";
-		time_ss << std::setw(2) << std::setfill('0') << sec;// << ":";
-		//time_ss << std::setw(2) << std::setfill('0') << msec;
+		time_ss << std::setw(2) << std::setfill('0') << sec;
 	}
 	if(m_ref != NULL){
 		m_ref->sendMsgToSrv(time_ss.str().c_str());
@@ -368,11 +367,15 @@ void MyController::breakTask()
 	isCleaningUp = false;
 	takeAwayObjects();
 	trialCount++;
-
+	std::string msg = "RoboCupReferee/reset/";
+	if(m_ref != NULL){
+		m_ref->sendMsgToSrv(msg.c_str());
+	}
+			
 	if(trialCount == trialMax){
 		resetRobotCondition();
-		LOG_MSG(("End of all tasks"));
-		broadcastMsg("End of all tasks");
+		LOG_MSG(("Mission_complete"));
+		broadcastMsg("Mission complete");
 	}
 }
 
@@ -540,7 +543,7 @@ void MyController::reposObjects(){
 			}
 
 			else{
-				yObj = table.y + 0.5 * table.height + 0.5 * it->height + 1.75;
+				yObj = table.y + 0.5 * table.height + 0.5 * it->height + 2.0;
 				float zOffset = it->width;
 				float zSup = table.z - 0.5 * table.width + zOffset;
 				float zInf = table.z + 0.5 * table.width - zOffset;

@@ -89,26 +89,12 @@ void DemoRobotController::onInit(InitEvent &evt)
 	// rotation speed of joint
 	m_jointVelocity = 0.5;
 
-	//m_trashName[0] = "petbottle_2";
+	m_trashName[0] = "petbottle_2";
 	//m_trashName2 = "can_1";
 
 	m_trashBoxName[0] = "trashbox_0";
 
 	m_grasp = false;
-
-	if((fp = fopen("trials_object.txt", "r")) == NULL) {
-		LOG_MSG(("File does not exist."));
-		exit(0);
-	}
-	else{
-		int i=0;
-		LOG_MSG(("File exists."));
-		while(fscanf(fp, "%[^,],%[^,],%[^,],%[^,],%[^,]\n", &m_trashName[0],&m_trashName[1],&m_trashName[2],&m_trashName[3],&m_trashName[4]) != EOF) {
-			LOG_MSG(("%s",m_trashName[0].c_str()));
-			i++;
-		}
-	}
-	fclose(fp);
 
 }
 
@@ -123,22 +109,9 @@ double DemoRobotController::onAction(ActionEvent &evt)
 			break;
 		}
 		case 50: {  // detour: rotate toward relay point 1
-			if(evt.time() >= m_time) {
-				this->stopRobotMove();
-				
-				SimObj   *obj;
-				SimObj   *tbox;
-				obj = getObj(m_trashName[0].c_str());
-				tbox = getObj(m_trashBoxName[0].c_str());
-				Vector3d tboxPosition;
-				tbox->getPosition(tboxPosition);
-				obj->setPosition(tboxPosition.x(), tboxPosition.y()+100, tboxPosition.z());
-				this->stopRobotMove();
-
-				broadcastMsg("Task_finished");
-				//broadcastMsg("Give_up");
-				m_state = 0;
-			}
+			usleep(3 * 1000000);
+			broadcastMsg("Give_up");
+			m_state = 0;
 			break;
 		}
 
@@ -157,8 +130,6 @@ void DemoRobotController::onRecvMsg(RecvMsgEvent &evt)
 			m_trial++;
 			m_time = 0.0;
 			m_state = 50;
-			if(m_trial == 1)	m_graspObjectName = m_trashName[0];
-			else	m_graspObjectName = m_trashName[0];
 		}
 		if(msg == "Time_over"){
 			m_time = 0.0;
