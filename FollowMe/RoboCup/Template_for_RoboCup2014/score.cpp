@@ -85,7 +85,7 @@ double MyController::onAction(ActionEvent &evt)
 		m_ref = connectToService("FollowMeReferee");
 	}
 
-	if (check1_clear == true && a == false){
+	if (check1_clear == true && a == false && b == false && d == false){
 		total = total + 300;
 		stringstream ss;
 		ss << total;
@@ -99,7 +99,7 @@ double MyController::onAction(ActionEvent &evt)
 		a = true;
 	}
 
-	if (elevator_clear == true && b == false && a == true){
+	if (elevator_clear == true && a == true && b == false && d == false){
 		total = total + 300;
 		stringstream ss2;
 		ss2 << total;
@@ -112,7 +112,7 @@ double MyController::onAction(ActionEvent &evt)
 		LOG_MSG((msg.c_str()));
 		b = true;
 	}
-	if (crowd_clear == true && d == false  && a == true  && b == true){
+	if (crowd_clear == true && a == true  && b == true && d == false){
 		total = total + 300;
 		stringstream ss5;
 		ss5 << total;
@@ -125,7 +125,7 @@ double MyController::onAction(ActionEvent &evt)
 		LOG_MSG((msg.c_str()));
 		d = true;
 	}
-	if (all_clear == true && e == false){
+	if (all_clear == true && a == true  && b == true && d == true && e == false){
 		total = total + 100;
 		stringstream ss;
 		ss << total;
@@ -146,11 +146,13 @@ void MyController::onRecvMsg(RecvMsgEvent &evt) {
 	if (msg == "checkpoint1"){
 		if(!check1_clear){
 			check1 = true;
+			LOG_MSG(("checkpoint1"));
 		}
 	}
 	else if (msg == "checkpoint1_clear"){
 		if(check1){
 			check1_clear = true;
+			LOG_MSG(("checkpoint1_clear"));
 		}
 	}
 	else if (msg == "elevator_clear"){

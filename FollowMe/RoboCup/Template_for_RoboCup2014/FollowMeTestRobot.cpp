@@ -136,7 +136,7 @@ double MyController::onAction(ActionEvent &evt)
 			if(evt.time() >= m_time){
 				m_my->setWheelVelocity(0.0, 0.0);
 				// wait for a walking person
-				//usleep(3200000);
+				usleep(3200000);
 				m_state = 106;
 			}
 			break;
