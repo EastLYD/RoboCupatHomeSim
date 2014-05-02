@@ -375,7 +375,7 @@ void MyController::breakTask()
 	if(trialCount == trialMax){
 		resetRobotCondition();
 		LOG_MSG(("Mission_complete"));
-		broadcastMsg("Mission complete");
+		broadcastMsg("Mission_complete");
 	}
 }
 
