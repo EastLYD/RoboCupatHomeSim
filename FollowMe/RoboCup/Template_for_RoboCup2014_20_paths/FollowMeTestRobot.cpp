@@ -23,7 +23,6 @@ struct coordinate{
 	double y[255];
 	double z[255];
 	double flag[255];
-	double waitTime[255];
 };
 
 
@@ -114,25 +113,23 @@ void MyController::initCondition()
 
 	m_count = 0;
 	FILE* fp;
-	double x, y, z, flag, waitTime;
+	double x, y, z, flag;
 	std::stringstream nodePath;
 	nodePath << "nodes/node_" << m_taskNum++ << ".txt";
-	// std::cout << "initCondition : " << nodePath.str() << std::endl;
 
 	if((fp = fopen(nodePath.str().c_str(), "r")) == NULL) {
-		LOG_MSG(("File do not exist."));
+		LOG_MSG(("File does not exist."));
 		exit(0);
 	}
-	while(fscanf(fp, "%lf,%lf,%lf,%lf,%lf", &x,&y,&z,&flag,&waitTime) != EOF) {
+	while(fscanf(fp, "%lf,%lf,%lf,%lf", &x,&y,&z,&flag) != EOF) {
 			node.x[m_count]=x;
 			node.y[m_count]=y;
 			node.z[m_count]=z;
-			node.flag[m_count]=flag;
-			node.waitTime[m_count++]=waitTime;
+			node.flag[m_count++]=flag;
 	}
 	fclose(fp);
-
-	m_count = 0;
+	m_my->setPosition(node.x[0], node.y[0], node.z[0] - 100);
+	m_count = 1;
 	m_started = false;
 	m_rotation = false;
 	m_d = -1;
@@ -145,9 +142,6 @@ double MyController::onAction(ActionEvent &evt)
 		SimObj* me = getRobotObj(myname());
 		Vector3d pos;
 		me->getPosition(pos);
-		// ROBOTINFO("m_count", m_count);
-		// ROBOTINFO("X", pos.x());
-		// ROBOTINFO("Z", pos.z());
 		int dx=(node.x[m_count]-pos.x());
 		int dz=(node.z[m_count]-pos.z());
 		double angle = atan2(dx,dz);
@@ -165,21 +159,21 @@ double MyController::onAction(ActionEvent &evt)
 				// notify and wait while in the elevator 
 				broadcastMsg("entered");
 				node.x[m_count] = -800;
+				m_my->setWheelVelocity(0.0, 0.0);
+				node.flag[m_count] = 3.6;
+				sleep(3);
 			}
 			// wait for the human to exit from the elevator.
 			else if (node.flag[m_count] == 4.0) {
 				broadcastMsg("ok");
+				node.flag[m_count] = 4.1;
+				sleep(3);
 			}
 			// avoid to collide with robot group
 			else if (node.flag[m_count] == 5.0) {
 				
 			}
 			
-			if (node.waitTime[m_count] > 0) {
-				m_my->setWheelVelocity(0.0, 0.0);
-				sleep(node.waitTime[m_count]);
-				node.waitTime[m_count] = 0;
-			}
 
 			// if the robot has reached the step or if it is rolling away from it, go to the next step
 			if (((dx == 0 && dz == 0) 
