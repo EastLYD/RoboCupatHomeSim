@@ -114,20 +114,16 @@ void UserController::onRecvMsg(RecvMsgEvent &evt)
   std::string msg    = evt.getMsg();
   //自分自身の取得
   SimObj *my = getObj(myname());
- //LOG_MSG(("%s: %s",sender.c_str(), msg.c_str()));
-  //メッセージ取得
-  //char *all_msg = (char*)evt.getMsg();
 
-//std::string ss = all_msg;
-  //ヘッダーの取り出し
-std::string message,brodcast_msg;
-parseFile("command.txt");
-message = ":"+ rooms[cycle] +";"+ objects[cycle]+"."; 
-brodcast_msg = "Go to the "+ rooms[cycle] +" grasp the "+ objects[cycle]+" and come back here"; 
- if(msg == "start") {
-sendMsg("moderator_0","init_time");
+ if(msg == "Task_start"   && sender == "moderator_0"  && cycle < 2) {
+  sendMsg("moderator_0","init_time");
+ 
+  std::string message,brodcast_msg;
+  parseFile("command.txt");
+  message = ":"+ rooms[cycle] +";"+ objects[cycle]+"."; 
+  brodcast_msg = "Go to the "+ rooms[cycle] +", grasp the "+ objects[cycle]+" and come back here"; 
 //broadcastMsgToSrv(brodcast_msg);
-broadcastMsg(brodcast_msg);
+  broadcastMsg(brodcast_msg);
 //LOG_MSG(("%s: %s",sender.c_str(), brodcast_msg.c_str()));
 //sendMsg("robot_000",message);
 //sendMsg("moderator_0",message);
