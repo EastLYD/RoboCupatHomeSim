@@ -248,14 +248,14 @@ cnt = m_entities.size();
        (m_entities[i] != "apple_1") &&
        (m_entities[i] != "apple_2") &&
        (m_entities[i] != "apple_3") &&
-       (m_entities[i] != "pet_0") &&
-       (m_entities[i] != "pet_1") &&
-       (m_entities[i] != "pet_2") &&
-       (m_entities[i] != "pet_3") &&
-       (m_entities[i] != "mug_0") &&
-       (m_entities[i] != "mug_1") &&
-       (m_entities[i] != "mug_2") &&
-       (m_entities[i] != "mug_3") &&
+       (m_entities[i] != "petbottle_0") &&
+       (m_entities[i] != "petbottle_1") &&
+       (m_entities[i] != "petbottle_2") &&
+       (m_entities[i] != "petbottle_3") &&
+       (m_entities[i] != "mugcup_0") &&
+       (m_entities[i] != "mugcup_1") &&
+       (m_entities[i] != "mugcup_2") &&
+       (m_entities[i] != "mugcup_3") &&
        (m_entities[i] != "can_0") &&
        (m_entities[i] != "can_1") &&
        (m_entities[i] != "can_2") &&
@@ -504,12 +504,12 @@ void MyController::onRecvMsg(RecvMsgEvent &evt)
   }
   if(object_msg == "mugcup" )
   {
-    m_pointedObject = "mug_0"; 
+    m_pointedObject = "mugcup_0"; 
   }
   
   if(object_msg == "petbottle" )
   {
-    m_pointedObject = "pet_0"; 
+    m_pointedObject = "petbottle_0"; 
   }
   }
 
@@ -528,12 +528,12 @@ void MyController::onRecvMsg(RecvMsgEvent &evt)
   }
   if(object_msg == "mugcup" )
   {
-    m_pointedObject = "mug_3"; 
+    m_pointedObject = "mugcup_3"; 
   }
   
   if(object_msg == "petbottle" )
   {
-    m_pointedObject = "pet_3"; 
+    m_pointedObject = "petbottle_3"; 
   }
   }
 
@@ -548,12 +548,12 @@ void MyController::onRecvMsg(RecvMsgEvent &evt)
   }
   if(object_msg == "mugcup" )
   {
-    m_pointedObject = "mug_1"; 
+    m_pointedObject = "mugcup_1"; 
   }
   
   if(object_msg == "petbottle" )
   {
-    m_pointedObject = "pet_1"; 
+    m_pointedObject = "petbottle_1"; 
   }
   
   m_roomState = 1;
@@ -573,12 +573,12 @@ void MyController::onRecvMsg(RecvMsgEvent &evt)
   }
   if(object_msg == "mugcup" )
   {
-    m_pointedObject = "mug_2"; 
+    m_pointedObject = "mugcup_2"; 
   }
   
   if(object_msg == "petbottle" )
   {
-    m_pointedObject = "pet_2"; 
+    m_pointedObject = "petbottle_2"; 
   }
    }
  }
@@ -1071,7 +1071,7 @@ void MyController::initRoomsObjects(){
 
   vec2.push_back(tar);
 
-  tar.name = "pet_0";
+  tar.name = "petbottle_0";
   tar.length = 7.11;
   tar.width = 7.11;
   tar.height = 22.3;
@@ -1085,7 +1085,7 @@ void MyController::initRoomsObjects(){
 
   vec2.push_back(tar);
 
-  tar.name = "mug_0";
+  tar.name = "mugcup_0";
   tar.length = 11.7;
   tar.width = 11.7;
   tar.height = 7.98;
@@ -1127,7 +1127,7 @@ void MyController::initRoomsObjects(){
 
   vec2.push_back(tar);
 
-  tar.name = "pet_1";
+  tar.name = "petbottle_1";
   tar.length = 7.11;
   tar.width = 7.11;
   tar.height = 22.3;
@@ -1141,7 +1141,7 @@ void MyController::initRoomsObjects(){
 
   vec2.push_back(tar);
 
-  tar.name = "mug_1";
+  tar.name = "mugcup_1";
   tar.length = 11.7;
   tar.width = 11.7;
   tar.height = 7.98;
@@ -1172,7 +1172,7 @@ void MyController::initRoomsObjects(){
 
   vec2.push_back(tar);
 
-  tar.name = "pet_2";
+  tar.name = "petbottle_2";
   tar.length = 7.11;
   tar.width = 7.11;
   tar.height = 22.3;
@@ -1186,7 +1186,7 @@ void MyController::initRoomsObjects(){
 
   vec2.push_back(tar);
 
-  tar.name = "mug_2";
+  tar.name = "mugcup_2";
   tar.length = 11.7;
   tar.width = 11.7;
   tar.height = 7.98;
@@ -1228,7 +1228,7 @@ void MyController::initRoomsObjects(){
 
   vec2.push_back(tar);
 
-  tar.name = "pet_3";
+  tar.name = "petbottle_3";
   tar.length = 7.11;
   tar.width = 7.11;
   tar.height = 22.3;
@@ -1242,7 +1242,7 @@ void MyController::initRoomsObjects(){
 
   vec2.push_back(tar);
 
-  tar.name = "mug_3";
+  tar.name = "mugcup_3";
   tar.length = 11.7;
   tar.width = 11.7;
   tar.height = 7.98;

@@ -103,7 +103,7 @@
   </instanciate>
 
   <instanciate class="sePetbottle_500ml_empty_c01.xml">
-    <set-attr-value name="name" value="pet_0"/>
+    <set-attr-value name="name" value="petbottle_0"/>
     <set-attr-value name="dynamics" value="false"/>
     <set-attr-value name="x" value="-100060"/>
     <set-attr-value name="y" value="-100000"/>
@@ -113,7 +113,7 @@
   </instanciate>
 
   <instanciate class="seMugcup_c01.xml">
-    <set-attr-value name="name" value="mug_0"/>
+    <set-attr-value name="name" value="mugcup_0"/>
     <set-attr-value name="dynamics" value="false"/>
     <set-attr-value name="x" value="-100090"/>
     <set-attr-value name="y" value="-100000"/>
@@ -144,7 +144,7 @@
   </instanciate>
 
   <instanciate class="sePetbottle_500ml_empty_c01.xml">
-    <set-attr-value name="name" value="pet_1"/>
+    <set-attr-value name="name" value="petbottle_1"/>
     <set-attr-value name="dynamics" value="false"/>
     <set-attr-value name="x" value="-100000"/>
     <set-attr-value name="y" value="-150000"/>
@@ -154,7 +154,7 @@
   </instanciate>
 
   <instanciate class="seMugcup_c01.xml">
-    <set-attr-value name="name" value="mug_1"/>
+    <set-attr-value name="name" value="mugcup_1"/>
     <set-attr-value name="dynamics" value="false"/>
     <set-attr-value name="x" value="-100000"/>
     <set-attr-value name="y" value="-100000"/>
@@ -184,7 +184,7 @@
   </instanciate>
 
   <instanciate class="sePetbottle_500ml_empty_c01.xml">
-    <set-attr-value name="name" value="pet_2"/>
+    <set-attr-value name="name" value="petbottle_2"/>
     <set-attr-value name="dynamics" value="false"/>
     <set-attr-value name="x" value="-100000"/>
     <set-attr-value name="y" value="-100300"/>
@@ -194,7 +194,7 @@
   </instanciate>
 
   <instanciate class="seMugcup_c01.xml">
-    <set-attr-value name="name" value="mug_2"/>
+    <set-attr-value name="name" value="mugcup_2"/>
     <set-attr-value name="dynamics" value="false"/>
     <set-attr-value name="x" value="-110000"/>
     <set-attr-value name="y" value="-100000"/>
@@ -224,7 +224,7 @@
   </instanciate>
 
   <instanciate class="sePetbottle_500ml_empty_c01.xml">
-    <set-attr-value name="name" value="pet_3"/>
+    <set-attr-value name="name" value="petbottle_3"/>
     <set-attr-value name="dynamics" value="false"/>
     <set-attr-value name="x" value="-101000"/>
     <set-attr-value name="y" value="-100000"/>
@@ -234,7 +234,7 @@
   </instanciate>
 
   <instanciate class="seMugcup_c01.xml">
-    <set-attr-value name="name" value="mug_3"/>
+    <set-attr-value name="name" value="mugcup_3"/>
     <set-attr-value name="dynamics" value="false"/>
     <set-attr-value name="x" value="-100000"/>
     <set-attr-value name="y" value="-100000"/>

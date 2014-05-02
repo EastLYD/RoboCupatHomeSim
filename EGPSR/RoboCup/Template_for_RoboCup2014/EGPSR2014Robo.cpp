@@ -1629,11 +1629,11 @@ void RobotController::onRecvMsg(RecvMsgEvent &evt)
   }
   if(object_msg == "mugcup" )
   {
-    m_pointedObject = "mug_0"; 
+    m_pointedObject = "mugcup_0"; 
   }
   if(object_msg == "petbottle" )
   {
-    m_pointedObject = "pet_0"; 
+    m_pointedObject = "petbottle_0"; 
   }
 
   }
@@ -1653,12 +1653,12 @@ void RobotController::onRecvMsg(RecvMsgEvent &evt)
   }
   if(object_msg == "mugcup" )
   {
-    m_pointedObject = "mug_3"; 
+    m_pointedObject = "mugcup_3"; 
   }
 
   if(object_msg == "petbottle" )
   {
-    m_pointedObject = "pet_3"; 
+    m_pointedObject = "petbottle_3"; 
   }
 
   }
@@ -1675,17 +1675,14 @@ void RobotController::onRecvMsg(RecvMsgEvent &evt)
   {
     m_pointedObject = "can_1"; 
   }
-  if(object_msg == "mug" )
-  {
-    m_pointedObject = "mug_1"; 
-  }
   if(object_msg == "mugcup" )
   {
-    m_pointedObject = "mug_1"; 
+    m_pointedObject = "mugcup_1"; 
   }
+  
   if(object_msg == "petbottle" )
   {
-    m_pointedObject = "pet_1"; 
+    m_pointedObject = "petbottle_1"; 
   }
 
   }
@@ -1704,12 +1701,12 @@ void RobotController::onRecvMsg(RecvMsgEvent &evt)
   }
   if(object_msg == "mugcup" )
   {
-    m_pointedObject = "mug_2"; 
+    m_pointedObject = "mugcup_2"; 
   }
   
   if(object_msg == "petbottle" )
   {
-    m_pointedObject = "pet_2"; 
+    m_pointedObject = "petbottle_2"; 
   }
 
   }
