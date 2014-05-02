@@ -1,7 +1,7 @@
 #sigverse header
 SIG_SRC  = $(SIGVERSE_PATH)/include/sigverse
 
-OBJS = CheckPoint.so CheckPoint2.so FollowMeHuman.so FollowMeTestRobot.so Wall.so score.so Operator.so Referee.so Moderator.so
+OBJS = CheckPoint.so CheckPoint2.so ITP1.so ITP2.so FinishLine.so FollowMeHuman.so FollowMeTestRobot.so Wall.so score.so Operator.so Moderator.so
 
 all: $(OBJS)
 

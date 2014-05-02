@@ -19,16 +19,19 @@ private:
 
 	SimObj *m_my;
 	bool check1;
-	bool elevator;
-	bool crowd;
+	//bool elevator;
+	bool entered;
+	bool crowd_clear;
 	bool collision;
 	bool check1_clear;
 	bool elevator_clear;
-	bool not_elevator;
+	bool all_clear;
+	//bool not_elevator;
 	bool a;
 	bool b;
 	bool c;
 	bool d;
+	bool e;
 	int total;
 
 	//std::vector<std::string> m_entities;
@@ -42,29 +45,27 @@ void MyController::onInit(InitEvent &evt)
 	retValue  = 0.05;
 
 	check1 = false;
-	elevator = false;
-	crowd = false;
-	collision = false;
 	check1_clear = false;
+	//elevator = false;
+	entered = false;
 	elevator_clear = false;
-	not_elevator = false;
+	crowd_clear = false;
+	all_clear = false;
 	a = false;
 	b = false;
 	c = false;
 	d = false;
+	e = false;
 	total = 0;
 
 	// ** Need to correctly connect to referee service
 	m_my = getObj(myname());
-	//getAllEntities(m_entities);
-	//SimObj *obj = getObj("moderator_0");
 
 }
 
 double MyController::onAction(ActionEvent &evt)
 {
-	/*
-	gettimeofday(&t0, NULL);
+	/*gettimeofday(&t0, NULL);
 	int sec, msec;
 	if (t0.tv_usec < t1.tv_usec) {
 		sec = t0.tv_sec - t1.tv_sec - 1;
@@ -83,8 +84,8 @@ double MyController::onAction(ActionEvent &evt)
 	else if(available && m_ref == NULL){
 		m_ref = connectToService("FollowMeReferee");
 	}
-	
-	if (check1 == true && check1_clear == true && a == false){
+
+	if (check1_clear == true && a == false){
 		total = total + 300;
 		stringstream ss;
 		ss << total;
@@ -98,21 +99,7 @@ double MyController::onAction(ActionEvent &evt)
 		a = true;
 	}
 
-	if (elevator_clear == false && elevator == true){
-		total = total - 100;
-		stringstream ss4;
-		ss4 << total;
-		string result4 = ss4.str();
-		//sendMsg("SIGViewer", result4);
-		std::string msg = "FollowMeReferee/Elevator" "/-100";
-		if(m_ref != NULL){
-			m_ref->sendMsgToSrv(msg.c_str());
-		LOG_MSG((msg.c_str()));
-		}
-		elevator = false;
-	}
-
-	if (elevator == true && elevator_clear == true && b == false){
+	if (elevator_clear == true && b == false && a == true){
 		total = total + 300;
 		stringstream ss2;
 		ss2 << total;
@@ -124,70 +111,83 @@ double MyController::onAction(ActionEvent &evt)
 		}
 		LOG_MSG((msg.c_str()));
 		b = true;
-		elevator_clear = false; //誤メッセージ判定のため
-		elevator = false;
 	}
-	if (collision == true && c == false){
-		total = 0;
-		stringstream ss3;
-		ss3 << total;
-		string result3 = ss3.str();
-		sendMsg("SIGViewer", result3);
-		std::string msg = "FollowMeReferee/Collision" "/-100";
-		if(m_ref != NULL){
-			m_ref->sendMsgToSrv(msg.c_str());
-		}
-		LOG_MSG((msg.c_str()));
-		c = true;
-	}
-	if (crowd == true && d == false){
-		total = total + 400;
+	if (crowd_clear == true && d == false  && a == true  && b == true){
+		total = total + 300;
 		stringstream ss5;
 		ss5 << total;
 		string result5 = ss5.str();
 		sendMsg("SIGViewer", result5);
-		std::string msg = "FollowMeReferee/Crowded loacation clear" "/400";
+		std::string msg = "FollowMeReferee/Crowded loacation clear" "/300";
 		if(m_ref != NULL){
 			m_ref->sendMsgToSrv(msg.c_str());
 		}
 		LOG_MSG((msg.c_str()));
 		d = true;
 	}
+	if (all_clear == true && e == false){
+		total = total + 100;
+		stringstream ss;
+		ss << total;
+		string result = ss.str();
+		sendMsg("SIGViewer", result);
+		std::string msg = "FollowMeReferee/All check points clear" "/100";
+		if(m_ref != NULL){
+			m_ref->sendMsgToSrv(msg.c_str());
+		}
+		LOG_MSG((msg.c_str()));
+		e = true;
+	}
 	return retValue;
 }
 
 void MyController::onRecvMsg(RecvMsgEvent &evt) {
 	string msg = evt.getMsg();
-	if (msg == "checkpoint1_clear"){
-		check1_clear = true;
+	if (msg == "checkpoint1"){
+		if(!check1_clear){
+			check1 = true;
+		}
+	}
+	else if (msg == "checkpoint1_clear"){
+		if(check1){
+			check1_clear = true;
+		}
 	}
 	else if (msg == "elevator_clear"){
-		elevator_clear = true;
+		if(entered){
+			elevator_clear = true;
+		}
 	}
-	else if (msg == "Collision"){
-		collision = true;
+	else if (msg == "Entered"){
+		if(!elevator_clear){
+			//elevator = true;
+			entered = true;
+		}
 	}
-	else if (msg == "check1"){
-		check1 = true;
+	else if (msg == "crowd_clear"){
+		crowd_clear = true;
+		if(check1_clear && elevator_clear && crowd_clear){
+			all_clear = true;
+		}
 	}
-	else if (msg == "elevator"){
-		elevator = true;
-	}
-	else if (msg == "crowd"){
-		crowd = true;
-	}
-	else if(msg == "start"){
+	/*else if (msg == "finish_line"){
+		if(check1_clear && elevator_clear && crowd_clear){
+			finish_line = true;
+		}
+	}*/
+	else if(msg == "Task_start"){
 		check1 = false;
-		elevator = false;
-		crowd = false;
-		collision = false;
 		check1_clear = false;
+		//elevator = false;
 		elevator_clear = false;
-		not_elevator = false;
+		crowd_clear = false;
+		collision = false;
+		all_clear = false;
 		a = false;
 		b = false;
 		c = false;
 		d = false;
+		e = false;
 	}
 }
 

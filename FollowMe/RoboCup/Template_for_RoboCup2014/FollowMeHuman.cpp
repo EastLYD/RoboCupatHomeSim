@@ -39,11 +39,18 @@ private:
 	float RLEG_JOINT2[SIZE]; // right groin
 	float RLEG_JOINT4[SIZE]; // right knee
 	float RLEG_JOINT6[SIZE]; // right ankle
+
+	int count;
+	int step;
+
+	Vector3d initPos;
+
 };
 
 void MyController::onInit(InitEvent &evt)
 {
 	my = getObj(myname());
+	my->getPosition(initPos);
 
 	start = false;
 	sw = false;
@@ -76,21 +83,25 @@ void MyController::onInit(InitEvent &evt)
 					   &RLEG_JOINT6[i]);
 		}
 	}
+
+	count = 0;
+	step = 6;
 }
 
 double MyController::onAction(ActionEvent &evt)
 {
-	int count = 0;
 	Vector3d pos;
 
 	if (start == true){
-		int step = 3;
-		while (count<step){
-			double dx = 0;
-			double dz = -2.5;
-			double addx = 0.0;
-			double addz = 0.0;
-			my->getPosition(pos);
+
+		my->getPosition(pos);
+
+		double dx = 0;
+		double dz = -2.5;
+		double addx = 0.0;
+		double addz = 0.0;
+
+		if(count%2){
 			for(int i=0; i<motionNum; i++){
 				addx += dx;
 				addz += dz;
@@ -108,6 +119,8 @@ double MyController::onAction(ActionEvent &evt)
 				my->setJointAngle("RLEG_JOINT4", DEG2RAD(RLEG_JOINT4[i]));
 				my->setJointAngle("RLEG_JOINT6", DEG2RAD(RLEG_JOINT6[i]));
 			}
+		}
+		else{
 			for(int i=0; i<motionNum; i++){
 				addx += dx;
 				addz += dz;
@@ -124,46 +137,18 @@ double MyController::onAction(ActionEvent &evt)
 				my->setJointAngle("LLEG_JOINT4", DEG2RAD(RLEG_JOINT4[i]));
 				my->setJointAngle("LLEG_JOINT6", DEG2RAD(RLEG_JOINT6[i]));
 			}
-			count++;
-			if(count==1){
-				usleep(3000000);
-			}
+		}
+		count++;
 
+		if(count==2){
+			sleep(3);
+		}
+		if(count==4){
+			sendMsg("operator","Passed_through");
+		}
+		if(count>step){
 			start = false;
 		}
-		/*while (count<20){
-			if (sw == false){
-				my->getPosition(pos);
-				my->setPosition(pos.x(), pos.y(), pos.z() - 10);
-				my->setJointAngle("LARM_JOINT1", DEG2RAD(-30));
-				my->setJointAngle("RLEG_JOINT2", DEG2RAD(-20));
-				my->setJointAngle("RLEG_JOINT4", DEG2RAD(10));
-				usleep(100000);
-				my->setJointAngle("LARM_JOINT1", DEG2RAD(0));
-				my->setJointAngle("RLEG_JOINT2", DEG2RAD(0));
-				my->setJointAngle("RLEG_JOINT4", DEG2RAD(0));
-				sw = true;
-			}
-			else{
-				my->getPosition(pos);
-				my->setPosition(pos.x(), pos.y(), pos.z() - 10);
-				my->setJointAngle("RARM_JOINT1", DEG2RAD(-30));
-				my->setJointAngle("LLEG_JOINT2", DEG2RAD(-20));
-				my->setJointAngle("LLEG_JOINT4", DEG2RAD(10));
-				usleep(100000);
-				my->setJointAngle("RARM_JOINT1", DEG2RAD(0));
-				my->setJointAngle("LLEG_JOINT2", DEG2RAD(0));
-				my->setJointAngle("LLEG_JOINT4", DEG2RAD(0));
-				sw = false;
-			}
-			count++;
-
-			if(count==7){
-				usleep(3000000);
-			}
-
-			start = false;
-		}*/
 	}
 
 	return 0.1;
@@ -172,9 +157,18 @@ double MyController::onAction(ActionEvent &evt)
 void MyController::onRecvMsg(RecvMsgEvent &evt)
 {
 	string msg = evt.getMsg();
-	if (msg == "point1"){
+	if(msg == "walk"){
 		start = true;
 	}
+	else if(msg == "Task_start"){
+		start = false;
+		my->setPosition(initPos);
+		count = 0;
+	}
+	else if(msg == "Give_up"){
+		start = false;
+	}
+
 }
 
 void MyController::onCollision(CollisionEvent &evt)
