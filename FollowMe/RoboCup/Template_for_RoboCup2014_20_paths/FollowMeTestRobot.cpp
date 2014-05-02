@@ -222,13 +222,18 @@ void MyController::onRecvMsg(RecvMsgEvent &evt)
 		m_started = true;
 	}
 	else if(msg == "end"){
-		//m_my->setWheelVelocity(0.0, 0.0);
+		m_my->setWheelVelocity(0.0, 0.0);
 		m_state = 999;
 		broadcastMsg("get message: end");
+		m_started = false;
 	}
 	else if(m_state == 207 && msg == "leave the elevator"){
 		broadcastMsg("get message: leave the elevator");
 		m_state = 208;
+	}
+	else if (msg == "end_all") {
+		m_my->setWheelVelocity(0.0, 0.0);
+		broadcastMsg("robot : End all of tasks");
 	}
 }
 

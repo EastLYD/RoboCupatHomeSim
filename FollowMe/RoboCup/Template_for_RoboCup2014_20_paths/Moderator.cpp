@@ -3,6 +3,8 @@
 #include "Logger.h"
 #include <sys/time.h>
 
+#define MAX_TASK 20
+
 char start_msg[]  = "start";
 char end_msg[]    = "end";
 char giveup_msg[] = "giveup";
@@ -90,7 +92,7 @@ void MyController::onInit(InitEvent &evt)
 
 double MyController::onAction(ActionEvent &evt)
 {
-	if(trialCount >= 10){
+	if(trialCount >= MAX_TASK){
 		return retValue;
 	}
 
@@ -205,7 +207,7 @@ void MyController::onRecvMsg(RecvMsgEvent &evt)
 	if(/*sender == roboName.c_str() &&*/ msg == end_msg){
 		breakTask();
 	}
-	if(msg == giveup_msg){
+	else if(msg == giveup_msg){
 		broadcastMsg(giveup_msg);
 		sendMsg(operatorName, giveup_msg);
 		breakTask();
@@ -226,10 +228,11 @@ void MyController::breakTask()
 	task = false;
 	trialCount++;
 
-	if(trialCount == 10){
+	if(trialCount == MAX_TASK){
 		resetCondition();
 		LOG_MSG(("End of all tasks"));
 		broadcastMsg("End of all tasks");
+		broadcastMsg("end_all");
 	}
 }
 

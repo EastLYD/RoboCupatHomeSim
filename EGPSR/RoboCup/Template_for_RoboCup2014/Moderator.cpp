@@ -68,7 +68,7 @@ public:
   void reposObjects();
   void onCheckFinalPosition();
   void breakTask();
-  //void takeAwayObjects();
+ // void takeAwayObjects();
 
 
 private:
@@ -87,6 +87,7 @@ private:
   std::vector<std::string> m_entities;
   std::vector<std::string> m_entNames;
   int entNum;
+  int cycle;
 
   std::vector<std::string> m_rooms;
   int m_roomState;
@@ -103,7 +104,7 @@ private:
   double take_time  ;
   bool init ;
 
-
+  bool time_display ;
 
       Vector3d Obj_pos;
       Vector3d PrObj_pos;
@@ -115,7 +116,7 @@ private:
   double startTime;
   double endTime;
 
-
+ bool Task_st;
 
 std::string m_pointedObject;
 
@@ -128,7 +129,7 @@ std::string m_pointedObject;
   Vector3d robotInitialPos;
   Vector3d humanPos;
   float radius;
-double cycle;
+
 
 };  
   
@@ -145,7 +146,8 @@ void MyController::onInit(InitEvent &evt) {
   initRoomsObjects();
 	
   int i, cnt;
-
+  Task_st = true;
+  time_display = true;
   retValue = 0.08;
   colState = false;
   pcolState = false;
@@ -160,7 +162,7 @@ void MyController::onInit(InitEvent &evt) {
   Obj_pos  = Vector3d(0,0,0);
   PrObj_pos  = Vector3d(0,0,0);
 
-
+  cycle = 0;
      room_msg = "";
      object_msg = "" ;
 
@@ -308,6 +310,16 @@ double MyController::onAction(ActionEvent &evt) {
 
   // for arm configuration
   //for(int j=0;j<jtnum;j++) crrJAng_r[j] = r_my->getJointAngle(jointName[j].c_str());
+if(Task_st == true && cycle < 2)
+  {
+  broadcastMsg("Task_start");
+  // printf("tast_start moderator \n");
+  Task_st = false;
+  cycle ++;
+  }
+
+
+
 
 	onCheckCollision();
 	
@@ -369,10 +381,14 @@ std::stringstream time_ss;
     take_time = evt.time();
     init = false;
   }
+
   double elapsedTime = evt.time() - startTime - take_time;
- 
-  printf("the time is %f \n" , evt.time());
   
+
+
+
+   if( time_display == true)
+   {
   //if(evt.time() - startTime > endTime){
   if(elapsedTime > endTime){
     LOG_MSG(("Time_over"));
@@ -399,7 +415,7 @@ std::stringstream time_ss;
     LOG_MSG((time_ss.str().c_str()));
   }
 
-
+  }
 
 
 
@@ -440,6 +456,9 @@ void MyController::onRecvMsg(RecvMsgEvent &evt)
  // fin.open(fileNam_my.c_str());
    bool dest = false;
 
+ 
+
+
    if(sender == "man_000")
    {
    // std::cout << "the message Moderator is "  + msg  << std::endl ;
@@ -448,25 +467,25 @@ void MyController::onRecvMsg(RecvMsgEvent &evt)
       task = msg.substr(found+10);
      // rooms.push_back(room);
      // printf("task %s \n",task);
-    std::cout << "Task : "+ task  << std::endl;
+   // std::cout << "Task : "+ task  << std::endl;
     }
 
-    found2 = task.find(" grasp the ",0);
+    found2 = task.find(", grasp the ",0);
     if (found3 != std::string::npos){
        room_msg = task.substr(0,found2);
      // rooms.push_back(room);
    // printf("room %s \n",room_msg);
-      std::cout << "room : "+room_msg  << std::endl;
+    //  std::cout << "room : "+room_msg  << std::endl;
     }
 
 
       found3 = task.find(" and come back here",found);
       if (found3 != std::string::npos){
-         object_msg = task.substr(found2+11,found3-found2-11);
+         object_msg = task.substr(found2+12,found3-found2-12);
          //buf = buf.substr(found+1);
        //  objects.push_back(object);
         // cout << "object"+object_msg  ;
-         std::cout << "object : "+object_msg  << std::endl;
+        // std::cout << "object : "+object_msg  << std::endl;
      // printf("object %s \n",object_msg);
        }
 
@@ -483,12 +502,12 @@ void MyController::onRecvMsg(RecvMsgEvent &evt)
   {
     m_pointedObject = "can_0"; 
   }
-  if(object_msg == "mug" )
+  if(object_msg == "mugcup" )
   {
     m_pointedObject = "mug_0"; 
   }
   
-  if(object_msg == "pet" )
+  if(object_msg == "petbottle" )
   {
     m_pointedObject = "pet_0"; 
   }
@@ -507,12 +526,12 @@ void MyController::onRecvMsg(RecvMsgEvent &evt)
   {
     m_pointedObject = "can_3"; 
   }
-  if(object_msg == "mug" )
+  if(object_msg == "mugcup" )
   {
     m_pointedObject = "mug_3"; 
   }
   
-  if(object_msg == "pet" )
+  if(object_msg == "petbottle" )
   {
     m_pointedObject = "pet_3"; 
   }
@@ -527,12 +546,12 @@ void MyController::onRecvMsg(RecvMsgEvent &evt)
   {
     m_pointedObject = "can_1"; 
   }
-  if(object_msg == "mug" )
+  if(object_msg == "mugcup" )
   {
     m_pointedObject = "mug_1"; 
   }
   
-  if(object_msg == "pet" )
+  if(object_msg == "petbottle" )
   {
     m_pointedObject = "pet_1"; 
   }
@@ -552,12 +571,12 @@ void MyController::onRecvMsg(RecvMsgEvent &evt)
   {
     m_pointedObject = "can_2"; 
   }
-  if(object_msg == "mug" )
+  if(object_msg == "mugcup" )
   {
     m_pointedObject = "mug_2"; 
   }
   
-  if(object_msg == "pet" )
+  if(object_msg == "petbottle" )
   {
     m_pointedObject = "pet_2"; 
   }
@@ -572,7 +591,7 @@ if(msg == "Room_reached" && sender == "robot_000")
   onCheckRoom();
 }
 
-    if(msg == "Object_grasped" && sender == "robot_000")
+if(msg == "Object_grasped" && sender == "robot_000")
     {
 onCheckObject();
     }
@@ -598,18 +617,30 @@ onCheckObject();
 
 
 
-if(sender == "robot_000" && msg == "Task_finished"){
+if(sender == "robot_000" && msg == "Task_finished" && cycle < 2 ){
     LOG_MSG(("Task_end"));
     broadcastMsg("Task_end");
     onCheckPositionfrontHuman();
     sleep(1);
     reposObjects();
     startTime = 0.0;
-    sendMsg("man_000","start");
-
-
-    breakTask();
+   
+   breakTask();
+   Task_st = true;
+   
   }
+
+if (sender == "robot_000" && msg == "Task_finished" && cycle == 2 )
+   {
+    LOG_MSG(("Task_end"));
+    broadcastMsg("Task_end");
+    onCheckPositionfrontHuman();
+    sleep(1);
+    broadcastMsg("Mission_complete");
+    time_display = false;
+   }
+
+
   if(sender == "robot_000" && msg == "Give_up"){
     LOG_MSG(("Task_end"));
     broadcastMsg("Task_end");
@@ -650,7 +681,7 @@ dist = rob_pos;
 dist -= hum_pos;
 distance = dist.length();
 printf("The distance to human is %f\n", distance);
-if(distance < 200 )
+if(distance <  radius )
 {
 
 std::string msg = "RoboCupReferee/Robot is in [" + final + "]" "/+400";
@@ -973,14 +1004,22 @@ void MyController::reposObjects(){
 void MyController::breakTask()
 {
   isCleaningUp = false;
- // takeAwayObjects();
+  //takeAwayObjects();
   trialCount++;
+  std::string msg = "RoboCupReferee/reset/";
+  if(m_ref != NULL){
+    m_ref->sendMsgToSrv(msg.c_str());
+  }
 
   if(trialCount == trialMax){
    // resetRobotCondition();
-    LOG_MSG(("End of all tasks"));
-    broadcastMsg("End of all tasks");
+    LOG_MSG(("Mission_complete"));
+    broadcastMsg("Mission_complete");
   }
+
+
+
+
 }
 
 
@@ -1268,9 +1307,14 @@ int MyController::contains(std::vector<Table> vec, std::string key){
 float MyController::mapRange(float s, float a1, float a2, float b1, float b2){
   return b1 + ( (s-a1) * (b2-b1) ) / (a2 - a1);
 }
-
-
-
+/*
+void MyController::takeAwayObjects(){
+  for(std::vector<Target>::iterator it = m_entities[trialCount].begin(); it != m_entities[trialCount].end(); ++it){
+    SimObj* target = getObj(it->name.c_str());
+    target->setPosition(Vector3d(100000, 100000, 100000));
+  }
+}
+*/
 
 extern "C" Controller * createController() {  
   return new MyController;  

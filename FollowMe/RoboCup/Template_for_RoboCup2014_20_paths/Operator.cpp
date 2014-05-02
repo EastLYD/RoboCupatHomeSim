@@ -170,6 +170,7 @@ void MyController::initCondition()
 	dy=0;
 	dz=0;
 
+
 	std::stringstream nodePath;
 	nodePath << "nodes/node_" << taskNum++ << ".txt";
 

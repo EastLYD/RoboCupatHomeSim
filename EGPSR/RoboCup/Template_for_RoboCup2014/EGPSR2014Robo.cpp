@@ -448,9 +448,9 @@ if (m_grasp == true)
       break;
     }
     case 108: {  
-
+      sleep(1);
       broadcastMsg("Object_grasped");
-      LOG_MSG(("Object_grasped"));
+      //LOG_MSG(("Object_grasped"));
      m_state = 110;
 
       break;
@@ -544,8 +544,8 @@ case 201: {
 		case 10: { // set rotation for relay point
 		//	broadcastMsgToSrv("Move toward the kitchen");
     sleep(1);
-          broadcastMsg("Task_start");
-         LOG_MSG(("Task_start"));
+         
+       
       sleep(1);
 			m_time = rotateTowardObj(m_relayPoint1, m_vel, evt.time());
 			m_state++;
@@ -636,8 +636,7 @@ case 201: {
 		// move toward the lobby
 		case 20: { // set rotation for relay point
 			//broadcastMsgToSrv("Move toward the lobby");
-        broadcastMsg("Task_start");
-        LOG_MSG(("Task_start"));
+
 			m_time = rotateTowardObj(m_relayPoint1, m_vel, evt.time());
 			m_state++;
 			break;
@@ -724,8 +723,7 @@ case 29: {
 		// move toward the bed room
 		case 30: { // set rotation for relay point
 			//broadcastMsgToSrv("Move toward the bed room");
-        broadcastMsg("Task_start");
-         LOG_MSG(("Task_start"));
+
 			m_time = rotateTowardObj(m_relayPoint1, m_vel, evt.time());
 			m_state++;
 			break;
@@ -799,8 +797,7 @@ case 37: { // move toward bed room point
 
 // move toward the bed room
     case 40: { //set rotation for relay point
-              broadcastMsg("Task_start");
-              LOG_MSG(("Task_start"));
+
       if(evt.time() >= m_time){
         m_my->setWheelVelocity(0.0, 0.0);
         m_time = rotateTowardObj(m_livingroomPoint, m_vel, evt.time());
@@ -1592,25 +1589,25 @@ void RobotController::onRecvMsg(RecvMsgEvent &evt)
       task = msg.substr(found+10);
      // rooms.push_back(room);
      // printf("task %s \n",task);
-     //  broadcastMsgToSrv("Task_start");
+
    // std::cout << "Task : "+ task  << std::endl;
     }
 
-    found2 = task.find(" grasp the ",0);
+    found2 = task.find(", grasp the ",0);
     if (found3 != std::string::npos){
        room_msg = task.substr(0,found2);
      // rooms.push_back(room);
    // printf("room %s \n",room_msg);
-    //  std::cout << "room : "+room_msg  << std::endl;
+    //  std::cout << " robt room : "+room_msg  << std::endl;
     }
      
       found3 = task.find(" and come back here",found);
       if (found3 != std::string::npos){
-         object_msg = task.substr(found2+11,found3-found2-11);
+         object_msg = task.substr(found2+12,found3-found2-12);
       //  buf = buf.substr(found+1);
       //  objects.push_back(object);
       //  cout << "object"+object_msg  ;
-      //  std::cout << "object : "+object_msg  << std::endl;
+     //   std::cout << " robot object : "+object_msg  << std::endl;
       //  printf("object %s \n",object_msg);
        
  }
@@ -1630,11 +1627,11 @@ void RobotController::onRecvMsg(RecvMsgEvent &evt)
   {
     m_pointedObject = "can_0"; 
   }
-  if(object_msg == "mug" )
+  if(object_msg == "mugcup" )
   {
     m_pointedObject = "mug_0"; 
   }
-  if(object_msg == "pet" )
+  if(object_msg == "petbottle" )
   {
     m_pointedObject = "pet_0"; 
   }
@@ -1654,12 +1651,12 @@ void RobotController::onRecvMsg(RecvMsgEvent &evt)
   {
     m_pointedObject = "can_3"; 
   }
-  if(object_msg == "mug" )
+  if(object_msg == "mugcup" )
   {
     m_pointedObject = "mug_3"; 
   }
 
-  if(object_msg == "pet" )
+  if(object_msg == "petbottle" )
   {
     m_pointedObject = "pet_3"; 
   }
@@ -1682,11 +1679,11 @@ void RobotController::onRecvMsg(RecvMsgEvent &evt)
   {
     m_pointedObject = "mug_1"; 
   }
-  if(object_msg == "mug" )
+  if(object_msg == "mugcup" )
   {
     m_pointedObject = "mug_1"; 
   }
-  if(object_msg == "pet" )
+  if(object_msg == "petbottle" )
   {
     m_pointedObject = "pet_1"; 
   }
@@ -1705,12 +1702,12 @@ void RobotController::onRecvMsg(RecvMsgEvent &evt)
   {
     m_pointedObject = "can_2"; 
   }
-  if(object_msg == "mug" )
+  if(object_msg == "mugcup" )
   {
     m_pointedObject = "mug_2"; 
   }
   
-  if(object_msg == "pet" )
+  if(object_msg == "petbottle" )
   {
     m_pointedObject = "pet_2"; 
   }
