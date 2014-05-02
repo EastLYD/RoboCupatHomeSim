@@ -1,5 +1,7 @@
 #pragma once
 #include "stdafx.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 public ref class Referee : public sigverse::SIGService  
 {  
@@ -10,6 +12,7 @@ public:
 		tmp_score = gcnew System::Collections::Generic::List<int>();
 		tmp_msg  = gcnew System::Collections::Generic::List<System::String^>();
 		m_total = 0;
+		trial_count = 1;
 	};
 	~Referee();
 	int getScore();
@@ -26,12 +29,15 @@ private:
 	System::Collections::Generic::List<System::String^>^ tmp_msg;
 	System::String^ remainingTime;
 	int m_total;
+	int trial_count;
+	FILE* fp;
 };
 
   
 Referee::~Referee()  
 {  
   this->disconnect();  
+  fclose(fp);
 }  
 
 int Referee::getScore()
@@ -71,7 +77,6 @@ System::String^ Referee::getRemainingTime()
 
 void Referee::onRecvMsg(sigverse::RecvMsgEvent ^evt)  
 {  
-	
 	System::String ^name = evt->getSender();
 	System::String ^msg  = evt->getMsg();
 
@@ -85,6 +90,15 @@ void Referee::onRecvMsg(sigverse::RecvMsgEvent ^evt)
 		if(split_msg[1] == "time"){
 			remainingTime = split_msg[2];
 		}
+		else if(split_msg[1] == "start"){
+			if(trial_count==1)	fp = fopen("score.xls","w");
+			else	fprintf(fp,"trial\t%d\n",trial_count);
+		}
+		else if(split_msg[1] == "end"){
+			fprintf(fp,"total\t%d\n",m_total);
+			trial_count++;
+			m_total = 0;
+		}
 		else{
 			tmp_msg->Add(split_msg[1]);
 		
@@ -92,6 +106,7 @@ void Referee::onRecvMsg(sigverse::RecvMsgEvent ^evt)
 			int score = int::Parse(split_msg[2]);
 			tmp_score->Add(score);
 			m_total += score;
+			fprintf(fp,"score\t%d\n",score);
 		}
 	}
 }
