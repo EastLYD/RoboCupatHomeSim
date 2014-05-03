@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define POINT 4//1 or 2 or 4
+#define PenaltyRatio 1.0 //select from 1.0, 0.5, 0.25
 
 public ref class Referee : public sigverse::SIGService  
 {  
@@ -107,7 +107,7 @@ void Referee::onRecvMsg(sigverse::RecvMsgEvent ^evt)
 		
 			// score
 			int score = int::Parse(split_msg[2]);
-			if(score>0)	score = score/POINT;
+			if(score>0)	score = score*PenaltyRatio;
 			tmp_score->Add(score);
 			m_total += score;
 			if(fp!=NULL)	fprintf(fp,"score,%d\n",score);
