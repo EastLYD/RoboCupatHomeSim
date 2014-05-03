@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define POINT 1//1 or 2 or 4
+#define POINT 4//1 or 2 or 4
 
 public ref class Referee : public sigverse::SIGService  
 {  
@@ -94,11 +94,11 @@ void Referee::onRecvMsg(sigverse::RecvMsgEvent ^evt)
 		}
 		else if(split_msg[1] == "start"){
 			if(trial_count==1)	fp = fopen("score.csv","w");
-			fprintf(fp,"trial,%d\n",trial_count);
+			if(fp!=NULL)	fprintf(fp,"trial,%d\n",trial_count);
 		}
 		else if(split_msg[1] == "end"){
 			if(m_total<0)	m_total = 0;
-			fprintf(fp,"total,%d\n",m_total);
+			if(fp!=NULL)	fprintf(fp,"total,%d\n",m_total);
 			m_total = 0;
 			trial_count++;
 		}
@@ -110,7 +110,7 @@ void Referee::onRecvMsg(sigverse::RecvMsgEvent ^evt)
 			if(score>0)	score = score/POINT;
 			tmp_score->Add(score);
 			m_total += score;
-			fprintf(fp,"score,%d\n",score);
+			if(fp!=NULL)	fprintf(fp,"score,%d\n",score);
 		}
 	}
 }
