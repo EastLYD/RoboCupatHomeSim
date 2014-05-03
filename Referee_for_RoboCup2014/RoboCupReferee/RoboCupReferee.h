@@ -92,7 +92,7 @@ void Referee::onRecvMsg(sigverse::RecvMsgEvent ^evt)
 		}
 		else if(split_msg[1] == "start"){
 			if(trial_count==1)	fp = fopen("score.xls","w");
-			else	fprintf(fp,"trial\t%d\n",trial_count);
+			fprintf(fp,"trial\t%d\n",trial_count);
 		}
 		else if(split_msg[1] == "end"){
 			fprintf(fp,"total\t%d\n",m_total);
