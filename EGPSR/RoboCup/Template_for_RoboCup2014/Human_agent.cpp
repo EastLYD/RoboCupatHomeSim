@@ -13,9 +13,10 @@
 #include <string>
 #include <sstream>
 
-#define PI 3.141592
-#define DEG2RAD(DEG) ( (PI) * (DEG) / 180.0 )
+#define DEG2RAD(DEG) ( (M_PI) * (DEG) / 180.0 )
 #define MAX_CHARS_PER_LINE 512
+
+#define NUMBER_OF_REPETITION   10
 
 
 class UserController : public Controller
@@ -28,7 +29,6 @@ public:
 private:
 
 	//移動速度
-	double vel;
 	ViewService *m_view;
 	std::string msg ;
 
@@ -65,7 +65,6 @@ void UserController::onInit(InitEvent &evt)
 
 	cycle = 0;
 
-	vel      = 10.0;
 	srand(time(NULL));
 
 	//初期位置の設定
@@ -111,7 +110,7 @@ void UserController::onRecvMsg(RecvMsgEvent &evt)
 	//自分自身の取得
 	SimObj *my = getObj(myname());
 
-	if(msg == "Task_start"   && sender == "moderator_0"  && cycle < 2) {
+	if(msg == "Task_start"   && sender == "moderator_0"  && cycle < NUMBER_OF_REPETITION) {
 		sendMsg("moderator_0","init_time");
  
 		std::string message,brodcast_msg;
