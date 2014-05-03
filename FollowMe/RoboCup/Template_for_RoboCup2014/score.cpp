@@ -79,10 +79,10 @@ double MyController::onAction(ActionEvent &evt)
 	t1 = t0;*/
 
 	// check whether Referee service is available or not
-	bool available = checkService("FollowMeReferee");
+	bool available = checkService("RoboCupReferee");
 	if(!available && m_ref != NULL) m_ref = NULL;
 	else if(available && m_ref == NULL){
-		m_ref = connectToService("FollowMeReferee");
+		m_ref = connectToService("RoboCupReferee");
 	}
 
 	if (check1_clear == true && a == false && b == false && d == false){
@@ -91,7 +91,7 @@ double MyController::onAction(ActionEvent &evt)
 		ss << total;
 		string result = ss.str();
 		sendMsg("SIGViewer", result);
-		std::string msg = "FollowMeReferee/Check point1 clear/300";
+		std::string msg = "RoboCupReferee/Check point1 clear/300";
 		if(m_ref != NULL){
 			m_ref->sendMsgToSrv(msg.c_str());
 		}
@@ -105,7 +105,7 @@ double MyController::onAction(ActionEvent &evt)
 		ss2 << total;
 		string result2 = ss2.str();
 		sendMsg("SIGViewer", result2);
-		std::string msg = "FollowMeReferee/Elevator clear" "/300";
+		std::string msg = "RoboCupReferee/Elevator clear" "/300";
 		if(m_ref != NULL){
 			m_ref->sendMsgToSrv(msg.c_str());
 		}
@@ -118,7 +118,7 @@ double MyController::onAction(ActionEvent &evt)
 		ss5 << total;
 		string result5 = ss5.str();
 		sendMsg("SIGViewer", result5);
-		std::string msg = "FollowMeReferee/Crowded loacation clear" "/300";
+		std::string msg = "RoboCupReferee/Crowded loacation clear" "/300";
 		if(m_ref != NULL){
 			m_ref->sendMsgToSrv(msg.c_str());
 		}
@@ -131,7 +131,7 @@ double MyController::onAction(ActionEvent &evt)
 		ss << total;
 		string result = ss.str();
 		sendMsg("SIGViewer", result);
-		std::string msg = "FollowMeReferee/All check points clear" "/100";
+		std::string msg = "RoboCupReferee/All check points clear" "/100";
 		if(m_ref != NULL){
 			m_ref->sendMsgToSrv(msg.c_str());
 		}

@@ -39,7 +39,7 @@ public:
 	void onRecvMsg(RecvMsgEvent &evt); 
 	void onCollision(CollisionEvent &evt); 
 
-	double getDistaceToRobot();
+	double getDistanceToRobot();
 
 	void resetPosition();
 
@@ -363,7 +363,7 @@ double MyController::onAction(ActionEvent &evt)
 		/*// 人が歩き始める前に待機
 		if(checkPoint == WAIT_PERSON && !waitForHuman){
 			stop = true;
-			if(getDistaceToRobot() < 150){
+			if(getDistanceToRobot() < 150){
 				stop = false;
 				waitForHuman = true;
 			}
@@ -374,7 +374,7 @@ double MyController::onAction(ActionEvent &evt)
 			
 			//LOG_MSG(("walk"));
 			stop = true;
-			if(getDistaceToRobot() < 200){
+			if(getDistanceToRobot() < 200){
 				sendMsg("man_001", "walk");
 				sentMsg_Man = true;
 			}
@@ -388,7 +388,7 @@ double MyController::onAction(ActionEvent &evt)
 		// エレベータ前待機
 		else if(checkPoint == FRONT_OF_ELEVATOR && !waitForElevator){
 			stop = true;
-			if(getDistaceToRobot() < 200){
+			if(getDistanceToRobot() < 200){
 				stop = false;
 				waitForElevator = true;
 			}
@@ -416,7 +416,7 @@ double MyController::onAction(ActionEvent &evt)
 		// 人ごみを通過後待機
 		else if(checkPoint == CROWD && !waitForCrowd){
 			stop = true;
-			if(getDistaceToRobot() < 200){
+			if(getDistanceToRobot() < 200){
 				stop = false;
 				waitForCrowd = true;
 			}
@@ -489,7 +489,7 @@ void MyController::onCollision(CollisionEvent &evt)
 
 }
 
-double MyController::getDistaceToRobot()
+double MyController::getDistanceToRobot()
 {
 	SimObj *robotObj = getObj(robotName);
 

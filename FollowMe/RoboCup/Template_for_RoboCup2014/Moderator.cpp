@@ -53,7 +53,7 @@ private:
 	int  trialCount;
 	void initialize();
 
-	void startTask();
+	//void startTask();
 	void resetCondition();
 	void breakTask();
 
@@ -105,6 +105,14 @@ double MyController::onAction(ActionEvent &evt)
 		return retValue;
 	}
 
+
+	// check whether Referee service is available or not
+	bool available = checkService("RoboCupReferee");
+	if(!available && m_ref != NULL) m_ref = NULL;
+	else if(available && m_ref == NULL){
+		m_ref = connectToService("RoboCupReferee");
+	}
+
 	/*
 	// processing time
 	gettimeofday(&t0, NULL);
@@ -131,17 +139,15 @@ double MyController::onAction(ActionEvent &evt)
 
 		// broadcast start message
 		broadcastMsg(start_msg);
+		if(m_ref != NULL){
+			m_ref->sendMsgToSrv("RoboCupReferee/start");
+		}
+		LOG_MSG(("RoboCupReferee/start"));
+
 		LOG_MSG(("trial count: %d",trialCount+1));
 
 		startTime = evt.time() + intervalTime;
 		task = true;
-	}
-
-	// check whether Referee service is available or not
-	bool available = checkService("FollowMeReferee");
-	if(!available && m_ref != NULL) m_ref = NULL;
-	else if(available && m_ref == NULL){
-		m_ref = connectToService("FollowMeReferee");
 	}
 
 	// get information about the robot and renew it
@@ -178,7 +184,7 @@ double MyController::onAction(ActionEvent &evt)
 				colState = false;
 			}
 
-			std::string msg = "FollowMeReferee/Collision" "/-100";
+			std::string msg = "RoboCupReferee/Collision" "/-100";
 
 			if(m_ref != NULL){
 				m_ref->sendMsgToSrv(msg.c_str());
@@ -211,9 +217,13 @@ double MyController::onAction(ActionEvent &evt)
 	if(elapsedTime > endTime){
 		LOG_MSG(("Time_over"));
 		broadcastMsg("Time_over");
+		if(m_ref != NULL){
+			m_ref->sendMsgToSrv("RoboCupReferee/end");
+		}
+		LOG_MSG(("RoboCupReferee/end"));
 		sleep(3);
 		breakTask();
-		time_ss << "FollowMeReferee/time/00:00:00";
+		time_ss << "RoboCupReferee/time/00:00:00";
 	}
 	else{
 		double remainedTime = endTime - elapsedTime;
@@ -222,7 +232,7 @@ double MyController::onAction(ActionEvent &evt)
 		min = sec / 60;
 		sec %= 60;
 		msec = (int)((remainedTime - sec) * 100);
-		time_ss <<  "FollowMeReferee/time/";
+		time_ss <<  "RoboCupReferee/time/";
 		time_ss << std::setw(2) << std::setfill('0') << min << ":";
 		time_ss << std::setw(2) << std::setfill('0') << sec;// << ":";
 		//time_ss << std::setw(2) << std::setfill('0') << msec;
@@ -243,19 +253,25 @@ void MyController::onRecvMsg(RecvMsgEvent &evt)
 	std::string msg    = evt.getMsg();
 	LOG_MSG(("%s: %s",sender.c_str(), msg.c_str()));
 
-	//if(/*sender == roboName.c_str() &&*/ msg == end_msg){
-	//	breakTask();
-	//}
 	if(msg == giveup_msg){
 		//sendMsg(operatorName, giveup_msg);
 		if(task){
 			broadcastMsg(end_msg);
+			if(m_ref != NULL){
+				m_ref->sendMsgToSrv("RoboCupReferee/end");
+				LOG_MSG(("RoboCupReferee/end"));
+			}
 			sleep(3);
 			breakTask();
 		}
 	}
 	if(msg == finish_msg){
 		broadcastMsg(end_msg);
+		if(m_ref != NULL){
+			m_ref->sendMsgToSrv("RoboCupReferee/end");
+			LOG_MSG(("RoboCupReferee/end"));
+		}
+
 		//sendMsg(operatorName, finish_msg);
 		sleep(3);
 		breakTask();
@@ -266,11 +282,15 @@ void MyController::initialize()
 {
 }
 
-void MyController::startTask()
+/*void MyController::startTask()
 {
 	// broadcast start message
 	broadcastMsg(start_msg);
-}
+	if(m_ref != NULL){
+		m_ref->sendMsgToSrv("RoboCupReferee/start");
+	}
+	LOG_MSG(("RoboCupReferee/start"));
+}*/
 void MyController::breakTask()
 {
 	task = false;

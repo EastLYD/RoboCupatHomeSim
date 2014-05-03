@@ -656,6 +656,27 @@
     <set-attr-value name="graspable" value="false"/>
   </instanciate>
 
+  <instanciate class="seCamera.xml">  
+    <set-attr-value name="name" value="Camera"/>
+     <set-attr-value name="dynamics" value="false"/>
+    <set-attr-value name="x" value="0.0"/>
+    <set-attr-value name="y" value="600.0"/>
+    <set-attr-value name="z" value="230.0"/>
+    <set-attr-value name="qx" value="0"/>
+    <set-attr-value name="qy" value="1"/>  <!--ny*sin(theta/2)-->
+    <set-attr-value name="qz" value="0"/>
+    <set-attr-value name="qw" value="0"/>  <!--cos(theta/2)-->
+    <set-attr-value name="language" value="c++"/>
+    <set-attr-value name="implementation"
+                    value="./Camera.so"/>
+    <set-attr-value name="collision" value="false"/>
+    <set-attr-value name="graspable" value="false"/>
+    <camera id="1"  
+            aspectRatio="1.77"
+            direction="0 -0.7 1"  
+            position="0.0 0.0 0.0"/>
+  </instanciate>
+
 <!--Referee-->
 <!--
   <instanciate class="seModerator.xml">
