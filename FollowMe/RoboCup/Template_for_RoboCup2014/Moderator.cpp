@@ -94,6 +94,7 @@ void MyController::onInit(InitEvent &evt)
 	else{
 		fscanf(fp, "%d", &taskNum);
 		LOG_MSG(("Set taskNum: %d",taskNum));
+		fclose(fp);
 	}
 
 	startTime =  0.0;
@@ -160,6 +161,18 @@ double MyController::onAction(ActionEvent &evt)
 		LOG_MSG(("RoboCupReferee/start"));
 
 		LOG_MSG(("task num: %d",taskNum+1));
+
+		if((fp = fopen("tasknum.txt", "w")) == NULL) {
+			printf("File do not exist:trial.txt\n");
+			//exit(0);
+		}
+		else{
+			//fscanf(fp, "%d", &taskNum);
+			fprintf(fp,"%d",taskNum+1);
+			LOG_MSG(("update tasknum.txt: %d",taskNum+1));
+			fclose(fp);
+		}
+
 
 		startTime = evt.time() + intervalTime;
 		task = true;

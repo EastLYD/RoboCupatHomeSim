@@ -121,6 +121,7 @@ void MyController::onInit(InitEvent &evt)
 	else{
 		fscanf(fp, "%d", &taskNum);
 		LOG_MSG(("Set taskNum: %d",taskNum));
+		fclose(fp);
 	}
 
 	my = getObj(myname());
@@ -153,6 +154,7 @@ void MyController::onInit(InitEvent &evt)
 					   &RLEG_JOINT4[i],
 					   &RLEG_JOINT6[i]);
 		}
+		fclose(fp);
 	}
 
 	interval = sleeptime / 1000000;
@@ -441,7 +443,7 @@ double MyController::onAction(ActionEvent &evt)
 void MyController::onRecvMsg(RecvMsgEvent &evt)
 {
 	string msg = evt.getMsg();
-	LOG_MSG(("get: %s", msg.c_str()));
+	//LOG_MSG(("get: %s", msg.c_str()));
 
 	// タスク開始
 	if(msg == "Task_start"){
@@ -486,7 +488,7 @@ void MyController::onRecvMsg(RecvMsgEvent &evt)
 	}
 	if(msg == "Task_end"){
 		//LOG_MSG(("get: task end"));
-		sendMsg("Moderator","Get_end_msg");
+		//sendMsg("Moderator_0","Get_end_msg");
 		stop = true;
 		end = true;
 	}
