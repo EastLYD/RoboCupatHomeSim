@@ -103,11 +103,16 @@ double MyController::onAction(ActionEvent &evt)
 				bool success = false;
 				// 台の上に置く(成功)
 				if(strcmp(ent->name(), "mayonaise_0") == 0 && tpos.y() != 57.85) {tpos.y(57.85); success = true;}
+				else if(strcmp(ent->name(), "unknown_3") == 0 && tpos.y() != 54.04){ tpos.y(54.04); success = true;}
+				else if(strcmp(ent->name(), "unknown_0") == 0 && tpos.y() != 51.15){ tpos.y(51.15); success = true;}
 				else if(strcmp(ent->name(), "mugcup") == 0 && tpos.y() != 54.79){ tpos.y(54.79); success = true;}
 				else if(strcmp(ent->name(), "banana") == 0 && tpos.y() != 51.69){ tpos.y(51.69); success = true;}
 				else if(strcmp(ent->name(), "petbottle_0") == 0 && tpos.y() != 67.45){ tpos.y(67.45); success = true;}
 				else if(strcmp(ent->name(), "petbottle_2") == 0 && tpos.y() != 67.45){ tpos.y(67.45); success = true;}
 				else if(strcmp(ent->name(), "petbottle_4") == 0 && tpos.y() != 61.95){ tpos.y(61.95); success = true;}
+				else if(strcmp(ent->name(), "unknown_4") == 0 && tpos.y() != 52.04){ tpos.y(52.04); success = true;}
+				else if(strcmp(ent->name(), "unknown_1") == 0 && tpos.y() != 56.150){ tpos.y(56.150); success = true;}
+				else if(strcmp(ent->name(), "unknown_2") == 0 && tpos.y() != 60.650){ tpos.y(60.650); success = true;}
 				// 台の上に置く(失敗)
 				else if(strcmp(ent->name(), "petbottle_1") == 0 && tpos.y() != 67.45){ tpos.y(67.45);}
 				else if(strcmp(ent->name(), "petbottle_2") == 0 && tpos.y() != 67.45){ tpos.y(67.45);}

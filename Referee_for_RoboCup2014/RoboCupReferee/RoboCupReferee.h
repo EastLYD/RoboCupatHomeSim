@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define PenaltyRatio 1.0 //select from 1.0, 0.5, 0.25
+
 public ref class Referee : public sigverse::SIGService  
 {  
 	
@@ -91,22 +93,24 @@ void Referee::onRecvMsg(sigverse::RecvMsgEvent ^evt)
 			remainingTime = split_msg[2];
 		}
 		else if(split_msg[1] == "start"){
-			if(trial_count==1)	fp = fopen("score.xls","w");
-			fprintf(fp,"trial\t%d\n",trial_count);
+			if(trial_count==1)	fp = fopen("score.csv","w");
+			if(fp!=NULL)	fprintf(fp,"trial,%d\n",trial_count);
 		}
 		else if(split_msg[1] == "end"){
-			fprintf(fp,"total\t%d\n",m_total);
-			trial_count++;
+			if(m_total<0)	m_total = 0;
+			if(fp!=NULL)	fprintf(fp,"total,%d\n",m_total);
 			m_total = 0;
+			trial_count++;
 		}
 		else{
 			tmp_msg->Add(split_msg[1]);
 		
 			// score
 			int score = int::Parse(split_msg[2]);
+			if(score>0)	score = score*PenaltyRatio;
 			tmp_score->Add(score);
 			m_total += score;
-			fprintf(fp,"score\t%d\n",score);
+			if(fp!=NULL)	fprintf(fp,"score,%d\n",score);
 		}
 	}
 }
