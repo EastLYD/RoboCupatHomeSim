@@ -6,6 +6,8 @@
 #include <fstream>
 #include <iomanip>
 
+#define NUMBER_OF_REPETITION   10
+
 enum Reachable{
   UP,
   DOWN,
@@ -76,7 +78,6 @@ private:
 	std::vector<std::string> m_entities;
 	std::vector<std::string> m_entNames;
 	int entNum;
-	int cycle;
 
 	std::vector<std::string> m_rooms;
 	int m_roomState;
@@ -99,7 +100,6 @@ private:
 	Vector3d PrObj_pos;
 
 	int trialCount;
-	int trialMax;
 
 	bool   isCleaningUp;
 	double startTime;
@@ -121,8 +121,8 @@ private:
 };  
   
 
-void MyController::onInit(InitEvent &evt) {  
-  
+void MyController::onInit(InitEvent &evt)
+{
 	m_rooms.push_back("livingroom"); //0
 	m_rooms.push_back("kitchen");    //1
 	m_rooms.push_back("lobby");      //2
@@ -148,7 +148,6 @@ void MyController::onInit(InitEvent &evt) {
 	Obj_pos  = Vector3d(0,0,0);
 	PrObj_pos  = Vector3d(0,0,0);
 
-	cycle = 0;
 	room_msg = "";
 	object_msg = "" ;
 
@@ -261,7 +260,6 @@ void MyController::onInit(InitEvent &evt) {
 	// std::cout << "robot is in the circle? " << checkRobotFinished() << std::endl;
 
 	trialCount = 0;
-	trialMax = 10;
 
 	isCleaningUp = false;
 
@@ -272,7 +270,9 @@ void MyController::onInit(InitEvent &evt) {
 	init = false;
 }
 
-double MyController::onAction(ActionEvent &evt) {
+
+double MyController::onAction(ActionEvent &evt)
+{
 	// check whether Referee service is available or not
 	bool available = checkService("RoboCupReferee");
 	if(!available && m_ref != NULL) m_ref = NULL;
@@ -293,12 +293,11 @@ double MyController::onAction(ActionEvent &evt) {
 
 	// for arm configuration
 	//for(int j=0;j<jtnum;j++) crrJAng_r[j] = r_my->getJointAngle(jointName[j].c_str());
-	if(Task_st == true && cycle < 2)
+	if(Task_st == true && trialCount < NUMBER_OF_REPETITION)
 		{
 			broadcastMsg("Task_start");
 			// printf("tast_start moderator \n");
 			Task_st = false;
-			cycle ++;
 		}
 
 	onCheckCollision();
@@ -329,7 +328,6 @@ double MyController::onAction(ActionEvent &evt) {
 					else{
 						LOG_MSG((msg.c_str()));
 					}
-					
 					break;
 				}
 			}
@@ -540,12 +538,12 @@ void MyController::onRecvMsg(RecvMsgEvent &evt)
 
 
 
-	if(msg == "Room_reached" && sender == "robot_000")
+	if (((msg=="Room_reached") || (msg=="room_reached")) && sender == "robot_000")
 		{
 			onCheckRoom();
 		}
 
-	if(msg == "Object_grasped" && sender == "robot_000")
+	if (((msg=="Object_grasped") || (msg=="object_grasped")) && sender == "robot_000")
 		{
 			onCheckObject();
 		}
@@ -559,41 +557,31 @@ void MyController::onRecvMsg(RecvMsgEvent &evt)
 			trash->getPosition(Obj_pos);
 			PrObj_pos = Obj_pos;
 			unable_collision = true;
-
 		}
 
     if(msg == "End grasping process")
 		{
-
 			unable_collision = false;  
-
 		}
 
 
 
-	if (sender == "robot_000" && msg == "Task_finished" && cycle < 2 ) {
+	if (sender == "robot_000" && msg == "Task_finished") {
 		LOG_MSG(("Task_end"));
 		broadcastMsg("Task_end");
+		LOG_MSG(("before onCheckPositionfronHuman"));
 		onCheckPositionfrontHuman();
+		LOG_MSG(("after onCheckPositionfronHuman"));
 		sleep(1);
+		LOG_MSG(("before reposObjects"));
 		reposObjects();
+		LOG_MSG(("after reposObjects"));
 		startTime = 0.0;
    
 		breakTask();
 		Task_st = true;
    
 	}
-
-	if (sender == "robot_000" && msg == "Task_finished" && cycle == 2 )
-		{
-			LOG_MSG(("Task_end"));
-			broadcastMsg("Task_end");
-			onCheckPositionfrontHuman();
-			sleep(1);
-			broadcastMsg("Mission_complete");
-			time_display = false;
-		}
-
 
 	if(sender == "robot_000" && msg == "Give_up"){
 		LOG_MSG(("Task_end"));
@@ -609,8 +597,9 @@ void MyController::onRecvMsg(RecvMsgEvent &evt)
 
 void MyController::onCheckCollision(){
 }
-void MyController::onCheckPositionfrontHuman(){
 
+void MyController::onCheckPositionfrontHuman()
+{
 	Vector3d rob_pos;
 	Vector3d hum_pos;
 	Vector3d dist;
@@ -637,7 +626,6 @@ void MyController::onCheckPositionfrontHuman(){
 	printf("The distance to human is %f\n", distance);
 	if(distance <  radius )
 		{
-
 			std::string msg = "RoboCupReferee/Robot is in [" + final + "]" "/+400";
       
 			if(m_ref != NULL){
@@ -648,18 +636,14 @@ void MyController::onCheckPositionfrontHuman(){
 			}
 
 		}
-
-
-
-
 }
+
+
 void MyController::onCheckFinalPosition()
 {
-
-
-
-
 }
+
+
 void MyController::onCheckObject()
 {
 	std:: string name;
@@ -686,7 +670,8 @@ void MyController::onCheckObject()
 
 }
 
-void MyController::onCheckRoom(){
+void MyController::onCheckRoom()
+{
 	int x, z;
 	int num = 4;
 	x =crrPos.x();
@@ -706,8 +691,7 @@ void MyController::onCheckRoom(){
 				}
 			}
 		}
-
-	if(x>100&&x<500&&z>75&&z<425){ // kitchen
+	else if(x>100&&x<500&&z>75&&z<425){ // kitchen
 		num=1;
 		if(m_roomState==0){
 			std::string msg = "RoboCupReferee/Robot is in [" + m_rooms[num] + "]" "/+400";
@@ -720,7 +704,7 @@ void MyController::onCheckRoom(){
 			}
 		}
 	}		
-	if(x>-500&&x<-100&&z>-425&&z<-75){ // lobby
+	else if(x>-500&&x<-100&&z>-425&&z<-75){ // lobby
 		num=2;
 		if(m_roomState==1){
 			std::string msg = "RoboCupReferee/Robot is in [" + m_rooms[num] + "]" "/+400";
@@ -733,7 +717,7 @@ void MyController::onCheckRoom(){
 			}
 		}
 	}
-	if(x>-500&&x<-100&&z>75&&z<425){ // bed room
+	else if(x>-500&&x<-100&&z>75&&z<425){ // bed room
 		num=3;
 		if(m_roomState==2){
 			std::string msg = "RoboCupReferee/Robot is in [" + m_rooms[num] + "]" "/+400";
@@ -746,6 +730,9 @@ void MyController::onCheckRoom(){
 			}
 		}
 	}
+	else {
+		LOG_MSG(("Robot is not staying at any room"));
+	}
  
 }
 
@@ -754,7 +741,8 @@ void MyController::onCheckRoom(){
   check if the position, posObj, where we want to put the object, obj, is
   available compared to the already placed objects contained in the vector, vec
 */
-bool MyController::checkAvailablePos(float posObj, Target obj, int indPosOnTable, std::vector<Target> vec){
+bool MyController::checkAvailablePos(float posObj, Target obj, int indPosOnTable, std::vector<Target> vec)
+{
 	bool available = true;
 
 	if(vec.size() > 0){
@@ -838,8 +826,10 @@ void MyController::performChange(int* indTab, int* indPosOnTable, Table* table, 
 		getNextTable(indTab, indPosOnTable, table, vecTable);
 	}
 }
-void MyController::reposObjects(){
 
+
+void MyController::reposObjects()
+{
 	for(std::map< std::string, std::vector<Target> >::iterator it = m_targets.begin(); it != m_targets.end(); ++it){
 		std::vector<Table> vecTable = m_tables[it->first];
 		std::vector<Target> placedObjects;
@@ -952,11 +942,12 @@ void MyController::reposObjects(){
 	// robot->setJointAngle("RARM_JOINT1", 0.);
 	//  robot->setJointAngle("LARM_JOINT4", 0.);
 	// robot->setJointAngle("LARM_JOINT4", 0.);
-
 }
+
 
 void MyController::breakTask()
 {
+	LOG_MSG(("in breakTask"));
 	isCleaningUp = false;
 	//takeAwayObjects();
 	trialCount++;
@@ -965,15 +956,17 @@ void MyController::breakTask()
 		m_ref->sendMsgToSrv(msg.c_str());
 	}
 
-	if(trialCount == trialMax){
+	if(trialCount == NUMBER_OF_REPETITION) {
 		// resetRobotCondition();
 		LOG_MSG(("Mission_complete"));
 		broadcastMsg("Mission_complete");
+		time_display = false;
 	}
 }
 
 
-void MyController::initRoomsObjects(){
+void MyController::initRoomsObjects()
+{
 	std::vector<Table> vec;
 	Table tab;
 	std::vector<Target> vec2;
