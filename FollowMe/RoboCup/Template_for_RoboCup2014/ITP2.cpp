@@ -5,8 +5,8 @@
 char robotName[]    = "robot_004";
 char operatorName[] = "operator";
 
-class MyController : public Controller {  
-public:  
+class MyController : public Controller {
+public:
 	void onInit(InitEvent &evt);  
 	double onAction(ActionEvent&);  
 	void onRecvMsg(RecvMsgEvent &evt); 
@@ -29,8 +29,8 @@ void MyController::onInit(InitEvent &evt) {
 	m_my = getObj(myname());
 
 	// この範囲で判定
-	checkSize_x  = 100.0;
-	checkSize_z  = 100.0; 
+	checkSize_x  = 80.0;
+	checkSize_z  = 80.0; 
 
 	// 自分の位置取得
 	m_my->getPosition(myPos);
@@ -67,8 +67,8 @@ double MyController::onAction(ActionEvent &evt)
 	}
 
 	if(flag1 && flag2 && !sentMsg){
-		LOG_MSG(("Entered"));
-		sendMsg("score", "Entered");
+		LOG_MSG(("elevator_clear"));
+		sendMsg("score", "elevator_clear");
 		sentMsg = true;
 	}
 

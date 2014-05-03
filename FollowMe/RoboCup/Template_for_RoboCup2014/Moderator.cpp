@@ -1,11 +1,17 @@
 #include "ControllerEvent.h"
 #include "Controller.h"
 #include "Logger.h"
-#include <sys/time.h>
+#include <sstream>
+#include <iomanip>
+//#include <sys/time.h>
+#include <unistd.h>
 
-char start_msg[]  = "start";
-char end_msg[]    = "end";
-char giveup_msg[] = "giveup";
+#define MAX_TRIAL 20
+
+char start_msg[]  = "Task_start";
+char end_msg[]    = "Task_end";
+char finish_msg[] = "Task_finished";
+char giveup_msg[] = "Give_up";
 
 class MyController : public Controller {  
 public:
@@ -52,6 +58,8 @@ private:
 	void breakTask();
 
 	// 
+	double startTime;
+	double endTime;
 	struct timeval t0, t1;
 };
 
@@ -69,10 +77,13 @@ void MyController::onInit(InitEvent &evt)
 	prv1Pos = Vector3d(0,0,0);
 
 	//
-	gettimeofday(&t1, NULL);
+	//gettimeofday(&t1, NULL);
 
 	task = false;
 	trialCount = 0;
+	
+	startTime =  0.0;
+	endTime   = 240.0; // [sec]
 
 	SimObj *obj;
 	obj = getObj(roboName.c_str());
@@ -90,7 +101,7 @@ void MyController::onInit(InitEvent &evt)
 
 double MyController::onAction(ActionEvent &evt)
 {
-	if(trialCount >= 10){
+	if(trialCount >= MAX_TRIAL){
 		return retValue;
 	}
 
@@ -106,22 +117,23 @@ double MyController::onAction(ActionEvent &evt)
 		sec = t0.tv_sec - t1.tv_sec;
 		msec = t0.tv_usec - t1.tv_usec;
 	}
-	//LOG_MSG(("%d.%d",sec,msec));
+	LOG_MSG(("%d.%d",sec,msec));
 	t1 = t0;
 	*/
 
 	// reset task
 	if(!task){
-		double deadTime = 3.0;
+		int intervalTime = 3;
 		resetCondition();
+		sendMsg("operator", "Reset_position");
 
-		usleep(deadTime * 1000000);
+		sleep(intervalTime);
 
 		// broadcast start message
 		broadcastMsg(start_msg);
-		LOG_MSG(("trial count: %d",trialCount));
+		LOG_MSG(("trial count: %d",trialCount+1));
 
-		//startTime = evt.time() + deadTime;
+		startTime = evt.time() + intervalTime;
 		task = true;
 	}
 
@@ -192,6 +204,35 @@ double MyController::onAction(ActionEvent &evt)
 		//LOG_MSG((colPtName.c_str()));
 		colState = false;
 	}
+	
+	std::stringstream time_ss;
+	double elapsedTime = evt.time() - startTime;
+	//if(evt.time() - startTime > endTime){
+	if(elapsedTime > endTime){
+		LOG_MSG(("Time_over"));
+		broadcastMsg("Time_over");
+		sleep(3);
+		breakTask();
+		time_ss << "FollowMeReferee/time/00:00:00";
+	}
+	else{
+		double remainedTime = endTime - elapsedTime;
+		int min, sec, msec;
+		sec = (int)remainedTime;
+		min = sec / 60;
+		sec %= 60;
+		msec = (int)((remainedTime - sec) * 100);
+		time_ss <<  "FollowMeReferee/time/";
+		time_ss << std::setw(2) << std::setfill('0') << min << ":";
+		time_ss << std::setw(2) << std::setfill('0') << sec;// << ":";
+		//time_ss << std::setw(2) << std::setfill('0') << msec;
+	}
+	if(m_ref != NULL){
+		m_ref->sendMsgToSrv(time_ss.str().c_str());
+	}
+	else{
+		LOG_MSG((time_ss.str().c_str()));
+	}
 
 	return retValue;
 }
@@ -202,12 +243,21 @@ void MyController::onRecvMsg(RecvMsgEvent &evt)
 	std::string msg    = evt.getMsg();
 	LOG_MSG(("%s: %s",sender.c_str(), msg.c_str()));
 
-	if(/*sender == roboName.c_str() &&*/ msg == end_msg){
-		breakTask();
-	}
+	//if(/*sender == roboName.c_str() &&*/ msg == end_msg){
+	//	breakTask();
+	//}
 	if(msg == giveup_msg){
-		broadcastMsg(giveup_msg);
-		sendMsg(operatorName, giveup_msg);
+		//sendMsg(operatorName, giveup_msg);
+		if(task){
+			broadcastMsg(end_msg);
+			sleep(3);
+			breakTask();
+		}
+	}
+	if(msg == finish_msg){
+		broadcastMsg(end_msg);
+		//sendMsg(operatorName, finish_msg);
+		sleep(3);
 		breakTask();
 	}
 }
@@ -226,7 +276,7 @@ void MyController::breakTask()
 	task = false;
 	trialCount++;
 
-	if(trialCount == 10){
+	if(trialCount == MAX_TRIAL){
 		resetCondition();
 		LOG_MSG(("End of all tasks"));
 		broadcastMsg("End of all tasks");
@@ -240,21 +290,21 @@ void MyController::resetCondition()
 	// reset robot condition
 	robot = getRobotObj(roboName.c_str());
 	robot->setWheelVelocity(0.0, 0.0);
-	robot->setRotation(initialRotation);
-	robot->setPosition(initialPosition);
+	//robot->setRotation(initialRotation);
+	//robot->setPosition(initialPosition);
 	robot->setJointVelocity("RARM_JOINT1", 0.0, 0.0);
 	robot->setJointVelocity("RARM_JOINT4", 0.0, 0.0);
 	robot->setJointAngle("RARM_JOINT1", 0.0);
 	robot->setJointAngle("RARM_JOINT4", 0.0);
 
-	SimObj* obj;
+	/*SimObj* obj;
 	obj = getObj(operatorName.c_str());
 	obj->setRotation(initialRotation_operator);
 	obj->setPosition(initialPosition_operator);
 
 	obj = getObj(manName.c_str());
 	obj->setRotation(initialRotation_man);
-	obj->setPosition(initialPosition_man);
+	obj->setPosition(initialPosition_man);*/
 }
 
 extern "C" Controller * createController() {

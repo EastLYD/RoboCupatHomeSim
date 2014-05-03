@@ -2,7 +2,8 @@
 #include "Controller.h"  
 #include "Logger.h"  
 #include <algorithm>
-#include <string> 
+//#include <string> 
+#include <sstream>
 #include <iostream>
 #include <math.h>
 #include <unistd.h>
@@ -10,13 +11,15 @@
 // Convert degree to radian
 #define DEG2RAD(DEG) ( (M_PI) * (DEG) / 180.0 )
 
-#define WALKING_PERSON  1.0 //人が歩き始める場所
-#define CHECK_POINT1    2.0 //1st Sectionの点数が入る場所
-#define ELEVATOR        3.0 //エレベータ内の待機場所
-#define ELEVATOR_CLEAR  4.0 //2nd Sectionの点数が入る場所
-#define CROWD           5.0 //人ごみを抜けた後の待機場所
-#define CROWD_END       6.0 //3rd Sectionの点数が入る場所
-#define END            99.0 //終了地点
+#define WAIT_PERSON       0.5 //人が歩き始める場所
+#define WALKING_PERSON    1.0 //人が歩き始める場所
+#define CHECK_POINT1      2.0 //1st Sectionの点数が入る場所
+#define FRONT_OF_ELEVATOR 2.5 //エレベータ内の待機場所
+#define ELEVATOR          3.0 //エレベータ内の待機場所
+#define ELEVATOR_CLEAR    4.0 //2nd Sectionの点数が入る場所
+#define CROWD             5.0 //人ごみを抜けた後の待機場所
+#define CROWD_END         6.0 //3rd Sectionの点数が入る場所
+#define END              99.0 //終了地点
 
 struct coordinate{
 	double x[255];
@@ -36,23 +39,31 @@ public:
 	void onRecvMsg(RecvMsgEvent &evt); 
 	void onCollision(CollisionEvent &evt); 
 
+	double getDistaceToRobot();
+
+	void resetPosition();
+
 private:
 	SimObj *my;
+	SimObj *robot;
+
 	std::vector<std::string> m_entities;
 
 	coordinate node; 
 
-	bool first;
+	//bool first;
 	bool start;
+	bool passed;
 	bool elevator;
 	bool crowd;
 	bool end;
 	bool stop;
 	bool doorClose;
-	bool leaveElevator;
-	//bool flg3;
-	//bool ok;
+	bool getoff;
 	bool elevator_end;
+	bool waitForHuman;
+	bool waitForCrowd;
+	bool waitForElevator;
 
 	bool sentMsg_Man;
 	bool sendMsg_CheckPoint1;
@@ -64,8 +75,12 @@ private:
 	double dx,dy,dz;
 	int i; 
 
-	bool follow;
+	//bool follow;
 	bool walking;
+
+	int trialCount;
+
+	bool resetPos;
 
 	FILE* fp;
 	float stepWidth;
@@ -87,6 +102,8 @@ private:
 	int count;
 	int step;
 
+	int taskNum;
+
 	double interval;
 
 	void initCondition();
@@ -94,15 +111,17 @@ private:
 
 void MyController::onInit(InitEvent &evt) 
 {
-	initCondition();
+	//first = true;
+	trialCount = 0;
 
 	my = getObj(myname());
+	robot = getObj(robotName);
 
 	// Put arms down
 	my->setJointAngle("LARM_JOINT2", DEG2RAD(-90));
 	my->setJointAngle("RARM_JOINT2", DEG2RAD(90));
 
-	stepWidth = 85;
+	stepWidth = 45;
 
 	if((fp = fopen("motion.txt", "r")) == NULL) {
 		printf("File do not exist.\n");
@@ -128,23 +147,27 @@ void MyController::onInit(InitEvent &evt)
 	}
 
 	interval = sleeptime / 1000000;
+
 }
 
 void MyController::initCondition()
 {
 	start = false;
+	passed = false;
 	elevator = false;
 	crowd = false;
 	end = false;
 	stop = true;
 	doorClose = false;
-	//flg3 = false;
-	first = false;
-	leaveElevator=false;
+	getoff=false;
 	elevator_end = false;
-	i=0;
+	waitForHuman = false;
+	waitForCrowd = false;
+	waitForElevator = false;
+	
+	resetPos = false;
 
-	follow = true;
+	//follow = true;
 	walking = false;
 
 	sentMsg_Man = false;
@@ -166,10 +189,39 @@ void MyController::initCondition()
 	dy=0;
 	dz=0;
 
-	if((fp = fopen("node.txt", "r")) == NULL) {
+	for(int k=0; k<256; k++){
+		node.x[k] = 0.0;
+		node.y[k] = 0.0;
+		node.z[k] = 0.0;
+		node.flag[k] = 0.0;
+	}
+
+	/*if(trialCount==0){
+		if((fp = fopen("node.txt", "r")) == NULL) {
+			LOG_MSG(("File do not exist."));
+			exit(0);
+		}
+	}
+	else{
+		if((fp = fopen("node2.txt", "r")) == NULL) {
+			LOG_MSG(("File do not exist."));
+			exit(0);
+		}
+	}*/
+
+	std::stringstream nodePath;
+	nodePath << "nodes/node_" << (int)(taskNum++/2) << ".txt";
+
+	//std::cout << "[HUMAN]" << " load file : " << nodePath.str() << std::endl;
+	LOG_MSG(("[HUMAN] load file: %s", nodePath.str().c_str()));
+
+	if((fp = fopen(nodePath.str().c_str(), "r")) == NULL) {
 		LOG_MSG(("File do not exist."));
 		exit(0);
 	}
+
+	i=0;
+
 	while(fscanf(fp, "%lf,%lf,%lf,%lf", &x,&y,&z,&flag) != EOF) {
 		node.x[i]=x;
 		node.y[i]=y;
@@ -177,9 +229,54 @@ void MyController::initCondition()
 		node.flag[i]=flag;
 		i++;
 	}
+
 	fclose(fp);
 	i=0;
 
+	if(taskNum%2){
+		stepWidth = 45;
+	}
+	else{
+		stepWidth = 60;
+	}
+
+}
+
+void MyController::resetPosition()
+{
+	//std::cout << "x:" << node.x[0] << " z:" << node.z[0] << std::endl;
+	my->setPosition(node.x[0], 60.0, node.z[0]);
+	
+	if(node.flag[0] == -1){ // left
+		double rad = 0;
+		Rotation rot(cos(0), 0.0, -sin(0), 0.0);
+		my->setRotation(rot);
+		robot->setPosition(node.x[0], 30.0, node.z[0]-100);
+		robot->setRotation(rot);
+	}
+	else if(node.flag[0] == -2){ // forward
+		double rad = M_PI/4;
+		Rotation rot(cos(rad), 0.0, -sin(rad), 0.0);
+		my->setRotation(rot);
+		robot->setPosition(node.x[0]+100, 30.0, node.z[0]);
+		robot->setRotation(rot);
+	}
+	else if(node.flag[0] == -3){ // right
+		double rad = M_PI/2;
+		Rotation rot(cos(rad), 0.0, -sin(rad), 0.0);
+		my->setRotation(rot);
+		robot->setPosition(node.x[0], 30.0, node.z[0]+100);
+		robot->setRotation(rot);
+	}
+	else if(node.flag[0] == -4){ // backward
+		double rad = M_PI;
+		Rotation rot(cos(rad), 0.0, -sin(rad), 0.0);
+		my->setRotation(rot);
+		robot->setPosition(node.x[0]-100, 30.0, node.z[0]);
+		robot->setRotation(rot);
+	}
+	
+	i=1;
 }
 
 double MyController::onAction(ActionEvent &evt)
@@ -201,18 +298,12 @@ double MyController::onAction(ActionEvent &evt)
 			
 			double r = sqrt(pow(dx,2)+pow(dz,2));
 			
-			step = 2 * (int)r / stepWidth;
+			step = 2 * r / stepWidth;
 			
 			dx /= step*motionNum;
 			dz /= step*motionNum;
-			
-			walking = true;
 
-			// 
-			/*if(!leaveElevator && !follow && node.flag[i-1]>0){
-				stop = true;
-				LOG_MSG(("wait"));
-			}*/
+			walking = true;
 		}
 
 		// 歩く
@@ -260,10 +351,6 @@ double MyController::onAction(ActionEvent &evt)
 
 			// 目標点に到着
 			if(step==count){
-				// チェックポイントなら停止
-				if(node.flag[i]){
-					stop = true;
-				}
 				count = 0;
 				step = 0;
 				walking = false;
@@ -271,82 +358,83 @@ double MyController::onAction(ActionEvent &evt)
 			}
 		}
 
-		//LOG_MSG(("%lf",checkPoint));
-
-		/*if(follow && !checkPoint){
-			stop = false;
-		}*/
-
 		double checkPoint = node.flag[i-1];
 
-		if(follow && !elevator){
-			// 人が歩き始める
-			if(checkPoint == WALKING_PERSON && !sentMsg_Man){
-				sendMsg("man_001", "point1");
-				LOG_MSG(("point1"));
+		/*// 人が歩き始める前に待機
+		if(checkPoint == WAIT_PERSON && !waitForHuman){
+			stop = true;
+			if(getDistaceToRobot() < 150){
+				stop = false;
+				waitForHuman = true;
+			}
+		}*/
+		// 人が歩き始める
+		if(checkPoint == WALKING_PERSON && !sentMsg_Man){
+			//sendMsg("man_001", "point1");
+			
+			//LOG_MSG(("walk"));
+			stop = true;
+			if(getDistaceToRobot() < 200){
+				sendMsg("man_001", "walk");
 				sentMsg_Man = true;
 			}
-			// チェックポイント1
-			else if(checkPoint == CHECK_POINT1 && !sendMsg_CheckPoint1){
-				sendMsg("score","check1");
-				LOG_MSG(("check point 1"));
-				sendMsg_CheckPoint1 = true;
-			}
-			// 人ごみを通過
-			else if(checkPoint == CROWD_END && !sentMsg_Crowd){
-				std::string msg5 = "crowd";
-				sendMsg("score", msg5);
-				LOG_MSG(("crowd"));
-				sentMsg_Crowd = true;
-			}
-
-			// チェックポイント以外
-			//else if(!checkPoint){
-				stop = false;
-			//}
 		}
-
+		// チェックポイント1
+		/*else if(checkPoint == CHECK_POINT1 && !sendMsg_CheckPoint1){
+			//sendMsg("score","checkpoint1_clear");
+			//LOG_MSG(("check point1 clear"));
+			sendMsg_CheckPoint1 = true;
+		}*/
+		// エレベータ前待機
+		else if(checkPoint == FRONT_OF_ELEVATOR && !waitForElevator){
+			stop = true;
+			if(getDistaceToRobot() < 200){
+				stop = false;
+				waitForElevator = true;
+			}
+		}
 		// エレベータ奥
 		if(checkPoint == ELEVATOR && !elevator){
-			if(!leaveElevator){
+			if(!getoff){
 				stop = true;
 				elevator = true;
 			}
 		}
-
-		// エレベータ＆ドアを閉めてＯＫ(ロボットが入り終わった)
-		if(elevator && doorClose && !sentMsg_Elevator){
-			sendMsg("wall_008", "elevator_close");
-			LOG_MSG(("elevator close"));
-			sentMsg_Elevator = true;
-		}
-
 		// ロボットが退出したらエレベータから出る
-		if(leaveElevator && !elevator_end){
+		if(getoff && !elevator_end){
 			elevator = false;
 			stop = false;
 			elevator_end = true;
 		}
-
 		// エレベータクリア
 		if(checkPoint==ELEVATOR_CLEAR && !sentMsg_CheckPoint2){
-			leaveElevator = false;
-			sendMsg("score","elevator");
-			LOG_MSG(("elevator_clear"));
+			getoff = false;
+			//sendMsg("score","elevator_clear");
+			//LOG_MSG(("elevator_clear"));
 			sentMsg_CheckPoint2 = true;
+		}
+		// 人ごみを通過後待機
+		else if(checkPoint == CROWD && !waitForCrowd){
+			stop = true;
+			if(getDistaceToRobot() < 200){
+				stop = false;
+				waitForCrowd = true;
+			}
+		}
+		// 人ごみを通過
+		else if(checkPoint == CROWD_END && !sentMsg_Crowd){
+			//std::string msg5 = "crowd";
+			//sendMsg("score", msg5);
+			//LOG_MSG(("crowd"));
+			sentMsg_Crowd = true;
 		}
 
 		// 終了点に着いた
-		if(checkPoint==END && follow){
+		//if(checkPoint==END && follow){
+		if(checkPoint==END){
 			end = true;
-			broadcastMsg("end");
 		}
 	}
-
-	/*// タスクの終了
-	if(node.flag[i-1] == END && follow){
-		broadcastMsg("end");
-	}*/
 
 	return interval;
 }
@@ -356,39 +444,65 @@ void MyController::onRecvMsg(RecvMsgEvent &evt)
 	string msg = evt.getMsg();
 
 	// タスク開始
-	if(msg == "start"){
-		initCondition();
+	if(msg == "Task_start"){
+		count = 0;
+		//initCondition();
 		start = true;
 		stop = false;
+		trialCount++;
+	}
+	else if(msg == "Reset_position"){
+		initCondition();
+		//if(!resetPos){
+			//initCondition();
+			resetPosition();
+			resetPos = true;
+		//}
+	}
+	else if(msg == "Passed_through" && sentMsg_Man){
+		passed = true;
+		stop = false;
+	}
+	else if(msg == "Door_close" && elevator && doorClose && !sentMsg_Elevator){
+		//sendMsg("wall_008", "elevator_close");
+		//LOG_MSG(("elevator close"));
+		sentMsg_Elevator = true;
 	}
 	// ロボットがエレベータに入り終わった
 	else if(msg == "entered"){
 		LOG_MSG(("entered"));
 		doorClose = true;
 	}
-	// エレベータのドアが開いた
-	else if(msg == "elevator_open"){
-		//sendMsg(robotName,"leave the elevator");
-		broadcastMsg("leave the elevator");
-	}
 	// ロボットがエレベータから退出した
-	else if(msg == "ok"){
-		leaveElevator = true;
-		sendMsg("score","elevator_clear");
+	else if(msg == "Get_off"){
+		getoff = true;
+		//sendMsg("score","elevator_clear");
 	}
-
-	// 追跡できているか
-	if(msg == "NotFollowing"){
-		follow = false;
-	}
-	else if(msg == "Following"){
-		follow = true;
+	else if(msg == "Give_up"){
+		//start = false;
+		end = true;
 	}
 }
 
 void MyController::onCollision(CollisionEvent &evt)
 {
 
+}
+
+double MyController::getDistaceToRobot()
+{
+	SimObj *robotObj = getObj(robotName);
+
+	Vector3d robotPos;
+	robotObj->getPosition(robotPos);
+
+	// 位置取得
+	Vector3d operatorPos;
+	my->getPosition(operatorPos);
+
+	Vector3d vec(operatorPos.x()-robotPos.x(), operatorPos.y()-robotPos.y(), operatorPos.z()-robotPos.z());
+
+	return sqrt((vec.x()*vec.x())+(vec.z()*vec.z()));
 }
 
 extern "C" Controller * createController() {

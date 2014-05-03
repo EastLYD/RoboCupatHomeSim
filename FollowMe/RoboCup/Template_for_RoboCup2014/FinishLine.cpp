@@ -5,8 +5,8 @@
 char robotName[]    = "robot_004";
 char operatorName[] = "operator";
 
-class MyController : public Controller {  
-public:  
+class MyController : public Controller {
+public:
 	void onInit(InitEvent &evt);  
 	double onAction(ActionEvent&);  
 	void onRecvMsg(RecvMsgEvent &evt); 
@@ -67,8 +67,8 @@ double MyController::onAction(ActionEvent &evt)
 	}
 
 	if(flag1 && flag2 && !sentMsg){
-		LOG_MSG(("Entered"));
-		sendMsg("score", "Entered");
+		LOG_MSG(("crowd_clear"));
+		sendMsg("score", "crowd_clear");
 		sentMsg = true;
 	}
 
