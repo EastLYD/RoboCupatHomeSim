@@ -311,13 +311,13 @@ private: System::Void timer1_Tick(System::Object^  sender, System::EventArgs^  e
 					 System::String^ listitem_score = score.ToString();
 					 this->listBox1->Items->Add(listitem_msg);
 					 this->listBox2->Items->Add(listitem_score);
-					 int total = m_srv->getTotal();
-					 this->textBox1->Text = total.ToString();
 				 }
 
 				System::String^ msg =  m_srv->getRemainingTime();
 				if(msg!=""){
 					this->textBox2->Text = msg;
+					int total = m_srv->getTotal();
+					this->textBox1->Text = total.ToString();
 				}
 				else{
 					this->textBox2->Text = "00:00";
