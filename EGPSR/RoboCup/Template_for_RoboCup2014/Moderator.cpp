@@ -291,8 +291,6 @@ double MyController::onAction(ActionEvent &evt)
 	Vector3d rsLenVec(prv1Pos.x()-crrPos.x(), prv1Pos.y()-crrPos.y(), prv1Pos.z()-crrPos.z());
 	rsLen = rsLenVec.length();
 
-	// for arm configuration
-	//for(int j=0;j<jtnum;j++) crrJAng_r[j] = r_my->getJointAngle(jointName[j].c_str());
 	if(Task_st == true && trialCount < NUMBER_OF_REPETITION)
 		{
 			broadcastMsg("Task_start");
@@ -384,8 +382,8 @@ double MyController::onAction(ActionEvent &evt)
 			else{
 				LOG_MSG((time_ss.str().c_str()));
 			}
-			
 		}
+
 	return retValue;      
 }
 
@@ -579,8 +577,6 @@ void MyController::onRecvMsg(RecvMsgEvent &evt)
 		startTime = 0.0;
    
 		breakTask();
-		Task_st = true;
-   
 	}
 
 	if(sender == "robot_000" && msg == "Give_up"){
@@ -676,7 +672,8 @@ void MyController::onCheckRoom()
 	int num = 4;
 	x =crrPos.x();
 	z =crrPos.z();
-	
+
+	LOG_MSG(("Check robot position, select from 4 rooms"));	
 	if(x>-100&&x<500&&z>-425&&z<75)	// living room
 		{ // bed room
 			num=0;
@@ -866,7 +863,7 @@ void MyController::reposObjects()
 
 				if( indPosOnTable == DOWN || indPosOnTable == UP ){
 					yObj = table.y + 0.5 * table.height + 0.5 * it2->height + 1.75;
-					float xOffset = 30;
+					float xOffset = 10;
 					float xInf = table.x - 0.5 * table.length + xOffset;
 					float xSup = table.x + 0.5 * table.length - xOffset;
 					float zOffset = it2->width;
@@ -894,7 +891,7 @@ void MyController::reposObjects()
 
 				else{
 					yObj = table.y + 0.5 * table.height + 0.5 * it2->height + 1.75;
-					float zOffset = 30;
+					float zOffset = 10;
 					float zSup = table.z - 0.5 * table.width + zOffset;
 					float zInf = table.z + 0.5 * table.width - zOffset;
 					float xOffset = it2->length;
@@ -935,19 +932,13 @@ void MyController::reposObjects()
 
 	//reset robot position
 	RobotObj* robot = getRobotObj(roboName.c_str());
-
 	robot->setPosition(robotInitialPos);
-	// robot->setWheelVelocity(0., 0.);
-	//robot->setJointAngle("LARM_JOINT1", 0.);
-	// robot->setJointAngle("RARM_JOINT1", 0.);
-	//  robot->setJointAngle("LARM_JOINT4", 0.);
-	// robot->setJointAngle("LARM_JOINT4", 0.);
 }
 
 
 void MyController::breakTask()
 {
-	LOG_MSG(("in breakTask"));
+	LOG_MSG(("start of breakTask"));
 	isCleaningUp = false;
 	//takeAwayObjects();
 	trialCount++;
@@ -962,6 +953,10 @@ void MyController::breakTask()
 		broadcastMsg("Mission_complete");
 		time_display = false;
 	}
+	else {
+		Task_st = true;		
+	}
+	LOG_MSG(("end of breakTask"));
 }
 
 
