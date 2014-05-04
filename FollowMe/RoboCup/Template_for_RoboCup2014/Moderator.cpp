@@ -21,6 +21,8 @@ public:
 	//void onCollision(CollisionEvent &evt);
 
 private:
+	FILE* fp;
+
 	BaseService *m_ref;       // Referee service
 	double retValue;          // Refresh rate of the modification
 	bool   colState;          // Collision state
@@ -50,7 +52,7 @@ private:
 	double rsLen;
 
 	bool task;
-	int  trialCount;
+	int  taskNum;
 	void initialize();
 
 	//void startTask();
@@ -61,6 +63,9 @@ private:
 	double startTime;
 	double endTime;
 	struct timeval t0, t1;
+
+	bool sendEndMsg();
+	bool echoEndMsg;
 };
 
 void MyController::onInit(InitEvent &evt)
@@ -80,8 +85,17 @@ void MyController::onInit(InitEvent &evt)
 	//gettimeofday(&t1, NULL);
 
 	task = false;
-	trialCount = 0;
-	
+	taskNum = 0;
+
+	if((fp = fopen("tasknum.txt", "r")) == NULL) {
+		printf("File do not exist:trial.txt\n");
+		exit(0);
+	}
+	else{
+		fscanf(fp, "%d", &taskNum);
+		LOG_MSG(("Set taskNum: %d",taskNum));
+	}
+
 	startTime =  0.0;
 	endTime   = 240.0; // [sec]
 
@@ -101,7 +115,7 @@ void MyController::onInit(InitEvent &evt)
 
 double MyController::onAction(ActionEvent &evt)
 {
-	if(trialCount >= MAX_TRIAL){
+	if(taskNum >= MAX_TRIAL){
 		return retValue;
 	}
 
@@ -133,7 +147,8 @@ double MyController::onAction(ActionEvent &evt)
 	if(!task){
 		int intervalTime = 3;
 		resetCondition();
-		sendMsg("operator", "Reset_position");
+		//sendMsg("operator", "Reset_position");
+		broadcastMsg("Reset_position");
 
 		sleep(intervalTime);
 
@@ -144,7 +159,7 @@ double MyController::onAction(ActionEvent &evt)
 		}
 		LOG_MSG(("RoboCupReferee/start"));
 
-		LOG_MSG(("trial count: %d",trialCount+1));
+		LOG_MSG(("task num: %d",taskNum+1));
 
 		startTime = evt.time() + intervalTime;
 		task = true;
@@ -221,6 +236,7 @@ double MyController::onAction(ActionEvent &evt)
 			m_ref->sendMsgToSrv("RoboCupReferee/end");
 		}
 		LOG_MSG(("RoboCupReferee/end"));
+		task = false;
 		sleep(3);
 		breakTask();
 		time_ss << "RoboCupReferee/time/00:00:00";
@@ -255,32 +271,50 @@ void MyController::onRecvMsg(RecvMsgEvent &evt)
 
 	if(msg == giveup_msg){
 		//sendMsg(operatorName, giveup_msg);
-		if(task){
+		//if(task){
 			broadcastMsg(end_msg);
+			/*echoEndMsg = false;
+			while(!echoEndMsg){
+				usleep(100000);
+				broadcastMsg(end_msg);
+			}*/
 			if(m_ref != NULL){
 				m_ref->sendMsgToSrv("RoboCupReferee/end");
 				LOG_MSG(("RoboCupReferee/end"));
 			}
+			task = false;
 			sleep(3);
 			breakTask();
-		}
+		//}
 	}
 	if(msg == finish_msg){
 		broadcastMsg(end_msg);
+		/*echoEndMsg = false;
+		while(!echoEndMsg){
+			usleep(100000);
+			broadcastMsg(end_msg);
+		}*/
 		if(m_ref != NULL){
 			m_ref->sendMsgToSrv("RoboCupReferee/end");
 			LOG_MSG(("RoboCupReferee/end"));
 		}
-
-		//sendMsg(operatorName, finish_msg);
+		task = false;
 		sleep(3);
 		breakTask();
 	}
+	if(msg == "Get_end_msg"){
+		LOG_MSG(("get: Get_end_msg"));
+		echoEndMsg = true;
+	}
 }
 
-void MyController::initialize()
-{
+bool MyController::sendEndMsg(){
+	broadcastMsg(end_msg);
 }
+
+/*void MyController::initialize()
+{
+}*/
 
 /*void MyController::startTask()
 {
@@ -293,10 +327,10 @@ void MyController::initialize()
 }*/
 void MyController::breakTask()
 {
-	task = false;
-	trialCount++;
+	//task = false;
+	taskNum++;
 
-	if(trialCount == MAX_TRIAL){
+	if(taskNum == MAX_TRIAL){
 		resetCondition();
 		LOG_MSG(("End of all tasks"));
 		broadcastMsg("End of all tasks");

@@ -37,7 +37,7 @@ public:
 	void onInit(InitEvent &evt);  
 	double onAction(ActionEvent&);  
 	void onRecvMsg(RecvMsgEvent &evt); 
-	void onCollision(CollisionEvent &evt); 
+	//void onCollision(CollisionEvent &evt); 
 
 	double getDistanceToRobot();
 
@@ -78,7 +78,7 @@ private:
 	//bool follow;
 	bool walking;
 
-	int trialCount;
+	//int trialCount;
 
 	bool resetPos;
 
@@ -112,7 +112,16 @@ private:
 void MyController::onInit(InitEvent &evt) 
 {
 	//first = true;
-	trialCount = 0;
+	taskNum = 0;
+
+	if((fp = fopen("tasknum.txt", "r")) == NULL) {
+		printf("File do not exist:trial.txt\n");
+		exit(0);
+	}
+	else{
+		fscanf(fp, "%d", &taskNum);
+		LOG_MSG(("Set taskNum: %d",taskNum));
+	}
 
 	my = getObj(myname());
 	robot = getObj(robotName);
@@ -196,19 +205,6 @@ void MyController::initCondition()
 		node.flag[k] = 0.0;
 	}
 
-	/*if(trialCount==0){
-		if((fp = fopen("node.txt", "r")) == NULL) {
-			LOG_MSG(("File do not exist."));
-			exit(0);
-		}
-	}
-	else{
-		if((fp = fopen("node2.txt", "r")) == NULL) {
-			LOG_MSG(("File do not exist."));
-			exit(0);
-		}
-	}*/
-
 	std::stringstream nodePath;
 	nodePath << "nodes/node_" << (int)(taskNum++/2) << ".txt";
 
@@ -281,6 +277,7 @@ void MyController::resetPosition()
 
 double MyController::onAction(ActionEvent &evt)
 {
+	//LOG_MSG(("on action"));
 	if(!end && start){
 		
 		Vector3d pos;
@@ -368,6 +365,13 @@ double MyController::onAction(ActionEvent &evt)
 				waitForHuman = true;
 			}
 		}*/
+		// チェックポイント1
+		/*else if(checkPoint == CHECK_POINT1 && !sendMsg_CheckPoint1){
+			//sendMsg("score","checkpoint1_clear");
+			//LOG_MSG(("check point1 clear"));
+			sendMsg_CheckPoint1 = true;
+		}*/
+
 		// 人が歩き始める
 		if(checkPoint == WALKING_PERSON && !sentMsg_Man){
 			//sendMsg("man_001", "point1");
@@ -379,12 +383,7 @@ double MyController::onAction(ActionEvent &evt)
 				sentMsg_Man = true;
 			}
 		}
-		// チェックポイント1
-		/*else if(checkPoint == CHECK_POINT1 && !sendMsg_CheckPoint1){
-			//sendMsg("score","checkpoint1_clear");
-			//LOG_MSG(("check point1 clear"));
-			sendMsg_CheckPoint1 = true;
-		}*/
+
 		// エレベータ前待機
 		else if(checkPoint == FRONT_OF_ELEVATOR && !waitForElevator){
 			stop = true;
@@ -442,6 +441,7 @@ double MyController::onAction(ActionEvent &evt)
 void MyController::onRecvMsg(RecvMsgEvent &evt)
 {
 	string msg = evt.getMsg();
+	LOG_MSG(("get: %s", msg.c_str()));
 
 	// タスク開始
 	if(msg == "Task_start"){
@@ -449,14 +449,15 @@ void MyController::onRecvMsg(RecvMsgEvent &evt)
 		//initCondition();
 		start = true;
 		stop = false;
-		trialCount++;
+		//trialCount++;
 	}
 	else if(msg == "Reset_position"){
+		LOG_MSG(("Reset"));
 		initCondition();
 		//if(!resetPos){
 			//initCondition();
 			resetPosition();
-			resetPos = true;
+			//resetPos = true;
 		//}
 	}
 	else if(msg == "Passed_through" && sentMsg_Man){
@@ -478,16 +479,22 @@ void MyController::onRecvMsg(RecvMsgEvent &evt)
 		getoff = true;
 		//sendMsg("score","elevator_clear");
 	}
-	else if(msg == "Give_up"){
+	if(msg == "Give_up"){
 		//start = false;
+		end = true;
+		//LOG_MSG(("get: give up"));
+	}
+	if(msg == "Task_end"){
+		//LOG_MSG(("get: task end"));
+		sendMsg("Moderator","Get_end_msg");
+		stop = true;
 		end = true;
 	}
 }
 
-void MyController::onCollision(CollisionEvent &evt)
+/*void MyController::onCollision(CollisionEvent &evt)
 {
-
-}
+}*/
 
 double MyController::getDistanceToRobot()
 {
