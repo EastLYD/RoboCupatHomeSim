@@ -136,15 +136,14 @@ void MyController::onInit(InitEvent &evt)
 
 	for(std::map< int, std::vector<std::string> >::iterator it = m_trialsObjects.begin(); it != m_trialsObjects.end(); ++it){
 
-		std::cout << "it first: " << it->first << std::endl;
-		std::cout << "it second size: " << it->second.size()<< std::endl;
+		//std::cout << "it first: " << it->first << std::endl;
+		//std::cout << "it second size: " << it->second.size()<< std::endl;
 
 		for(int i=0; i<it->second.size(); i++){
-			m_targetsOnTrial[it->first].push_back(m_targets[contains(m_targets, it->second[i])]);
 			//std::cout << "contains: " << contains(m_targets, it->second[i]) << std::endl;
 			//std::cout << "it second[i]: " << it->second[i] << std::endl;
+			m_targetsOnTrial[it->first].push_back(m_targets[contains(m_targets, it->second[i])]);
 		}
-
 	}
 	getAllEntities(m_entities);
 
@@ -174,6 +173,8 @@ void MyController::onInit(InitEvent &evt)
 		   (m_entities[i] != "petbottle_4") &&
 		   (m_entities[i] != "petbottle_5") &&
 		   (m_entities[i] != "banana") &&
+		   (m_entities[i] != "unknown_3") &&
+		   (m_entities[i] != "unknown_0") &&
 		   (m_entities[i] != "mayonaise_0") &&
 		   (m_entities[i] != "mayonaise_1") &&
 		   (m_entities[i] != "mugcup") &&
@@ -181,14 +182,17 @@ void MyController::onInit(InitEvent &evt)
 		   (m_entities[i] != "can_1") &&
 		   (m_entities[i] != "can_2") &&
 		   (m_entities[i] != "can_3") &&
-		   (m_entities[i] != "apple") ){
+		   (m_entities[i] != "apple") &&
+		   (m_entities[i] != "unknown_1") &&
+		   (m_entities[i] != "unknown_2") &&
+		   (m_entities[i] != "unknown_4") ){
 			m_entNames.push_back(m_entities[i]);
 		}
 	}
 	entNum = m_entNames.size();
 
 	trialCount = 0;
-	trialMax = 2;
+	trialMax = 10;
 
 	isCleaningUp = false;
 
@@ -196,6 +200,7 @@ void MyController::onInit(InitEvent &evt)
 	endTime   = 480.0; // [sec]
 	srand(2);
 	//srand(time(NULL));
+
 }
 
 double MyController::onAction(ActionEvent &evt)
@@ -204,37 +209,30 @@ double MyController::onAction(ActionEvent &evt)
 		return retValue;
 	}
 
+	// reset clean-up task
+	if(!isCleaningUp){
+		double deadTime = 3.0;
+		resetRobotCondition();
+		//sleep(1);
+		reposObjects();
+
+		//usleep(deadTime * 1000000);
+		sleep(3);
+
+		// broadcast start message
+		LOG_MSG(("Task_start"));
+		broadcastMsg("Task_start");
+
+		startTime = evt.time() + deadTime;
+		isCleaningUp = true;
+	}
+
 	// check whether Referee service is available or not
 	bool available = checkService("RoboCupReferee");
 	if(!available && m_ref != NULL) m_ref = NULL;
 	else if(available && m_ref == NULL){
 		m_ref = connectToService("RoboCupReferee");
 	}
-
-	// reset clean-up task
-	if(!isCleaningUp){
-		double deadTime = 3.0;
-		resetRobotCondition();
-		reposObjects();
-
-		usleep(deadTime * 1000000);
-
-		// broadcast start message
-		LOG_MSG(("Task_start"));
-		broadcastMsg("Task_start");
-
-		std::string msg = "RoboCupReferee/start/";
-		if(m_ref != NULL){
-			m_ref->sendMsgToSrv(msg.c_str());
-		}
-		else{
-			LOG_MSG((msg.c_str()));
-		}
-
-		startTime = evt.time() + deadTime;
-		isCleaningUp = true;
-	}
-
 
 	// get information about the robot and renew it
 	//----------------------------------
@@ -326,12 +324,12 @@ void MyController::onRecvMsg(RecvMsgEvent &evt)
 	std::string msg    = evt.getMsg();
 	LOG_MSG(("%s: %s",sender.c_str(), msg.c_str()));
 
-	if(sender == "robot_000" && msg == "Task_finished"){
+	if(/**sender == "robot_000" &&*/ msg == "Task_finished"){
 		LOG_MSG(("Task_end"));
 		broadcastMsg("Task_end");
 		breakTask();
 	}
-	if(sender == "robot_000" && msg == "Give_up"){
+	if(/*sender == "robot_000" &&*/ msg == "Give_up"){
 		LOG_MSG(("Task_end"));
 		broadcastMsg("Task_end");
 		breakTask();
@@ -369,14 +367,13 @@ void MyController::startTask()
 void MyController::breakTask()
 {
 	isCleaningUp = false;
+	resetRobotCondition();
+	sleep(1);
 	takeAwayObjects();
 	trialCount++;
-	std::string msg = "RoboCupReferee/end/";
+	std::string msg = "RoboCupReferee/reset/";
 	if(m_ref != NULL){
 		m_ref->sendMsgToSrv(msg.c_str());
-	}
-	else{
-		LOG_MSG((msg.c_str()));
 	}
 			
 	if(trialCount == trialMax){
@@ -602,7 +599,7 @@ std::vector<Table> MyController::parseFileTables(std::string fileName){
 	std::string buf;
 
 	while(std::getline(fin, buf)){
-		std::cout << "BUFF Tables: " << std::endl;
+		std::cout << "BUFF Tables: ";// << std::endl;
 		std::cout << buf << std::endl;
 
 		std::size_t found_name = buf.find(",");
@@ -612,7 +609,8 @@ std::vector<Table> MyController::parseFileTables(std::string fileName){
 		obj.name = buf.substr(0, found_name);
 		obj.height = atof( buf.substr(found_name + 1, found_height - found_name - 1).c_str() );
 		obj.width = atof( buf.substr(found_height + 1, found_width - found_height - 1).c_str() );
-		obj.length = atof( buf.substr(found_width + 1, buf.size() - found_width - 2).c_str() );
+		obj.length = atof( buf.substr(found_width + 1, buf.size() - found_width - 1).c_str() );
+		//obj.length = atof( buf.substr(found_width + 1, buf.size() - found_width - 2).c_str() );
 
 		vecObj.push_back(obj);
 	}
@@ -665,8 +663,8 @@ std::map< int, std::vector<std::string> > MyController::parseFileTrials(std::str
 		std::size_t found_name3 = buf.find(",", found_name2 + 1);
 		std::size_t found_name4 = buf.find(",", found_name3 + 1);
 
-		std::cout << "i: " << i << std::endl;
-		std::cout << "\tBUFF: " << std::endl;
+		std::cout << "i: " << i;// << std::endl;
+		std::cout << "\tBUFF: ";// << std::endl;
 		std::cout << buf << std::endl;
 		/*std::cout << "\tfound_name1: " << found_name1 << std::endl;
 		std::cout << "\tfound_name2: " << found_name1 << std::endl;
@@ -677,7 +675,8 @@ std::map< int, std::vector<std::string> > MyController::parseFileTrials(std::str
 		vec.push_back(buf.substr(found_name1 + 1, found_name2 - found_name1 - 1));
 		vec.push_back(buf.substr(found_name2 + 1, found_name3 - found_name2 - 1));
 		vec.push_back(buf.substr(found_name3 + 1, found_name4 - found_name3 - 1));
-		vec.push_back(buf.substr(found_name4 + 1, buf.size() - found_name4 - 2));
+		vec.push_back(buf.substr(found_name4 + 1, buf.size() - found_name4 - 1));
+		//vec.push_back(buf.substr(found_name4 + 1, buf.size() - found_name4 - 2));
 
 		trialsObj[i] = vec;
 		i++;
