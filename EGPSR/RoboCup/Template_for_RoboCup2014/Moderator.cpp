@@ -593,11 +593,19 @@ void MyController::onRecvMsg(RecvMsgEvent &evt)
 	if(sender == "robot_000" && msg == "Give_up"){
 		LOG_MSG(("Task_end"));
 		broadcastMsg("Task_end");
+		LOG_MSG(("before reposObjects"));
+		reposObjects();
+		LOG_MSG(("after reposObjects"));
+		startTime = 0.0;
 		breakTask();
 	}
-	if (sener == "RoboCupReferee" && "Task_next"){
+	if (sender == "RoboCupReferee" && "Task_next"){
 		LOG_MSG(("Task_end"));
 		broadcastMsg("Task_end");
+		LOG_MSG(("before reposObjects"));
+		reposObjects();
+		LOG_MSG(("after reposObjects"));
+		startTime = 0.0;
 		breakTask();
 	}
 	if(msg == "init_time")
