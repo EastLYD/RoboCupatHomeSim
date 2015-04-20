@@ -118,7 +118,9 @@ void UserController::onRecvMsg(RecvMsgEvent &evt)
 		message = ":"+ rooms[cycle] +";"+ objects[cycle]+"."; 
 		brodcast_msg = "Go to the "+ rooms[cycle] +", grasp the "+ objects[cycle]+" and come back here"; 
 		//broadcastMsgToSrv(brodcast_msg);
-		broadcastMsg(brodcast_msg);
+		//broadcastMsg(brodcast_msg);
+		sendMsg("robot_000",brodcast_msg);
+		sendMsg("moderator_0",brodcast_msg);
 		//LOG_MSG(("%s: %s",sender.c_str(), brodcast_msg.c_str()));
 		//sendMsg("robot_000",message);
 		//sendMsg("moderator_0",message);

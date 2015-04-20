@@ -296,6 +296,16 @@ double MyController::onAction(ActionEvent &evt)
 			broadcastMsg("Task_start");
 			// printf("tast_start moderator \n");
 			Task_st = false;
+			std::stringstream trial_ss;
+			trial_ss << "RoboCupReferee/trial/";
+			trial_ss << trialCount + 1 << "/";
+			trial_ss << NUMBER_OF_REPETITION;
+			if (m_ref != NULL){
+				m_ref->sendMsgToSrv(trial_ss.str().c_str());
+			}
+			else{
+				LOG_MSG((trial_ss.str().c_str()));
+			}
 		}
 
 	onCheckCollision();
@@ -306,7 +316,8 @@ double MyController::onAction(ActionEvent &evt)
 		CParts *parts = locObj->getMainParts();
 		bool state = parts->getCollisionState();
 
-		if ( unable_collision == false)
+		if (unable_collision == false) //debug.
+		//if ( unable_collision == true) 
 			{
 				if(state){
 					colState=true;       // collided with main body of robot
@@ -580,6 +591,11 @@ void MyController::onRecvMsg(RecvMsgEvent &evt)
 	}
 
 	if(sender == "robot_000" && msg == "Give_up"){
+		LOG_MSG(("Task_end"));
+		broadcastMsg("Task_end");
+		breakTask();
+	}
+	if (sener == "RoboCupReferee" && "Task_next"){
 		LOG_MSG(("Task_end"));
 		broadcastMsg("Task_end");
 		breakTask();
