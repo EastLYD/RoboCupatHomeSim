@@ -10,22 +10,31 @@ public:
 		tmp_score = gcnew System::Collections::Generic::List<int>();
 		tmp_msg  = gcnew System::Collections::Generic::List<System::String^>();
 		m_total = 0;
+		m_score = 0;
+		trialCount = 0;
+		numberOfRepetition = 0;
 	};
 	~Referee();
 	int getScore();
 	int getScoreSize();
+	int getMessageSize();
 	int getTotal();
+	int getTrialCount();
+	int getNumberOfRepetition();
 	void setTotal(int total){ m_total = total; }
 	System::String^ getMessage();
 	System::String^ getRemainingTime();
 	virtual void onRecvMsg(sigverse::RecvMsgEvent ^evt) override;
 	virtual double onAction() override;
+	int m_total;
+	int m_score;
+	int trialCount;
+	int numberOfRepetition;
 	
 private:
 	System::Collections::Generic::List<int>^ tmp_score;
 	System::Collections::Generic::List<System::String^>^ tmp_msg;
 	System::String^ remainingTime;
-	int m_total;
 };
 
   
@@ -46,6 +55,15 @@ int Referee::getTotal()
 {
 	return m_total;
 }
+
+int Referee::getTrialCount()
+{
+	return trialCount;
+}
+int Referee::getNumberOfRepetition()
+{
+	return numberOfRepetition;
+}
 System::String^ Referee::getMessage()
 {
 	System::String^ msg = tmp_msg[0];
@@ -57,6 +75,11 @@ System::String^ Referee::getMessage()
 int Referee::getScoreSize()
 {
 	return tmp_score->Count;
+}
+
+int Referee::getMessageSize()
+{
+	return tmp_msg->Count;
 }
 
 double Referee::onAction()  
@@ -85,13 +108,20 @@ void Referee::onRecvMsg(sigverse::RecvMsgEvent ^evt)
 		if(split_msg[1] == "time"){
 			remainingTime = split_msg[2];
 		}
+		else if (split_msg[1] == "reset"){
+			tmp_msg->Add(split_msg[1]);
+		}
+		else if (split_msg[1] == "trial"){
+			trialCount = int::Parse(split_msg[2]);
+			numberOfRepetition = int::Parse(split_msg[3]);
+		}
 		else{
 			tmp_msg->Add(split_msg[1]);
 		
 			// score
-			int score = int::Parse(split_msg[2]);
-			tmp_score->Add(score);
-			m_total += score;
+			m_score = int::Parse(split_msg[2]);
+			tmp_score->Add(m_score);
+			m_total += m_score;
 		}
 	}
 }
