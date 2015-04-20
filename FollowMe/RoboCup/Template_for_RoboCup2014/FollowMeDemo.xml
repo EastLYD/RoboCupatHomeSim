@@ -178,18 +178,32 @@
   </instanciate> -->
 
 	<!--House-->
-	<instanciate class="Floor_B.xml">
-		<set-attr-value name="name" value="floor_b"/>
-		<set-attr-value name="x" value="-125.0"/>
-		<set-attr-value name="y" value="0.5"/>
-		<set-attr-value name="z" value="250.0"/>
-		<set-attr-value name="scalex" value="9.5"/>  
-		<set-attr-value name="scaley" value="1.0"/>  
-		<set-attr-value name="scalez" value="15.0"/>  
-		<set-attr-value name="dynamics" value="false"/>
-		<set-attr-value name="collision" value="false"/>
-		<set-attr-value name="graspable" value="false"/>
-	</instanciate>
+    <!--
+    <instanciate class="Floor_B.xml">
+        <set-attr-value name="name" value="floor_b"/>
+        <set-attr-value name="x" value="-125.0"/>
+        <set-attr-value name="y" value="0.5"/>
+        <set-attr-value name="z" value="250.0"/>
+        <set-attr-value name="scalex" value="9.5"/>  
+        <set-attr-value name="scaley" value="1.0"/>  
+        <set-attr-value name="scalez" value="15.0"/>  
+        <set-attr-value name="dynamics" value="false"/>
+        <set-attr-value name="collision" value="false"/>
+        <set-attr-value name="graspable" value="false"/>
+    </instanciate>
+ -->
+
+
+    <instanciate class="Floor_B1.xml">
+        <set-attr-value name="name" value="floor_b"/>
+        <set-attr-value name="x" value="-125.0"/>
+        <set-attr-value name="y" value="0.5"/>
+        <set-attr-value name="z" value="250.0"/>
+        <set-attr-value name="dynamics" value="false"/>
+        <set-attr-value name="collision" value="false"/>
+        <set-attr-value name="graspable" value="false"/>
+    </instanciate>
+
   <instanciate class="L_Wall.xml">  
     <set-attr-value name="name" value="lwall_000"/>  
     <set-attr-value name="x" value="-600.0"/>  
@@ -524,18 +538,33 @@
   </instanciate>
 
 	<!--Lobby-->
-	<instanciate class="Floor_A.xml">
-		<set-attr-value name="name" value="floor_a"/>
-		<set-attr-value name="x" value="-950.0"/>
-		<set-attr-value name="y" value="0.5"/>
-		<set-attr-value name="z" value="250.0"/>
-		<set-attr-value name="scalex" value="7.0"/>  
-		<set-attr-value name="scaley" value="1.0"/>  
-		<set-attr-value name="scalez" value="15.0"/>  
-		<set-attr-value name="dynamics" value="false"/>
-		<set-attr-value name="collision" value="false"/>
-		<set-attr-value name="graspable" value="false"/>
-	</instanciate>
+ <!--
+    <instanciate class="Floor_A.xml">
+        <set-attr-value name="name" value="floor_a"/>
+        <set-attr-value name="x" value="-950.0"/>
+        <set-attr-value name="y" value="0.5"/>
+        <set-attr-value name="z" value="250.0"/>
+        <set-attr-value name="scalex" value="7.0"/>  
+        <set-attr-value name="scaley" value="1.0"/>  
+        <set-attr-value name="scalez" value="15.0"/>  
+        <set-attr-value name="dynamics" value="false"/>
+        <set-attr-value name="collision" value="false"/>
+        <set-attr-value name="graspable" value="false"/>
+    </instanciate>
+-->
+    <instanciate class="Floor_A1.xml">
+        <set-attr-value name="name" value="floor_a"/>
+        <set-attr-value name="x" value="-950.0"/>
+        <set-attr-value name="y" value="0.5"/>
+        <set-attr-value name="z" value="250.0"/>
+        <set-attr-value name="scalex" value="1.0"/>  
+        <set-attr-value name="scaley" value="1.0"/>  
+        <set-attr-value name="scalez" value="1.0"/>  
+        <set-attr-value name="dynamics" value="false"/>
+        <set-attr-value name="collision" value="false"/>
+        <set-attr-value name="graspable" value="false"/>
+    </instanciate>
+    
   <instanciate class="S_Wall.xml">
     <set-attr-value name="name" value="swall_010"/>
     <set-attr-value name="x" value="-775.0"/>  
@@ -594,14 +623,16 @@
   </instanciate>
   
   <!--EV-->
+   <!--EV format 1-->
+   <!--
   <instanciate class="S_Wall_EV.xml">  
     <set-attr-value name="name" value="swall_020"/>  
     <set-attr-value name="x" value="-1100.0"/>  
     <set-attr-value name="y" value="50.0"/>  
     <set-attr-value name="z" value="200.0"/> 
-		<set-attr-value name="scalex" value="3.5"/>  
-		<set-attr-value name="scaley" value="1.0"/>  
-		<set-attr-value name="scalez" value="5.0"/>  
+        <set-attr-value name="scalex" value="3.5"/>  
+        <set-attr-value name="scaley" value="1.0"/>  
+        <set-attr-value name="scalez" value="5.0"/>  
     <set-attr-value name="dynamics" value="false"/>
     <set-attr-value name="collision" value="true"/>
   </instanciate>
@@ -610,20 +641,41 @@
     <set-attr-value name="x" value="-1100.0"/>  
     <set-attr-value name="y" value="50.0"/>  
     <set-attr-value name="z" value="350.0"/> 
-		<set-attr-value name="scalex" value="3.5"/>  
-		<set-attr-value name="scaley" value="1.0"/>  
-		<set-attr-value name="scalez" value="5.0"/>  
+        <set-attr-value name="scalex" value="3.5"/>  
+        <set-attr-value name="scaley" value="1.0"/>  
+        <set-attr-value name="scalez" value="5.0"/>  
     <set-attr-value name="collision" value="true"/>
     <set-attr-value name="dynamics" value="false"/>
   </instanciate>
+-->
+ <instanciate class="S_Wall_EV1.xml">  
+    <set-attr-value name="name" value="swall_020"/>  
+    <set-attr-value name="x" value="-1100.0"/>  
+    <set-attr-value name="y" value="50.0"/>  
+    <set-attr-value name="z" value="200.0"/> 
+    <set-attr-value name="dynamics" value="false"/>
+    <set-attr-value name="collision" value="true"/>
+  </instanciate>
+  <instanciate class="S_Wall_EV1.xml">  
+    <set-attr-value name="name" value="swall_021"/>  
+    <set-attr-value name="x" value="-1100.0"/>  
+    <set-attr-value name="y" value="50.0"/>  
+    <set-attr-value name="z" value="350.0"/>  
+    <set-attr-value name="collision" value="true"/>
+    <set-attr-value name="dynamics" value="false"/>
+  </instanciate>
+
+
+     <!--EV format 2-->
+     <!--
   <instanciate class="Wall_EV.xml">  
     <set-attr-value name="name" value="wall_020"/>  
     <set-attr-value name="x" value="-1275.0"/>  
     <set-attr-value name="y" value="50.0"/>  
     <set-attr-value name="z" value="275.0"/>   
-		<set-attr-value name="scalex" value="5.0"/>  
-		<set-attr-value name="scaley" value="1.0"/>  
-		<set-attr-value name="scalez" value="1.5"/>  
+        <set-attr-value name="scalex" value="5.0"/>  
+        <set-attr-value name="scaley" value="1.0"/>  
+        <set-attr-value name="scalez" value="1.5"/>  
     <set-attr-value name="collision" value="true"/>
     <set-attr-value name="dynamics" value="false"/>
   </instanciate>
@@ -635,9 +687,30 @@
     <set-attr-value name="x" value="-925.0"/>  
     <set-attr-value name="y" value="50.0"/>  
     <set-attr-value name="z" value="125.0"/>   
-		<set-attr-value name="scalex" value="5.0"/>  
-		<set-attr-value name="scaley" value="1.0"/>  
-		<set-attr-value name="scalez" value="1.5"/>  
+        <set-attr-value name="scalex" value="5.0"/>  
+        <set-attr-value name="scaley" value="1.0"/>  
+        <set-attr-value name="scalez" value="1.5"/>  
+    <set-attr-value name="collision" value="true"/>
+    <set-attr-value name="dynamics" value="false"/>
+  </instanciate>
+-->
+
+ <instanciate class="Wall_EV1.xml">  
+    <set-attr-value name="name" value="wall_020"/>  
+    <set-attr-value name="x" value="-1275.0"/>  
+    <set-attr-value name="y" value="50.0"/>  
+    <set-attr-value name="z" value="275.0"/>    
+    <set-attr-value name="collision" value="true"/>
+    <set-attr-value name="dynamics" value="false"/>
+  </instanciate>
+  <instanciate class="Wall_EV1.xml"> 
+    <set-attr-value name="name" value="wall_008"/>
+    <set-attr-value name="language" value="c++"/>  
+    <set-attr-value name="implementation"
+                    value="./Wall.so"/>
+    <set-attr-value name="x" value="-925.0"/>  
+    <set-attr-value name="y" value="50.0"/>  
+    <set-attr-value name="z" value="125.0"/>    
     <set-attr-value name="collision" value="true"/>
     <set-attr-value name="dynamics" value="false"/>
   </instanciate>
