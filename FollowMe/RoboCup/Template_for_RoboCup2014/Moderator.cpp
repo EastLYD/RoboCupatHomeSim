@@ -12,6 +12,7 @@ char start_msg[]  = "Task_start";
 char end_msg[]    = "Task_end";
 char finish_msg[] = "Task_finished";
 char giveup_msg[] = "Give_up";
+char next_msg[]   = "Task_next";
 
 class MyController : public Controller {  
 public:
@@ -155,6 +156,18 @@ double MyController::onAction(ActionEvent &evt)
 
 		// broadcast start message
 		broadcastMsg(start_msg);
+
+		std::stringstream trial_ss;
+		trial_ss << "RoboCupReferee/trial/";
+		trial_ss << taskNum + 1 << "/";
+		trial_ss << MAX_TRIAL;
+		if (m_ref != NULL){
+			m_ref->sendMsgToSrv(trial_ss.str().c_str());
+		}
+		else{
+			LOG_MSG((trial_ss.str().c_str()));
+		}
+
 		if(m_ref != NULL){
 			m_ref->sendMsgToSrv("RoboCupReferee/start");
 		}
@@ -318,6 +331,16 @@ void MyController::onRecvMsg(RecvMsgEvent &evt)
 	if(msg == "Get_end_msg"){
 		LOG_MSG(("get: Get_end_msg"));
 		echoEndMsg = true;
+	}
+	if(msg == next_msg){
+		broadcastMsg(end_msg);
+		if(m_ref != NULL){
+			m_ref->sendMsgToSrv("RoboCupReferee/end");
+			LOG_MSG(("RoboCupReferee/end"));
+		}
+		task = false;
+		sleep(3);
+		breakTask();
 	}
 }
 
