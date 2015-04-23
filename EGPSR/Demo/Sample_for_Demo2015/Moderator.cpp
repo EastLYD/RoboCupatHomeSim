@@ -1113,7 +1113,7 @@ void MyController::initRoomsObjects()
 
 	vec.push_back(tab);
 
-	tab.name = "Side_board1";
+	tab.name = "Side board1";
 	tab.length = 192;
 	tab.width  = 46.1;
 	tab.height = 59.8;

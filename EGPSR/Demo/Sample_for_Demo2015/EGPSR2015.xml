@@ -966,7 +966,7 @@
 
 	<!-- Lobby -->
 	<instanciate class="seTVbass_A.xml">
-    <set-attr-value name="name" value="Side_board1"/>
+    <set-attr-value name="name" value="Side board1"/>
     <set-attr-value name="dynamics" value="false"/>
     <set-attr-value name="x" value="-199.0"/>
 		<set-attr-value name="y" value="30.0"/>
