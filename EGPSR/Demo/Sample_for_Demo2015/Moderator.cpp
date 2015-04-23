@@ -136,7 +136,7 @@ void MyController::onInit(InitEvent &evt)
 	int i, cnt;
 	Task_st = true;
 	time_display = true;
-	retValue = 0.08;
+	retValue = 0.01;
 	colState = false;
 	pcolState = false;
 	roboName = "robot_000";
@@ -320,7 +320,7 @@ double MyController::onAction(ActionEvent &evt)
 				LOG_MSG((trial_ss.str().c_str()));
 			}
 		}
-if( Task_st == true && trialCount == NUMBER_OF_REPETITION)
+if( Task_st == true && trialCount >= NUMBER_OF_REPETITION)
 	{
 		// resetRobotCondition();
 		LOG_MSG(("Mission_complete"));
@@ -617,10 +617,10 @@ void MyController::onRecvMsg(RecvMsgEvent &evt)
 		LOG_MSG(("after onCheckPositionfronHuman"));
 		sleep(1);
 		LOG_MSG(("before reposObjects"));
-		reposObjects();
+		//reposObjects();
 		LOG_MSG(("after reposObjects"));
 		startTime = 0.0;
-   
+        Task_st = true;
 		breakTask();
 	}
 
@@ -629,7 +629,7 @@ void MyController::onRecvMsg(RecvMsgEvent &evt)
 		LOG_MSG(("Task_end"));
 		broadcastMsg("Task_end");
 		LOG_MSG(("before reposObjects"));
-		reposObjects();
+		//reposObjects();
 		LOG_MSG(("after reposObjects"));
 		startTime = 0.0;
 		breakTask();
@@ -922,7 +922,7 @@ void MyController::reposObjects()
 					do{
 						xObj = mapRange(rand(), 0,  RAND_MAX, xInf, xSup);
 						nbTries++;
-					} while(!checkAvailablePos(xObj, *it2, indPosOnTable, placedObjects) && nbTries < 10);
+					} while(!checkAvailablePos(xObj, *it2, indPosOnTable, placedObjects) && nbTries < NUMBER_OF_REPETITION);
 
 					if(nbTries >= 9){
 						performChange(&indTab, &indPosOnTable, &table, vecTable);
@@ -950,7 +950,7 @@ void MyController::reposObjects()
 					do{
 						zObj = mapRange(rand(), 0,  RAND_MAX, zInf, zSup);
 						nbTries++;
-					} while(!checkAvailablePos(zObj, *it2, indPosOnTable, placedObjects) && nbTries < 10);
+					} while(!checkAvailablePos(zObj, *it2, indPosOnTable, placedObjects) && nbTries < NUMBER_OF_REPETITION);
 
 					if(nbTries >= 9){
 						performChange(&indTab, &indPosOnTable, &table, vecTable);
@@ -985,7 +985,7 @@ void MyController::reposObjects()
 
 	//reset robot position
 	RobotObj* robot = getRobotObj(roboName.c_str());
-	robot->setPosition(robotInitialPos);
+
      if(grasping == true)
 		 {
             CParts * parts = robot->getParts("LARM_LINK7");
@@ -993,24 +993,29 @@ void MyController::reposObjects()
             grasping = false;
 
 		 }
-
-	     robot->setJointAngle("LARM_JOINT0", 0.0);
-		 robot->setJointAngle("LARM_JOINT1", 0.0);
-		 robot->setJointAngle("LARM_JOINT3", 0.0);
-		 robot->setJointAngle("LARM_JOINT4", 0.0);
-		 robot->setJointAngle("LARM_JOINT5", 0.0);
-         robot->setJointAngle("LARM_JOINT6", 0.0);
-         robot->setJointAngle("LARM_JOINT7", 0.0);
+		 robot->setWheelVelocity(0.0,0.0);
+		 robot->setPosition(robotInitialPos);
+		 Rotation rot;
+		 rot.setQuaternion(1, 0, 0, 0);
+         robot->setRotation(rot);
          robot->setJointVelocity("LARM_JOINT0", 0.0,0.0);
+         robot->setJointAngle("LARM_JOINT0", 0.0);
 		 robot->setJointVelocity("LARM_JOINT1", 0.0,0.0);
+		 robot->setJointAngle("LARM_JOINT1", 0.0);
 		 robot->setJointVelocity("LARM_JOINT3", 0.0,0.0);
+		 robot->setJointAngle("LARM_JOINT3", 0.0);
 		 robot->setJointVelocity("LARM_JOINT4", 0.0,0.0);
+		 robot->setJointAngle("LARM_JOINT4", 0.0);
 		 robot->setJointVelocity("LARM_JOINT5", 0.0,0.0);
+		 robot->setJointAngle("LARM_JOINT5", 0.0);
          robot->setJointVelocity("LARM_JOINT6", 0.0,0.0);
+         robot->setJointAngle("LARM_JOINT6", 0.0);
          robot->setJointVelocity("LARM_JOINT7", 0.0,0.0);
+         robot->setJointAngle("LARM_JOINT7", 0.0);
+         
          trialCount++;
          std::cout << "trial count is  " << trialCount << std::endl;
-         robot->setWheelVelocity(0.0,0.0);
+         
 }
 
 
@@ -1027,13 +1032,13 @@ void MyController::breakTask()
 		 robot = this->getObj("robot_000");
 
 
-
+	}
+if(trialCount < NUMBER_OF_REPETITION)
+{
 		 broadcastMsg("Task_end");
 		 reposObjects();
-
-	}
-
-	if(trialCount == NUMBER_OF_REPETITION) {
+}
+	if(trialCount >= NUMBER_OF_REPETITION) {
 		// resetRobotCondition();
 		LOG_MSG(("Mission_complete"));
 		broadcastMsg("Mission_complete");
@@ -1041,6 +1046,7 @@ void MyController::breakTask()
 			msg = "RoboCupReferee/time/- END -";
             m_ref->sendMsgToSrv(msg.c_str());
 		}
+		Task_st = false;
 		time_display = false;
 	}
 	else {
@@ -1056,7 +1062,8 @@ void MyController::initRoomsObjects()
 	Table tab;
 	std::vector<Target> vec2;
 	Target tar;
-
+    Vector3d posf;
+    SimObj* entity ;
 	tab.name = "Buffet1";
 	tab.length = 32.1;
 	tab.width  = 54.2;
@@ -1065,9 +1072,11 @@ void MyController::initRoomsObjects()
 	tab.reachable[DOWN]  = 1;
 	tab.reachable[RIGHT] = 1;
 	tab.reachable[LEFT]  = -1;
-	tab.x = -72.8;
-	tab.y = 30;
-	tab.z = -106.3;
+	entity = getObj(tab.name.c_str());
+	entity->getPosition(posf);
+	tab.x = posf.x()+10;
+	tab.y = posf.y();
+	tab.z = posf.z();
 	vec.push_back(tab);
 
 	tab.name = "Dinner table1";
@@ -1134,24 +1143,26 @@ void MyController::initRoomsObjects()
 	tab.reachable[DOWN]  = 1;
 	tab.reachable[RIGHT] = -1;
 	tab.reachable[LEFT]  = 1;
-    tab.x = -123;
-	tab.y = 30;
-	tab.z = -245;
+	entity = getObj(tab.name.c_str());
+	entity->getPosition(posf);
+	tab.x = posf.x()-10;
+	tab.y = posf.y();
+	tab.z = posf.z();
 	vec.push_back(tab);
 
 	tab.name = "Side board1";
-	tab.length = 172;
-	tab.width  = 46.1;
-	tab.height = 59.8;
+	tab.length = 165;
+	tab.width  = 50.8;
+	tab.height = 59.7;
 	tab.reachable[UP]    = 1;
 	tab.reachable[DOWN]  = -1;
 	tab.reachable[RIGHT] = -1;
 	tab.reachable[LEFT]  = 1;
-	
-    tab.x = -189;
-	tab.y = 30;
-	tab.z = -245;
-	
+	entity = getObj(tab.name.c_str());
+	entity->getPosition(posf);
+	tab.x = posf.x()-10;
+	tab.y = posf.y();
+	tab.z = posf.z();
 	vec.push_back(tab);
 
 	tar.name = "apple_1";
@@ -1241,22 +1252,27 @@ void MyController::initRoomsObjects()
 	tab.reachable[DOWN]  = -1;
 	tab.reachable[RIGHT] = -1;
 	tab.reachable[LEFT]  = -1;
-    tab.x = -123;
-	tab.y = 30;
-	tab.z = 380;
+	entity = getObj(tab.name.c_str());
+	entity->getPosition(posf);
+
+    tab.x = posf.x()-10;
+	tab.y = posf.y();
+	tab.z = posf.z()-10;
 	vec.push_back(tab);
 
 	tab.name = "Side board2";
-	tab.length = 172;
-	tab.width  = 46.1;
-	tab.height = 39.8;
+	tab.length = 167;
+	tab.width  = 24.9;
+	tab.height = 58.8;
 	tab.reachable[UP]    = 1;
 	tab.reachable[DOWN]  = -1;
 	tab.reachable[RIGHT] = -1;
 	tab.reachable[LEFT]  = -1;
-    tab.x = -387;
-	tab.y = 30;
-	tab.z = 390;
+	entity = getObj(tab.name.c_str());
+	entity->getPosition(posf);
+	tab.x = posf.x()+10;
+	tab.y = posf.y();
+	tab.z = posf.z()-10;
 	vec.push_back(tab);
 
 	tar.name = "apple_3";

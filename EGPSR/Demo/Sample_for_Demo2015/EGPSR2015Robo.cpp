@@ -610,7 +610,7 @@ void RobotController::onInit(InitEvent &evt)
 	my->setWheel(10.0, 10.0);
 
 	//エージェントの正面の定義はz軸の正の向きを向いていると仮定する
-	m_onActionReturn = 0.001;
+	m_onActionReturn = 0.01;
 
 	room_msg = "";
 	object_msg ="";
@@ -772,7 +772,7 @@ double RobotController::onAction(ActionEvent &evt)
 					m_state = 1;
 					break;
 				}
-
+printf("the actual stat is  %d\n", m_state);
 	// move toward the kitchen
 
 	case 10: 	{ // set rotation for relay point
@@ -831,8 +831,7 @@ double RobotController::onAction(ActionEvent &evt)
 	case 25: 	{ // rotate toward relay point
 					broadcastMsg("Room_reached");
 					LOG_MSG(("Room_reached"));
-					m_state = 0;
-					m_lastPoint= m_kitchenPoint;
+					m_lastPoint= m_lobbyPoint;
 					PathinFrontObject(room_msg,m_pointedObject);
 					break;
 				}
@@ -1323,6 +1322,39 @@ void RobotController::onRecvMsg(RecvMsgEvent &evt)
 				m_pointedObject = "petbottle_2";
 		}
 	}
+
+if(msg == "Task_end" && sender == "moderator_0" )
+{
+m_state = 0;
+         
+         if(m_grasp_left == true)
+     {
+         //   CParts * parts = m_my->getParts("LARM_LINK7");
+           // parts->releaseObj();
+            m_grasp_left = false;
+
+     }
+         m_my->setJointVelocity("LARM_JOINT0", 0.0,0.0);
+         m_my->setJointVelocity("LARM_JOINT1", 0.0,0.0);
+         m_my->setJointVelocity("LARM_JOINT3", 0.0,0.0);
+         m_my->setJointVelocity("LARM_JOINT4", 0.0,0.0);
+         m_my->setJointVelocity("LARM_JOINT5", 0.0,0.0);
+         m_my->setJointVelocity("LARM_JOINT6", 0.0,0.0);
+         m_my->setJointVelocity("LARM_JOINT7", 0.0,0.0);
+         m_my->setWheelVelocity(0,0);
+}
+if(msg == "Mission_complete" && sender == "moderator_0" )
+{
+m_state = 0;
+         m_my->setJointVelocity("LARM_JOINT0", 0.0,0.0);
+         m_my->setJointVelocity("LARM_JOINT1", 0.0,0.0);
+         m_my->setJointVelocity("LARM_JOINT3", 0.0,0.0);
+         m_my->setJointVelocity("LARM_JOINT4", 0.0,0.0);
+         m_my->setJointVelocity("LARM_JOINT5", 0.0,0.0);
+         m_my->setJointVelocity("LARM_JOINT6", 0.0,0.0);
+         m_my->setJointVelocity("LARM_JOINT7", 0.0,0.0);
+         m_my->setWheelVelocity(0,0);
+}
 }
 
 /*************************************************************************************/
@@ -1388,7 +1420,7 @@ double RobotController::PathinFrontObject(std::string room, std::string object)
 	else if (room == "lobby" )
 	{
 		std::string m_table1 =  "Buffet2";
-		std::string m_table2 = "Side_board1";
+		std::string m_table2 = "Side board1";
 
 		SimObj *obj = getObj(m_object.c_str());
 		SimObj *tab1 = getObj(m_table1.c_str());
