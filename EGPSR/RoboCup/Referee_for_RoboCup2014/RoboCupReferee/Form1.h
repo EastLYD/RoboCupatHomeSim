@@ -345,9 +345,9 @@ namespace RoboCupReferee {
 				static_cast<System::Byte>(128)));
 			this->label7->Location = System::Drawing::Point(41, 250);
 			this->label7->Name = L"label7";
-			this->label7->Size = System::Drawing::Size(182, 21);
+			this->label7->Size = System::Drawing::Size(175, 21);
 			this->label7->TabIndex = 14;
-			this->label7->Text = L"Diametars of score";
+			this->label7->Text = L"Scale of the score";
 			// 
 			// radioButton1
 			// 
@@ -516,6 +516,8 @@ private: System::Void radioButton1_CheckedChanged(System::Object^  sender, Syste
 			 if (radioButton1->Checked == true){
 				 radioButton2->Checked = false;
 				 radioButton3->Checked = false;
+				 double total = m_srv->getTotal();
+				 this->textBox1->Text = total.ToString();
 			 }
 
 }
@@ -523,12 +525,16 @@ private: System::Void radioButton2_CheckedChanged(System::Object^  sender, Syste
 			 if (radioButton2->Checked == true){
 				 radioButton1->Checked = false;
 				 radioButton3->Checked = false;
+				 double total = m_srv->getTotal() / 2;
+				 this->textBox1->Text = total.ToString();
 			 }
 }
 private: System::Void radioButton3_CheckedChanged(System::Object^  sender, System::EventArgs^  e) {
 			 if (radioButton3->Checked == true){
 				 radioButton1->Checked = false;
 				 radioButton2->Checked = false;
+				 double total = m_srv->getTotal() / 4;
+				 this->textBox1->Text = total.ToString();
 			 }
 }
 };
