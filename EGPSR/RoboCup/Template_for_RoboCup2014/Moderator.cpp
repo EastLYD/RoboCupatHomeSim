@@ -943,7 +943,9 @@ void MyController::reposObjects()
 
 			SimObj* target = getObj(it2->name.c_str());
 			target->setPosition(Vector3d(xObj, yObj, zObj));
-
+            Rotation rot;
+			rot.setQuaternion(1, 0, 0, 0);
+            target->setRotation(rot);
 			it2->x = xObj;
 			it2->y = yObj;
 			it2->z = zObj;
