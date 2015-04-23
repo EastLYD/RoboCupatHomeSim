@@ -322,11 +322,11 @@ namespace RoboCupReferee {
 			// 
 			this->button3->Font = (gcnew System::Drawing::Font(L"HGPºÞ¼¯¸E", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(128)));
-			this->button3->Location = System::Drawing::Point(205, 346);
+			this->button3->Location = System::Drawing::Point(221, 346);
 			this->button3->Name = L"button3";
-			this->button3->Size = System::Drawing::Size(97, 31);
+			this->button3->Size = System::Drawing::Size(81, 31);
 			this->button3->TabIndex = 13;
-			this->button3->Text = L"Next task";
+			this->button3->Text = L"Give Up";
 			this->button3->UseVisualStyleBackColor = true;
 			this->button3->Click += gcnew System::EventHandler(this, &Form1::button3_Click);
 			// 
@@ -444,7 +444,7 @@ private: System::Void button2_Click(System::Object^  sender, System::EventArgs^ 
 private: System::Void label6_Click(System::Object^  sender, System::EventArgs^  e) {
 }
 private: System::Void button3_Click(System::Object^  sender, System::EventArgs^  e) {
-			 m_srv->sendMsgToCtr("moderator_0", "Task_next");
+			 m_srv->sendMsgToCtr("moderator_0", "Give_up");
 }
 };
 }
