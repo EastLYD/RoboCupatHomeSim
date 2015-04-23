@@ -202,22 +202,31 @@ void MyController::onInit(InitEvent &evt)
 		Vector3d pos;
 		entity->getPosition(pos);
 
-		if( ( found = contains( m_tables["livingroom"], m_entities[i] ) ) != -1 ){
+		if( ( found = contains( m_tables["livingroom"], m_entities[i] ) ) != -1  ){
+			if (m_tables["livingroom"][found].name != "Buffet1" )
+			{
 			m_tables["livingroom"][found].x = pos.x();
 			m_tables["livingroom"][found].y = pos.y();
 			m_tables["livingroom"][found].z = pos.z();
+			}
 		}
 
 		else if( ( found = contains( m_tables["bedroom"], m_entities[i] ) ) != -1 ){
+		if (m_tables["bedroom"][found].name != "Side board2" && m_tables["bedroom"][found].name != "Side table1")
+			{
 			m_tables["bedroom"][found].x = pos.x();
 			m_tables["bedroom"][found].y = pos.y();
 			m_tables["bedroom"][found].z = pos.z();
+			}
 		}
 
 		else if( ( found = contains( m_tables["lobby"], m_entities[i] ) ) != -1 ){
+		if (m_tables["lobby"][found].name != "Buffet2" && m_tables["lobby"][found].name != "Side board1")
+			{
 			m_tables["lobby"][found].x = pos.x();
 			m_tables["lobby"][found].y = pos.y();
 			m_tables["lobby"][found].z = pos.z();
+			}
 		}
 
 		else if( ( found = contains( m_tables["kitchen"], m_entities[i] ) ) != -1 ){
@@ -300,6 +309,16 @@ double MyController::onAction(ActionEvent &evt)
 			broadcastMsg("Task_start");
 			// printf("tast_start moderator \n");
 			Task_st = false;
+			std::stringstream trial_ss;
+			trial_ss << "RoboCupReferee/trial/";
+			trial_ss << trialCount + 1 << "/";
+			trial_ss << NUMBER_OF_REPETITION;
+			if (m_ref != NULL){
+				m_ref->sendMsgToSrv(trial_ss.str().c_str());
+			}
+			else{
+				LOG_MSG((trial_ss.str().c_str()));
+			}
 		}
 if( Task_st == true && trialCount == NUMBER_OF_REPETITION)
 	{
@@ -590,27 +609,32 @@ void MyController::onRecvMsg(RecvMsgEvent &evt)
 
 
 
-	if (sender == "robot_000" && msg == "Task_finished") {
+		if (sender == "robot_000" && msg == "Task_finished") {
 		LOG_MSG(("Task_end"));
-		//broadcastMsg("Task_end");
+		broadcastMsg("Task_end");
 		LOG_MSG(("before onCheckPositionfronHuman"));
 		onCheckPositionfrontHuman();
 		LOG_MSG(("after onCheckPositionfronHuman"));
-		//sleep(1);
+		sleep(1);
 		LOG_MSG(("before reposObjects"));
 		reposObjects();
 		LOG_MSG(("after reposObjects"));
-		Task_st = true;
 		startTime = 0.0;
-		broadcastMsg("Task_end");
-		//breakTask();
-	}
-
-	if(sender == "robot_000" && msg == "Give_up"){
-		LOG_MSG(("Task_end"));
-		//broadcastMsg("Task_end");
+   
 		breakTask();
 	}
+
+	if( (sender == "robot_000" || sender == "RoboCupReferee")  && msg == "Give_up")
+	{
+		LOG_MSG(("Task_end"));
+		broadcastMsg("Task_end");
+		LOG_MSG(("before reposObjects"));
+		reposObjects();
+		LOG_MSG(("after reposObjects"));
+		startTime = 0.0;
+		breakTask();
+	}
+	
 	if(msg == "init_time")
 		{
 			init = true;
@@ -1034,16 +1058,16 @@ void MyController::initRoomsObjects()
 	Target tar;
 
 	tab.name = "Buffet1";
-	tab.length = 52.1;
+	tab.length = 32.1;
 	tab.width  = 54.2;
 	tab.height = 59.5;
 	tab.reachable[UP]    = 1;
 	tab.reachable[DOWN]  = 1;
 	tab.reachable[RIGHT] = 1;
 	tab.reachable[LEFT]  = -1;
-	tab.x = 0;
-	tab.y = 0;
-	tab.z = 0;
+	tab.x = -72.8;
+	tab.y = 30;
+	tab.z = -106.3;
 	vec.push_back(tab);
 
 	tab.name = "Dinner table1";
@@ -1103,25 +1127,31 @@ void MyController::initRoomsObjects()
 	vec2.clear();
 
 	tab.name = "Buffet2";
-	tab.length = 52.1;
+	tab.length = 32.1;
 	tab.width  = 54.2;
 	tab.height = 59.5;
 	tab.reachable[UP]    = 1;
 	tab.reachable[DOWN]  = 1;
 	tab.reachable[RIGHT] = -1;
 	tab.reachable[LEFT]  = 1;
-
+    tab.x = -123;
+	tab.y = 30;
+	tab.z = -245;
 	vec.push_back(tab);
 
 	tab.name = "Side board1";
-	tab.length = 192;
+	tab.length = 172;
 	tab.width  = 46.1;
 	tab.height = 59.8;
 	tab.reachable[UP]    = 1;
 	tab.reachable[DOWN]  = -1;
 	tab.reachable[RIGHT] = -1;
 	tab.reachable[LEFT]  = 1;
-
+	
+    tab.x = -189;
+	tab.y = 30;
+	tab.z = -245;
+	
 	vec.push_back(tab);
 
 	tar.name = "apple_1";
@@ -1204,25 +1234,29 @@ void MyController::initRoomsObjects()
 	vec2.clear();
 
 	tab.name = "Side table1";
-	tab.length = 52.1;
-	tab.width  = 54.2;
+	tab.length = 32.1;
+	tab.width  = 34.2;
 	tab.height = 59.5;
 	tab.reachable[UP]    = 1;
 	tab.reachable[DOWN]  = -1;
 	tab.reachable[RIGHT] = -1;
 	tab.reachable[LEFT]  = -1;
-
+    tab.x = -123;
+	tab.y = 30;
+	tab.z = 380;
 	vec.push_back(tab);
 
 	tab.name = "Side board2";
-	tab.length = 192;
+	tab.length = 172;
 	tab.width  = 46.1;
-	tab.height = 59.8;
+	tab.height = 39.8;
 	tab.reachable[UP]    = 1;
 	tab.reachable[DOWN]  = -1;
 	tab.reachable[RIGHT] = -1;
 	tab.reachable[LEFT]  = -1;
-
+    tab.x = -387;
+	tab.y = 30;
+	tab.z = 390;
 	vec.push_back(tab);
 
 	tar.name = "apple_3";
