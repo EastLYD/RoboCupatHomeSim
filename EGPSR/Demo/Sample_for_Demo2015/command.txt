@@ -1,0 +1,11 @@
+living room:petbottle.
+kitchen:mugcup.
+lobby:can.
+bed room:apple.
+living room:can.
+kitchen:can.
+lobby:apple.
+kitchen:mugcup.
+living room:apple.
+kitchen:petbottle.
+lobby:apple.
