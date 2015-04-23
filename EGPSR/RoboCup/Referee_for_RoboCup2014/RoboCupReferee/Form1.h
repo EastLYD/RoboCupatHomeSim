@@ -90,6 +90,10 @@ namespace RoboCupReferee {
 	private: System::Windows::Forms::Label^  label6;
 	private: System::Windows::Forms::TextBox^  textBox4;
 	private: System::Windows::Forms::Button^  button3;
+	private: System::Windows::Forms::Label^  label7;
+	private: System::Windows::Forms::RadioButton^  radioButton1;
+	private: System::Windows::Forms::RadioButton^  radioButton2;
+	private: System::Windows::Forms::RadioButton^  radioButton3;
 			 bool m_connected;
 			 //srv->connect("socio4.iir.nii.ac.jp", 9333);
 			 
@@ -118,6 +122,10 @@ namespace RoboCupReferee {
 			this->label6 = (gcnew System::Windows::Forms::Label());
 			this->textBox4 = (gcnew System::Windows::Forms::TextBox());
 			this->button3 = (gcnew System::Windows::Forms::Button());
+			this->label7 = (gcnew System::Windows::Forms::Label());
+			this->radioButton1 = (gcnew System::Windows::Forms::RadioButton());
+			this->radioButton2 = (gcnew System::Windows::Forms::RadioButton());
+			this->radioButton3 = (gcnew System::Windows::Forms::RadioButton());
 			this->SuspendLayout();
 			// 
 			// label1
@@ -125,7 +133,7 @@ namespace RoboCupReferee {
 			this->label1->AutoSize = true;
 			this->label1->Font = (gcnew System::Drawing::Font(L"HGS恨集窫", 15.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(128)));
-			this->label1->Location = System::Drawing::Point(219, 259);
+			this->label1->Location = System::Drawing::Point(219, 294);
 			this->label1->Name = L"label1";
 			this->label1->Size = System::Drawing::Size(57, 21);
 			this->label1->TabIndex = 0;
@@ -137,7 +145,7 @@ namespace RoboCupReferee {
 			this->connect->Enabled = false;
 			this->connect->Font = (gcnew System::Drawing::Font(L"HGP恨集窫", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(128)));
-			this->connect->Location = System::Drawing::Point(5, 346);
+			this->connect->Location = System::Drawing::Point(5, 376);
 			this->connect->Name = L"connect";
 			this->connect->Size = System::Drawing::Size(89, 31);
 			this->connect->TabIndex = 1;
@@ -154,7 +162,7 @@ namespace RoboCupReferee {
 			// button1
 			// 
 			this->button1->Font = (gcnew System::Drawing::Font(L"HGP恨集窫", 14.25F));
-			this->button1->Location = System::Drawing::Point(94, 346);
+			this->button1->Location = System::Drawing::Point(94, 376);
 			this->button1->Name = L"button1";
 			this->button1->Size = System::Drawing::Size(105, 31);
 			this->button1->TabIndex = 2;
@@ -166,7 +174,7 @@ namespace RoboCupReferee {
 			// 
 			this->button2->Font = (gcnew System::Drawing::Font(L"HGP恨集窫", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(128)));
-			this->button2->Location = System::Drawing::Point(303, 346);
+			this->button2->Location = System::Drawing::Point(303, 376);
 			this->button2->Name = L"button2";
 			this->button2->Size = System::Drawing::Size(82, 31);
 			this->button2->TabIndex = 3;
@@ -207,7 +215,7 @@ namespace RoboCupReferee {
 			this->textBox1->Font = (gcnew System::Drawing::Font(L"MS UI Gothic", 18, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(128)));
 			this->textBox1->ForeColor = System::Drawing::SystemColors::InactiveBorder;
-			this->textBox1->Location = System::Drawing::Point(282, 253);
+			this->textBox1->Location = System::Drawing::Point(282, 288);
 			this->textBox1->Name = L"textBox1";
 			this->textBox1->RightToLeft = System::Windows::Forms::RightToLeft::No;
 			this->textBox1->Size = System::Drawing::Size(103, 31);
@@ -247,7 +255,7 @@ namespace RoboCupReferee {
 			this->textBox2->Font = (gcnew System::Drawing::Font(L"MS UI Gothic", 18, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(128)));
 			this->textBox2->ForeColor = System::Drawing::SystemColors::InactiveBorder;
-			this->textBox2->Location = System::Drawing::Point(110, 253);
+			this->textBox2->Location = System::Drawing::Point(110, 288);
 			this->textBox2->Name = L"textBox2";
 			this->textBox2->RightToLeft = System::Windows::Forms::RightToLeft::No;
 			this->textBox2->Size = System::Drawing::Size(103, 31);
@@ -260,7 +268,7 @@ namespace RoboCupReferee {
 			this->label4->AutoSize = true;
 			this->label4->Font = (gcnew System::Drawing::Font(L"HGS恨集窫", 15.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(128)));
-			this->label4->Location = System::Drawing::Point(47, 259);
+			this->label4->Location = System::Drawing::Point(47, 294);
 			this->label4->Name = L"label4";
 			this->label4->Size = System::Drawing::Size(53, 21);
 			this->label4->TabIndex = 0;
@@ -273,7 +281,7 @@ namespace RoboCupReferee {
 			this->textBox3->Font = (gcnew System::Drawing::Font(L"MS UI Gothic", 18, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(128)));
 			this->textBox3->ForeColor = System::Drawing::SystemColors::InactiveBorder;
-			this->textBox3->Location = System::Drawing::Point(265, 299);
+			this->textBox3->Location = System::Drawing::Point(265, 333);
 			this->textBox3->Name = L"textBox3";
 			this->textBox3->RightToLeft = System::Windows::Forms::RightToLeft::No;
 			this->textBox3->Size = System::Drawing::Size(44, 31);
@@ -286,7 +294,7 @@ namespace RoboCupReferee {
 			this->label5->AutoSize = true;
 			this->label5->Font = (gcnew System::Drawing::Font(L"HGS恨集窫", 15.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(128)));
-			this->label5->Location = System::Drawing::Point(97, 305);
+			this->label5->Location = System::Drawing::Point(97, 339);
 			this->label5->Name = L"label5";
 			this->label5->Size = System::Drawing::Size(161, 21);
 			this->label5->TabIndex = 9;
@@ -297,7 +305,7 @@ namespace RoboCupReferee {
 			this->label6->AutoSize = true;
 			this->label6->Font = (gcnew System::Drawing::Font(L"HGS恨集窫", 20.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(128)));
-			this->label6->Location = System::Drawing::Point(313, 302);
+			this->label6->Location = System::Drawing::Point(313, 336);
 			this->label6->Name = L"label6";
 			this->label6->Size = System::Drawing::Size(27, 27);
 			this->label6->TabIndex = 11;
@@ -310,7 +318,7 @@ namespace RoboCupReferee {
 			this->textBox4->Font = (gcnew System::Drawing::Font(L"MS UI Gothic", 18, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(128)));
 			this->textBox4->ForeColor = System::Drawing::SystemColors::InactiveBorder;
-			this->textBox4->Location = System::Drawing::Point(341, 299);
+			this->textBox4->Location = System::Drawing::Point(341, 333);
 			this->textBox4->Name = L"textBox4";
 			this->textBox4->RightToLeft = System::Windows::Forms::RightToLeft::No;
 			this->textBox4->Size = System::Drawing::Size(44, 31);
@@ -322,7 +330,7 @@ namespace RoboCupReferee {
 			// 
 			this->button3->Font = (gcnew System::Drawing::Font(L"HGP恨集窫", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(128)));
-			this->button3->Location = System::Drawing::Point(221, 346);
+			this->button3->Location = System::Drawing::Point(221, 376);
 			this->button3->Name = L"button3";
 			this->button3->Size = System::Drawing::Size(81, 31);
 			this->button3->TabIndex = 13;
@@ -330,12 +338,64 @@ namespace RoboCupReferee {
 			this->button3->UseVisualStyleBackColor = true;
 			this->button3->Click += gcnew System::EventHandler(this, &Form1::button3_Click);
 			// 
+			// label7
+			// 
+			this->label7->AutoSize = true;
+			this->label7->Font = (gcnew System::Drawing::Font(L"HGS恨集窫", 15.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(128)));
+			this->label7->Location = System::Drawing::Point(41, 250);
+			this->label7->Name = L"label7";
+			this->label7->Size = System::Drawing::Size(182, 21);
+			this->label7->TabIndex = 14;
+			this->label7->Text = L"Diametars of score";
+			// 
+			// radioButton1
+			// 
+			this->radioButton1->AutoSize = true;
+			this->radioButton1->Checked = true;
+			this->radioButton1->Location = System::Drawing::Point(233, 256);
+			this->radioButton1->Name = L"radioButton1";
+			this->radioButton1->Size = System::Drawing::Size(39, 16);
+			this->radioButton1->TabIndex = 15;
+			this->radioButton1->TabStop = true;
+			this->radioButton1->Text = L"x 1";
+			this->radioButton1->UseVisualStyleBackColor = true;
+			this->radioButton1->CheckedChanged += gcnew System::EventHandler(this, &Form1::radioButton1_CheckedChanged);
+			// 
+			// radioButton2
+			// 
+			this->radioButton2->AutoSize = true;
+			this->radioButton2->Location = System::Drawing::Point(280, 256);
+			this->radioButton2->Name = L"radioButton2";
+			this->radioButton2->Size = System::Drawing::Size(51, 16);
+			this->radioButton2->TabIndex = 16;
+			this->radioButton2->TabStop = true;
+			this->radioButton2->Text = L"x 1/2";
+			this->radioButton2->UseVisualStyleBackColor = true;
+			this->radioButton2->CheckedChanged += gcnew System::EventHandler(this, &Form1::radioButton2_CheckedChanged);
+			// 
+			// radioButton3
+			// 
+			this->radioButton3->AutoSize = true;
+			this->radioButton3->Location = System::Drawing::Point(336, 256);
+			this->radioButton3->Name = L"radioButton3";
+			this->radioButton3->Size = System::Drawing::Size(51, 16);
+			this->radioButton3->TabIndex = 17;
+			this->radioButton3->TabStop = true;
+			this->radioButton3->Text = L"x 1/4";
+			this->radioButton3->UseVisualStyleBackColor = true;
+			this->radioButton3->CheckedChanged += gcnew System::EventHandler(this, &Form1::radioButton3_CheckedChanged);
+			// 
 			// Form1
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 12);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->BackColor = System::Drawing::SystemColors::ButtonFace;
-			this->ClientSize = System::Drawing::Size(390, 389);
+			this->ClientSize = System::Drawing::Size(390, 412);
+			this->Controls->Add(this->radioButton3);
+			this->Controls->Add(this->radioButton2);
+			this->Controls->Add(this->radioButton1);
+			this->Controls->Add(this->label7);
 			this->Controls->Add(this->button3);
 			this->Controls->Add(this->textBox4);
 			this->Controls->Add(this->label6);
@@ -397,7 +457,13 @@ private: System::Void timer1_Tick(System::Object^  sender, System::EventArgs^  e
 					 System::String^ listitem_score = score.ToString();
 					 this->listBox1->Items->Add(listitem_msg);
 					 this->listBox2->Items->Add(listitem_score);
-					 int total = m_srv->getTotal();
+					 double total = m_srv->getTotal();
+					 if (radioButton2->Checked == true){
+						 total /= 2;
+					 }
+					 else if (radioButton3->Checked == true){
+						 total /= 4;
+					 }
 					 this->textBox1->Text = total.ToString();
 				 }
 				 //comment傪峏怴
@@ -445,6 +511,25 @@ private: System::Void label6_Click(System::Object^  sender, System::EventArgs^  
 }
 private: System::Void button3_Click(System::Object^  sender, System::EventArgs^  e) {
 			 m_srv->sendMsgToCtr("moderator_0", "Give_up");
+}
+private: System::Void radioButton1_CheckedChanged(System::Object^  sender, System::EventArgs^  e) {
+			 if (radioButton1->Checked == true){
+				 radioButton2->Checked = false;
+				 radioButton3->Checked = false;
+			 }
+
+}
+private: System::Void radioButton2_CheckedChanged(System::Object^  sender, System::EventArgs^  e) {
+			 if (radioButton2->Checked == true){
+				 radioButton1->Checked = false;
+				 radioButton3->Checked = false;
+			 }
+}
+private: System::Void radioButton3_CheckedChanged(System::Object^  sender, System::EventArgs^  e) {
+			 if (radioButton3->Checked == true){
+				 radioButton1->Checked = false;
+				 radioButton2->Checked = false;
+			 }
 }
 };
 }

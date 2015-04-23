@@ -18,7 +18,7 @@ public:
 	int getScore();
 	int getScoreSize();
 	int getMessageSize();
-	int getTotal();
+	double getTotal();
 	int getTrialCount();
 	int getNumberOfRepetition();
 	void setTotal(int total){ m_total = total; }
@@ -26,7 +26,7 @@ public:
 	System::String^ getRemainingTime();
 	virtual void onRecvMsg(sigverse::RecvMsgEvent ^evt) override;
 	virtual double onAction() override;
-	int m_total;
+	double m_total;
 	int m_score;
 	int trialCount;
 	int numberOfRepetition;
@@ -51,7 +51,7 @@ int Referee::getScore()
 	return score;
 }
 
-int Referee::getTotal()
+double Referee::getTotal()
 {
 	return m_total;
 }
