@@ -36,8 +36,7 @@
 	<instanciate class="WheelRobot-nii-v1.xml" type="Robot">
     <set-attr-value name="name" value="robot_000"/>
     <set-attr-value name="language" value="c++"/>
-    <set-attr-value name="implementation"
-                    value="./EGPSR2014Robo.so"/>
+    <set-attr-value name="implementation"  value="./EGPSR2015Robo.so"/>
     <set-attr-value name="dynamics" value="false"/>
     <set-attr-value name="x" value="0.0"/>
     <set-attr-value name="y" value="30.0"/>
