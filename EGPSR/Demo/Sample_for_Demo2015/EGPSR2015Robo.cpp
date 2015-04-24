@@ -1253,7 +1253,7 @@ void RobotController::onRecvMsg(RecvMsgEvent &evt)
 		{
 			task = msg.substr(found+10);
 		}
-		found2 = task.find("  grasp the ",0);
+		found2 = task.find(", grasp the ",0);
 		if (found3 != std::string::npos)
 		{
 			room_msg = task.substr(0,found2);

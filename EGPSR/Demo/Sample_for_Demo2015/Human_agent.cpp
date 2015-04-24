@@ -130,7 +130,7 @@ void UserController::onRecvMsg(RecvMsgEvent &evt)
 		parseFile("command.txt");
 
 		message = ":"+ rooms[cycle] +";"+ objects[cycle]+".";
-		brodcast_msg = "Go to the "+ rooms[cycle] +"  grasp the "+ objects[cycle]+" and come back here";
+		brodcast_msg = "Go to the "+ rooms[cycle] +", grasp the "+ objects[cycle]+" and come back here";
 		choice_movement(rooms[cycle]);
 		//broadcastMsgToSrv(brodcast_msg);
 		//sendMsg("moderator_0","init_time");

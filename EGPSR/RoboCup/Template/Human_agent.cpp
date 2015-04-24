@@ -130,17 +130,17 @@ void UserController::onRecvMsg(RecvMsgEvent &evt)
 		parseFile("command.txt");
 
 		message = ":"+ rooms[cycle] +";"+ objects[cycle]+".";
-		brodcast_msg = "Go to the "+ rooms[cycle] +"  grasp the "+ objects[cycle]+" and come back here";
+		brodcast_msg = "Go to the "+ rooms[cycle] +", grasp the "+ objects[cycle]+" and come back here";
 		choice_movement(rooms[cycle]);
 		//broadcastMsgToSrv(brodcast_msg);
 		//sendMsg("moderator_0","init_time");
 		//broadcastMsg(message);
 		LOG_MSG((brodcast_msg.c_str()));
 		//LOG_MSG(("%s: %s",sender.c_str(), brodcast_msg.c_str()));
-		//sendMsg("robot_000",brodcast_msg);
-		//sendMsg("moderator_0",brodcast_msg);
+		sendMsg("robot_000",brodcast_msg);
+		sendMsg("moderator_0",brodcast_msg);
 		// m_state  = 0;
-		broadcastMsg(brodcast_msg);
+		//broadcastMsg(brodcast_msg);
        cycle = cycle+1;
 	}
 		if(msg == "Task_finished" && sender == "robot_000" && Mission_complete == false )
