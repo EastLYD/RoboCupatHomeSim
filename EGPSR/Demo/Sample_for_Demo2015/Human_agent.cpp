@@ -139,6 +139,7 @@ void UserController::onRecvMsg(RecvMsgEvent &evt)
 		//LOG_MSG(("%s: %s",sender.c_str(), brodcast_msg.c_str()));
 		sendMsg("robot_000",brodcast_msg);
 		sendMsg("moderator_0",brodcast_msg);
+		sendMsg("SIGViewer", brodcast_msg);
 		// m_state  = 0;
 		//broadcastMsg(brodcast_msg);
        cycle = cycle+1;
