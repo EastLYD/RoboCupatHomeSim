@@ -194,7 +194,7 @@ namespace RoboCupReferee {
 			this->listBox1->Location = System::Drawing::Point(5, 45);
 			this->listBox1->Name = L"listBox1";
 			this->listBox1->RightToLeft = System::Windows::Forms::RightToLeft::No;
-			this->listBox1->Size = System::Drawing::Size(272, 193);
+			this->listBox1->Size = System::Drawing::Size(290, 193);
 			this->listBox1->TabIndex = 4;
 			this->listBox1->SelectedIndexChanged += gcnew System::EventHandler(this, &Form1::listBox1_SelectedIndexChanged);
 			// 
@@ -203,7 +203,7 @@ namespace RoboCupReferee {
 			this->label2->AutoSize = true;
 			this->label2->Font = (gcnew System::Drawing::Font(L"HGSºÞ¼¯¸E", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(128)));
-			this->label2->Location = System::Drawing::Point(271, 26);
+			this->label2->Location = System::Drawing::Point(337, 26);
 			this->label2->Name = L"label2";
 			this->label2->Size = System::Drawing::Size(46, 16);
 			this->label2->TabIndex = 5;
@@ -232,10 +232,10 @@ namespace RoboCupReferee {
 			this->listBox2->FormattingEnabled = true;
 			this->listBox2->HorizontalScrollbar = true;
 			this->listBox2->ItemHeight = 21;
-			this->listBox2->Location = System::Drawing::Point(274, 45);
+			this->listBox2->Location = System::Drawing::Point(292, 45);
 			this->listBox2->Name = L"listBox2";
 			this->listBox2->RightToLeft = System::Windows::Forms::RightToLeft::No;
-			this->listBox2->Size = System::Drawing::Size(111, 193);
+			this->listBox2->Size = System::Drawing::Size(93, 193);
 			this->listBox2->TabIndex = 7;
 			// 
 			// label3
@@ -330,9 +330,9 @@ namespace RoboCupReferee {
 			// 
 			this->button3->Font = (gcnew System::Drawing::Font(L"HGPºÞ¼¯¸E", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(128)));
-			this->button3->Location = System::Drawing::Point(221, 376);
+			this->button3->Location = System::Drawing::Point(215, 376);
 			this->button3->Name = L"button3";
-			this->button3->Size = System::Drawing::Size(81, 31);
+			this->button3->Size = System::Drawing::Size(87, 31);
 			this->button3->TabIndex = 13;
 			this->button3->Text = L"Give Up";
 			this->button3->UseVisualStyleBackColor = true;
@@ -343,22 +343,22 @@ namespace RoboCupReferee {
 			this->label7->AutoSize = true;
 			this->label7->Font = (gcnew System::Drawing::Font(L"HGSºÞ¼¯¸E", 15.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(128)));
-			this->label7->Location = System::Drawing::Point(41, 250);
+			this->label7->Location = System::Drawing::Point(5, 250);
 			this->label7->Name = L"label7";
-			this->label7->Size = System::Drawing::Size(175, 21);
+			this->label7->Size = System::Drawing::Size(227, 21);
 			this->label7->TabIndex = 14;
-			this->label7->Text = L"Scale of the score";
+			this->label7->Text = L"Use of special functions";
 			// 
 			// radioButton1
 			// 
 			this->radioButton1->AutoSize = true;
 			this->radioButton1->Checked = true;
-			this->radioButton1->Location = System::Drawing::Point(233, 256);
+			this->radioButton1->Location = System::Drawing::Point(230, 256);
 			this->radioButton1->Name = L"radioButton1";
-			this->radioButton1->Size = System::Drawing::Size(39, 16);
+			this->radioButton1->Size = System::Drawing::Size(49, 16);
 			this->radioButton1->TabIndex = 15;
 			this->radioButton1->TabStop = true;
-			this->radioButton1->Text = L"x 1";
+			this->radioButton1->Text = L"None";
 			this->radioButton1->UseVisualStyleBackColor = true;
 			this->radioButton1->CheckedChanged += gcnew System::EventHandler(this, &Form1::radioButton1_CheckedChanged);
 			// 
@@ -367,10 +367,10 @@ namespace RoboCupReferee {
 			this->radioButton2->AutoSize = true;
 			this->radioButton2->Location = System::Drawing::Point(280, 256);
 			this->radioButton2->Name = L"radioButton2";
-			this->radioButton2->Size = System::Drawing::Size(51, 16);
+			this->radioButton2->Size = System::Drawing::Size(53, 16);
 			this->radioButton2->TabIndex = 16;
 			this->radioButton2->TabStop = true;
-			this->radioButton2->Text = L"x 1/2";
+			this->radioButton2->Text = L"Either";
 			this->radioButton2->UseVisualStyleBackColor = true;
 			this->radioButton2->CheckedChanged += gcnew System::EventHandler(this, &Form1::radioButton2_CheckedChanged);
 			// 
@@ -379,10 +379,10 @@ namespace RoboCupReferee {
 			this->radioButton3->AutoSize = true;
 			this->radioButton3->Location = System::Drawing::Point(336, 256);
 			this->radioButton3->Name = L"radioButton3";
-			this->radioButton3->Size = System::Drawing::Size(51, 16);
+			this->radioButton3->Size = System::Drawing::Size(47, 16);
 			this->radioButton3->TabIndex = 17;
 			this->radioButton3->TabStop = true;
-			this->radioButton3->Text = L"x 1/4";
+			this->radioButton3->Text = L"Both";
 			this->radioButton3->UseVisualStyleBackColor = true;
 			this->radioButton3->CheckedChanged += gcnew System::EventHandler(this, &Form1::radioButton3_CheckedChanged);
 			// 
@@ -414,7 +414,7 @@ namespace RoboCupReferee {
 			this->Controls->Add(this->label1);
 			this->Name = L"Form1";
 			this->RightToLeft = System::Windows::Forms::RightToLeft::No;
-			this->Text = L"Robocup@home 2014";
+			this->Text = L"Robocup@home 2015";
 			this->Load += gcnew System::EventHandler(this, &Form1::Form1_Load);
 			this->ResumeLayout(false);
 			this->PerformLayout();
