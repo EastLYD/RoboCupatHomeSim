@@ -32,7 +32,7 @@ private:
 	bool c;
 	bool d;
 	bool e;
-	int total;
+	//int total;
 
 	//std::vector<std::string> m_entities;
 
@@ -56,7 +56,7 @@ void MyController::onInit(InitEvent &evt)
 	c = false;
 	d = false;
 	e = false;
-	total = 0;
+	//total = 0;
 
 	// ** Need to correctly connect to referee service
 	m_my = getObj(myname());
@@ -86,11 +86,11 @@ double MyController::onAction(ActionEvent &evt)
 	}
 
 	if (check1_clear == true && a == false && b == false && d == false){
-		total = total + 300;
-		stringstream ss;
-		ss << total;
-		string result = ss.str();
-		sendMsg("SIGViewer", result);
+		//total = total + 300;
+		//stringstream ss;
+		//ss << total;
+		//string result = ss.str();
+		//sendMsg("SIGViewer", result);
 		std::string msg = "RoboCupReferee/Check point1 clear/300";
 		if(m_ref != NULL){
 			m_ref->sendMsgToSrv(msg.c_str());
@@ -100,11 +100,11 @@ double MyController::onAction(ActionEvent &evt)
 	}
 
 	if (elevator_clear == true && a == true && b == false && d == false){
-		total = total + 300;
-		stringstream ss2;
-		ss2 << total;
-		string result2 = ss2.str();
-		sendMsg("SIGViewer", result2);
+		//total = total + 300;
+		//stringstream ss2;
+		//ss2 << total;
+		//string result2 = ss2.str();
+		//sendMsg("SIGViewer", result2);
 		std::string msg = "RoboCupReferee/Elevator clear" "/300";
 		if(m_ref != NULL){
 			m_ref->sendMsgToSrv(msg.c_str());
@@ -113,11 +113,11 @@ double MyController::onAction(ActionEvent &evt)
 		b = true;
 	}
 	if (crowd_clear == true && a == true  && b == true && d == false){
-		total = total + 300;
-		stringstream ss5;
-		ss5 << total;
-		string result5 = ss5.str();
-		sendMsg("SIGViewer", result5);
+		//total = total + 300;
+		//stringstream ss5;
+		//ss5 << total;
+		//string result5 = ss5.str();
+		//sendMsg("SIGViewer", result5);
 		std::string msg = "RoboCupReferee/Crowded loacation clear" "/300";
 		if(m_ref != NULL){
 			m_ref->sendMsgToSrv(msg.c_str());
@@ -126,11 +126,11 @@ double MyController::onAction(ActionEvent &evt)
 		d = true;
 	}
 	if (all_clear == true && a == true  && b == true && d == true && e == false){
-		total = total + 100;
-		stringstream ss;
-		ss << total;
-		string result = ss.str();
-		sendMsg("SIGViewer", result);
+		//total = total + 100;
+		//stringstream ss;
+		//ss << total;
+		//string result = ss.str();
+		//sendMsg("SIGViewer", result);
 		std::string msg = "RoboCupReferee/All check points clear" "/100";
 		if(m_ref != NULL){
 			m_ref->sendMsgToSrv(msg.c_str());
