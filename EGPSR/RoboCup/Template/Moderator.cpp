@@ -461,7 +461,7 @@ void MyController::onRecvMsg(RecvMsgEvent &evt)
 				// std::cout << "Task : "+ task  << std::endl;
 			}
 
-			found2 = task.find(", grasp the ",0);
+			found2 = task.find("  grasp the ",0);
 			if (found3 != std::string::npos){
 				room_msg = task.substr(0,found2);
 				// rooms.push_back(room);
@@ -1064,6 +1064,7 @@ void MyController::initRoomsObjects()
 	Target tar;
     Vector3d posf;
     SimObj* entity ;
+    /*
 	tab.name = "Buffet1";
 	tab.length = 32.1;
 	tab.width  = 54.2;
@@ -1078,7 +1079,7 @@ void MyController::initRoomsObjects()
 	tab.y = posf.y();
 	tab.z = posf.z();
 	vec.push_back(tab);
-
+    
 	tab.name = "Dinner table1";
 	tab.length = 135;
 	tab.width  = 75.9;
@@ -1089,15 +1090,15 @@ void MyController::initRoomsObjects()
 	tab.reachable[LEFT]  = 1;
 
 	vec.push_back(tab);
-
+     */
 	tab.name = "Couch_table1";
 	tab.length = 128;
 	tab.width  = 65.8;
 	tab.height = 59.8;
-	tab.reachable[UP]    = -1;
+	tab.reachable[UP]    = 1;
 	tab.reachable[DOWN]  = 1;
-	tab.reachable[RIGHT] = -1;
-	tab.reachable[LEFT]  = -1;
+	tab.reachable[RIGHT] = 1;
+	tab.reachable[LEFT]  = 1;
 
 	vec.push_back(tab);
 

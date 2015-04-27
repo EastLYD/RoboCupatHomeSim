@@ -126,6 +126,8 @@ class RobotController : public Controller
 		Vector3d m_livingroomFront1;
 		Vector3d m_livingroomFront2;
 		Vector3d m_livingroomFront3;
+    Vector3d m_livingroomFront4;
+    Vector3d m_livingroomFront5;
 };
 
 /************************************************************************************/
@@ -649,6 +651,7 @@ void RobotController::onInit(InitEvent &evt)
 	m_frontbedroom.push_back(m_bedroomFront3 );
 
 	// lobby
+  m_frontlooby.clear();
 	m_lobbyFront1 = Vector3d(-190, 30, -310);
 	m_lobbyFront2 = Vector3d(-220, 30, -220);
 	m_lobbyFront3 = Vector3d(-200, 30, -170);
@@ -659,13 +662,17 @@ void RobotController::onInit(InitEvent &evt)
 	m_frontlooby.push_back(m_lobbyFront4 );
 
 	// living room
-	m_livingroomFront1 = Vector3d(310, 30,-120);
-	m_livingroomFront2 = Vector3d(30, 30,-150);
-	m_livingroomFront3 = Vector3d(50, 30, 30);
+  m_frontlivingroom.clear();
+	m_livingroomFront1 = Vector3d(175, 30,-140);
+	m_livingroomFront2 = Vector3d(380, 30,-140);
+	m_livingroomFront3 = Vector3d(380, 30,-285);
+  m_livingroomFront4 = Vector3d(185, 30,-285);
+  m_livingroomFront5 = Vector3d(180, 30,-140);
 	m_frontlivingroom.push_back(m_livingroomFront1 );
 	m_frontlivingroom.push_back(m_livingroomFront2 );
 	m_frontlivingroom.push_back(m_livingroomFront3 );
-
+  m_frontlivingroom.push_back(m_livingroomFront4 );
+  m_frontlivingroom.push_back(m_livingroomFront5 );
 	srand((unsigned)time( NULL ));
 }
 
@@ -715,7 +722,7 @@ double RobotController::onAction(ActionEvent &evt)
 					break;
 				}
 	case 3333: 	{
-					m_my->setWheelVelocity(-1.1,-1.1);
+					m_my->setWheelVelocity(-0.7,-0.7);
 					chooze_task_arm_left(4);
 					if (moveLeftArm() == true)
 					{
@@ -1216,7 +1223,39 @@ printf("the actual stat is  %d\n", m_state);
 					}
 					break;
 				}
-	case 630: 	{ // move toward kitchen point
+          case 630:   { // move toward relay point
+          if (goTo(m_livingroomFront4, 0) == true)
+          {
+            if(stopfront == 4)
+            {
+              stopfront = 0;
+              m_frontState = m_state+10;
+              m_state = 100;
+            }
+            else
+            {
+              m_state = m_state+10;
+            }
+          }
+          break;
+        }
+                  case 640:   { // move toward relay point
+          if (goTo(m_livingroomFront5, 0) == true)
+          {
+            if(stopfront == 5)
+            {
+              stopfront = 0;
+              m_frontState = m_state+10;
+              m_state = 100;
+            }
+            else
+            {
+              m_state = m_state+10;
+            }
+          }
+          break;
+        }
+	case 650: 	{ // move toward kitchen point
 
 					m_my->setWheelVelocity(0.0, 0.0);
 					m_state = 0;
@@ -1253,7 +1292,7 @@ void RobotController::onRecvMsg(RecvMsgEvent &evt)
 		{
 			task = msg.substr(found+10);
 		}
-		found2 = task.find(", grasp the ",0);
+		found2 = task.find("  grasp the ",0);
 		if (found3 != std::string::npos)
 		{
 			room_msg = task.substr(0,found2);
@@ -1527,7 +1566,7 @@ double RobotController::PathinFrontObject(std::string room, std::string object)
 			m_table = m_table3;
 
 		m_object = object;
-		go_to = PointApproachObj(m_table, m_object, 50);
+		go_to = PointApproachObj(m_table, m_object, 45);
 
 		m_state = 600;
 		for(int m=0;m<m_frontlivingroom.size();m++)
