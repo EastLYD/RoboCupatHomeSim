@@ -461,7 +461,7 @@ void MyController::onRecvMsg(RecvMsgEvent &evt)
 				// std::cout << "Task : "+ task  << std::endl;
 			}
 
-			found2 = task.find("  grasp the ",0);
+			found2 = task.find(", grasp the ",0);
 			if (found3 != std::string::npos){
 				room_msg = task.substr(0,found2);
 				// rooms.push_back(room);
