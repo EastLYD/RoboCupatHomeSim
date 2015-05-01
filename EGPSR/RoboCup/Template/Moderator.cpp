@@ -164,7 +164,7 @@ void MyController::onInit(InitEvent &evt)
 /*
   // select objects to be observed
   cnt = m_entities.size();
-  for(i=0;i<cnt;i++){
+  for (i=0;i<cnt;i++) {
     if((m_entities[i] != mdName) &&
        (m_entities[i] != roboName) &&
        (m_entities[i] != "trashbox_0") &&
@@ -187,7 +187,7 @@ void MyController::onInit(InitEvent &evt)
        (m_entities[i] != "can_3") &&
        (m_entities[i] != "apple") &&
        (m_entities[i] != "clock") &&
-       (m_entities[i] != "kettle") ){
+       (m_entities[i] != "kettle") ) {
       m_entNames.push_back(m_entities[i]);
     }
   }
@@ -196,13 +196,13 @@ void MyController::onInit(InitEvent &evt)
 
 	cnt = m_entities.size();
 
-	for(i=0;i<cnt;i++) {
+	for (i=0;i<cnt;i++) {
 		int found;
 		SimObj* entity = getObj(m_entities[i].c_str());
 		Vector3d pos;
 		entity->getPosition(pos);
 
-		if( ( found = contains( m_tables["livingroom"], m_entities[i] ) ) != -1  ){
+		if ( ( found = contains( m_tables["livingroom"], m_entities[i] ) ) != -1  ) {
 			if (m_tables["livingroom"][found].name != "Buffet1" )
 			{
 			m_tables["livingroom"][found].x = pos.x();
@@ -211,7 +211,7 @@ void MyController::onInit(InitEvent &evt)
 			}
 		}
 
-		else if( ( found = contains( m_tables["bedroom"], m_entities[i] ) ) != -1 ){
+		else if ( ( found = contains( m_tables["bedroom"], m_entities[i] ) ) != -1 ) {
 		if (m_tables["bedroom"][found].name != "Side board2" && m_tables["bedroom"][found].name != "Side table1")
 			{
 			m_tables["bedroom"][found].x = pos.x();
@@ -220,7 +220,7 @@ void MyController::onInit(InitEvent &evt)
 			}
 		}
 
-		else if( ( found = contains( m_tables["lobby"], m_entities[i] ) ) != -1 ){
+		else if ( ( found = contains( m_tables["lobby"], m_entities[i] ) ) != -1 ) {
 		if (m_tables["lobby"][found].name != "Buffet2" && m_tables["lobby"][found].name != "Side board1")
 			{
 			m_tables["lobby"][found].x = pos.x();
@@ -229,13 +229,13 @@ void MyController::onInit(InitEvent &evt)
 			}
 		}
 
-		else if( ( found = contains( m_tables["kitchen"], m_entities[i] ) ) != -1 ){
+		else if ( ( found = contains( m_tables["kitchen"], m_entities[i] ) ) != -1 ) {
 			m_tables["kitchen"][found].x = pos.x();
 			m_tables["kitchen"][found].y = pos.y();
 			m_tables["kitchen"][found].z = pos.z();
 		}
 
-		if((m_entities[i] != mdName) &&
+		if ((m_entities[i] != mdName) &&
 		   (m_entities[i] != roboName) &&
 		   (m_entities[i] != "apple_0") &&
 		   (m_entities[i] != "apple_1") &&
@@ -252,7 +252,7 @@ void MyController::onInit(InitEvent &evt)
 		   (m_entities[i] != "can_0") &&
 		   (m_entities[i] != "can_1") &&
 		   (m_entities[i] != "can_2") &&
-		   (m_entities[i] != "can_3") ){
+		   (m_entities[i] != "can_3") ) {
 			m_entNames.push_back(m_entities[i]);
 			//std::cout << "entitie: " << m_entities[i] << " pushed!" << std::endl;
 		}
@@ -265,7 +265,7 @@ void MyController::onInit(InitEvent &evt)
 	trialCount = 0;
 	//srand(time(NULL));
 
-	/*for(int i=0; i<10; i++){
+	/*for (int i=0; i<10; i++) {
 	  reposObjects();
 	  //usleep(5000000);
 	  }*/
@@ -288,8 +288,8 @@ double MyController::onAction(ActionEvent &evt)
 {
 	// check whether Referee service is available or not
 	bool available = checkService("RoboCupReferee");
-	if(!available && m_ref != NULL) m_ref = NULL;
-	else if(available && m_ref == NULL){
+	if (!available && m_ref != NULL) m_ref = NULL;
+	else if (available && m_ref == NULL) {
 		m_ref = connectToService("RoboCupReferee");
 	}
 
@@ -304,7 +304,7 @@ double MyController::onAction(ActionEvent &evt)
 	Vector3d rsLenVec(prv1Pos.x()-crrPos.x(), prv1Pos.y()-crrPos.y(), prv1Pos.z()-crrPos.z());
 	rsLen = rsLenVec.length();
 
-	if(Task_st == true && trialCount < NUMBER_OF_REPETITION)
+	if (Task_st == true && trialCount < NUMBER_OF_REPETITION)
 		{
 			broadcastMsg("Task_start");
 			// printf("tast_start moderator \n");
@@ -313,40 +313,39 @@ double MyController::onAction(ActionEvent &evt)
 			trial_ss << "RoboCupReferee/trial/";
 			trial_ss << trialCount + 1 << "/";
 			trial_ss << NUMBER_OF_REPETITION;
-			if (m_ref != NULL){
+			if (m_ref != NULL) {
 				m_ref->sendMsgToSrv(trial_ss.str().c_str());
 			}
-			else{
+			else {
 				LOG_MSG((trial_ss.str().c_str()));
 			}
 		}
-if( Task_st == true && trialCount >= NUMBER_OF_REPETITION)
-	{
-		// resetRobotCondition();
-		LOG_MSG(("Mission_complete"));
-		broadcastMsg("Mission_complete");
-		if(m_ref != NULL){
-            m_ref->sendMsgToSrv("RoboCupReferee/time/- END -");
+	if (Task_st == true && trialCount >= NUMBER_OF_REPETITION)
+		{
+			// resetRobotCondition();
+			LOG_MSG(("Mission_complete"));
+			broadcastMsg("Mission_complete");
+			if (m_ref != NULL) {
+				m_ref->sendMsgToSrv("RoboCupReferee/time/- END -");
+			}
+			time_display = false;
+			Task_st = false;
 		}
-		time_display = false;
-		Task_st = false;
-	}
-
 
 	onCheckCollision();
 
 	// onCheckObject();
-	for(int k=0;k<entNum;k++){
+	for (int k=0;k<entNum;k++) {
 		SimObj* locObj = getObj(m_entNames[k].c_str());
 		CParts *parts = locObj->getMainParts();
 		bool state = parts->getCollisionState();
 
 		if ( unable_collision == false)
 			{
-				if(state){
+				if (state) {
 					colState=true;       // collided with main body of robot
 
-					if(rsLen == 0.0) {
+					if (rsLen == 0.0) {
 						//        pcolState=true;
 						r_my->setRotation(prv1Rot);
 					} else {
@@ -355,10 +354,10 @@ if( Task_st == true && trialCount >= NUMBER_OF_REPETITION)
 					}
 
 					std::string msg = "RoboCupReferee/Collision with [" + m_entNames[k] + "]" "/-100";
-					if(m_ref != NULL){
+					if (m_ref != NULL) {
 						m_ref->sendMsgToSrv(msg.c_str());
 					}
-					else{
+					else {
 						LOG_MSG((msg.c_str()));
 					}
 					break;
@@ -366,15 +365,15 @@ if( Task_st == true && trialCount >= NUMBER_OF_REPETITION)
 			}
 	}
 
-	//  if(!colState && !pcolState){
-	if(!colState){
+	//  if (!colState && !pcolState) {
+	if (!colState) {
 		prv1Pos=crrPos;
 		prv1Rot=crrRot;
 		//colState=false;     // reset collision condition
-	} else if(pcolState){
-		for(int i=0;i<jtnum;i++) prv1JAng_r[i]=crrJAng_r[i];
+	} else if (pcolState) {
+		for (int i=0;i<jtnum;i++) prv1JAng_r[i]=crrJAng_r[i];
 		pcolState = false;
-	} else{
+	} else {
 		//Do nothing on "collided" condition
 		//    LOG_MSG((colPtName.c_str()));
 		colState = false;
@@ -382,7 +381,7 @@ if( Task_st == true && trialCount >= NUMBER_OF_REPETITION)
 
 	std::stringstream time_ss;
 
-	if(init == true)
+	if (init == true)
 		{
 			take_time = evt.time();
 			init = false;
@@ -390,16 +389,16 @@ if( Task_st == true && trialCount >= NUMBER_OF_REPETITION)
 
 	double elapsedTime = evt.time() - startTime - take_time;
 
-	if( time_display == true)
+	if ( time_display == true)
 		{
-			//if(evt.time() - startTime > endTime){
-			if(elapsedTime > endTime){
+			//if (evt.time() - startTime > endTime) {
+			if (elapsedTime > endTime) {
 				LOG_MSG(("Time_over"));
 				broadcastMsg("Time_over");
 				breakTask();
 				//time_ss << "RoboCupReferee/time/00:00:00";
 			}
-			else{
+			else {
 				double remainedTime = endTime - elapsedTime;
 				int min, sec, msec;
 				sec = (int)remainedTime;
@@ -413,13 +412,13 @@ if( Task_st == true && trialCount >= NUMBER_OF_REPETITION)
                //  time_ss << "youuu";
 				//time_ss << std::setw(2) << std::setfill('0') << msec;
 			}
-			if(m_ref != NULL){
+			if (m_ref != NULL) {
 				std::string mess;
 				mess =time_ss.str();
 				m_ref->sendMsgToSrv(mess.c_str());
 				 //std::cout << "Message to referee : " << time_ss.str() << std::endl;
 			}
-			else{
+			else {
 				LOG_MSG((time_ss.str().c_str()));
 			}
 		}
@@ -449,12 +448,12 @@ void MyController::onRecvMsg(RecvMsgEvent &evt)
 	// fin.open(fileNam_my.c_str());
 	bool dest = false;
 
-	if(sender == "man_000")
+	if (sender == "man_000")
 		{
             //broadcastMsgToSrv(msg.c_str());
 			// std::cout << "the message Moderator is "  + msg  << std::endl ;
 			found = msg.find("Go to the ",0);
-			if (found != std::string::npos){
+			if (found != std::string::npos) {
 				task = msg.substr(found+10);
 				// rooms.push_back(room);
 				// printf("task %s \n",task);
@@ -462,7 +461,7 @@ void MyController::onRecvMsg(RecvMsgEvent &evt)
 			}
 
 			found2 = task.find(", grasp the ",0);
-			if (found3 != std::string::npos){
+			if (found3 != std::string::npos) {
 				room_msg = task.substr(0,found2);
 				// rooms.push_back(room);
 				// printf("room %s \n",room_msg);
@@ -471,7 +470,7 @@ void MyController::onRecvMsg(RecvMsgEvent &evt)
 
 
 			found3 = task.find(" and come back here",found);
-			if (found3 != std::string::npos){
+			if (found3 != std::string::npos) {
 				object_msg = task.substr(found2+12,found3-found2-12);
 				//buf = buf.substr(found+1);
 				//  objects.push_back(object);
@@ -482,23 +481,23 @@ void MyController::onRecvMsg(RecvMsgEvent &evt)
 
 
 			//  std::cout << "The moderator : " + room_msg  + "  and " +  object_msg + "|" << std::endl;
-			if(room_msg == "living room" ){
+			if (room_msg == "living room" ) {
 
 				m_roomState = 3;
-				if(object_msg == "apple" )
+				if (object_msg == "apple" )
 					{
 						m_pointedObject = "apple_0";
 					}
-				if(object_msg == "can" )
+				if (object_msg == "can" )
 					{
 						m_pointedObject = "can_0";
 					}
-				if(object_msg == "mugcup" )
+				if (object_msg == "mugcup" )
 					{
 						m_pointedObject = "mugcup_0";
 					}
 
-				if(object_msg == "petbottle" )
+				if (object_msg == "petbottle" )
 					{
 						m_pointedObject = "petbottle_0";
 					}
@@ -506,43 +505,43 @@ void MyController::onRecvMsg(RecvMsgEvent &evt)
 
 
 			// lobby message
-			if(room_msg == "bed room" ){
+			if (room_msg == "bed room" ) {
 
 				m_roomState = 2;
-				if(object_msg == "apple" )
+				if (object_msg == "apple" )
 					{
 						m_pointedObject = "apple_3";
 					}
-				if(object_msg == "can" )
+				if (object_msg == "can" )
 					{
 						m_pointedObject = "can_3";
 					}
-				if(object_msg == "mugcup" )
+				if (object_msg == "mugcup" )
 					{
 						m_pointedObject = "mugcup_3";
 					}
 
-				if(object_msg == "petbottle" )
+				if (object_msg == "petbottle" )
 					{
 						m_pointedObject = "petbottle_3";
 					}
 			}
 
-			if(room_msg == "lobby" ){
-				if(object_msg == "apple" )
+			if (room_msg == "lobby" ) {
+				if (object_msg == "apple" )
 					{
 						m_pointedObject = "apple_1";
 					}
-				if(object_msg == "can" )
+				if (object_msg == "can" )
 					{
 						m_pointedObject = "can_1";
 					}
-				if(object_msg == "mugcup" )
+				if (object_msg == "mugcup" )
 					{
 						m_pointedObject = "mugcup_1";
 					}
 
-				if(object_msg == "petbottle" )
+				if (object_msg == "petbottle" )
 					{
 						m_pointedObject = "petbottle_1";
 					}
@@ -550,24 +549,24 @@ void MyController::onRecvMsg(RecvMsgEvent &evt)
 				m_roomState = 1;
 			}
 
-			if(room_msg == "kitchen" ){
+			if (room_msg == "kitchen" ) {
 
 				m_roomState = 0;
 
-				if(object_msg == "apple" )
+				if (object_msg == "apple" )
 					{
 						m_pointedObject = "apple_2";
 					}
-				if(object_msg == "can" )
+				if (object_msg == "can" )
 					{
 						m_pointedObject = "can_2";
 					}
-				if(object_msg == "mugcup" )
+				if (object_msg == "mugcup" )
 					{
 						m_pointedObject = "mugcup_2";
 					}
 
-				if(object_msg == "petbottle" )
+				if (object_msg == "petbottle" )
 					{
 						m_pointedObject = "petbottle_2";
 					}
@@ -591,7 +590,7 @@ void MyController::onRecvMsg(RecvMsgEvent &evt)
 		{
 			grasping = false;
 		}
-	if(msg == "Start grasping process")
+	if (msg == "Start grasping process")
 		{
 			std:: string name;
 			//name = m_pointedObject;
@@ -602,7 +601,7 @@ void MyController::onRecvMsg(RecvMsgEvent &evt)
 			unable_collision = true;
 		}
 
-    if(msg == "End grasping process")
+    if (msg == "End grasping process")
 		{
 			unable_collision = false;
 		}
@@ -624,7 +623,7 @@ void MyController::onRecvMsg(RecvMsgEvent &evt)
 		breakTask();
 	}
 
-	if( (sender == "robot_000" || sender == "RoboCupReferee")  && msg == "Give_up")
+	if ( (sender == "robot_000" || sender == "RoboCupReferee")  && msg == "Give_up")
 	{
 		LOG_MSG(("Task_end"));
 		broadcastMsg("Task_end");
@@ -635,14 +634,14 @@ void MyController::onRecvMsg(RecvMsgEvent &evt)
 		breakTask();
 	}
 	
-	if(msg == "init_time")
+	if (msg == "init_time")
 		{
 			init = true;
 		}
 }
 
 
-void MyController::onCheckCollision(){
+void MyController::onCheckCollision() {
 }
 
 void MyController::onCheckPositionfrontHuman()
@@ -671,14 +670,14 @@ void MyController::onCheckPositionfrontHuman()
 	dist -= hum_pos;
 	distance = dist.length();
 	printf("The distance to human is %f\n", distance);
-	if(distance <  radius )
+	if (distance <  radius )
 		{
 			std::string msg = "RoboCupReferee/Robot is in [" + final + "]" "/+400";
 
-			if(m_ref != NULL){
+			if (m_ref != NULL) {
 				m_ref->sendMsgToSrv(msg.c_str());
 			}
-			else{
+			else {
 				LOG_MSG((msg.c_str()));
 			}
 
@@ -699,7 +698,7 @@ void MyController::onCheckObject()
 	// get trash's position
 	trash->getPosition(Obj_pos);
 
-	if(Obj_pos.x()== PrObj_pos.x() && Obj_pos.y()== PrObj_pos.y() && Obj_pos.z()== PrObj_pos.z())
+	if (Obj_pos.x()== PrObj_pos.x() && Obj_pos.y()== PrObj_pos.y() && Obj_pos.z()== PrObj_pos.z())
 		{
 
 		}
@@ -707,10 +706,10 @@ void MyController::onCheckObject()
 		{
 			std::string msg = "RoboCupReferee/Robot is in [" + m_pointedObject + "]" "/+400";
 
-			if(m_ref != NULL){
+			if (m_ref != NULL) {
 				m_ref->sendMsgToSrv(msg.c_str());
 			}
-			else{
+			else {
 				LOG_MSG((msg.c_str()));
 			}
 		}
@@ -725,55 +724,55 @@ void MyController::onCheckRoom()
 	z =crrPos.z();
 
 	LOG_MSG(("Check robot position, select from 4 rooms"));
-	if(x>-100&&x<500&&z>-425&&z<75)	// living room
+	if (x>-100&&x<500&&z>-425&&z<75)	// living room
 		{ // bed room
 			num=0;
-			if(m_roomState==3){
+			if (m_roomState==3) {
 				std::string msg = "RoboCupReferee/Robot is in [" + m_rooms[num] + "]" "/+400";
 				m_roomState=0;
-				if(m_ref != NULL){
+				if (m_ref != NULL) {
 					m_ref->sendMsgToSrv(msg.c_str());
 				}
-				else{
+				else {
 					LOG_MSG((msg.c_str()));
 				}
 			}
 		}
-	else if(x>100&&x<500&&z>75&&z<425){ // kitchen
+	else if (x>100&&x<500&&z>75&&z<425) { // kitchen
 		num=1;
-		if(m_roomState==0){
+		if (m_roomState==0) {
 			std::string msg = "RoboCupReferee/Robot is in [" + m_rooms[num] + "]" "/+400";
 			m_roomState=1;
-			if(m_ref != NULL){
+			if (m_ref != NULL) {
 				m_ref->sendMsgToSrv(msg.c_str());
 			}
-			else{
+			else {
 				LOG_MSG((msg.c_str()));
 			}
 		}
 	}
-	else if(x>-500&&x<-100&&z>-425&&z<-75){ // lobby
+	else if (x>-500&&x<-100&&z>-425&&z<-75) { // lobby
 		num=2;
-		if(m_roomState==1){
+		if (m_roomState==1) {
 			std::string msg = "RoboCupReferee/Robot is in [" + m_rooms[num] + "]" "/+400";
 			m_roomState=2;
-			if(m_ref != NULL){
+			if (m_ref != NULL) {
 				m_ref->sendMsgToSrv(msg.c_str());
 			}
-			else{
+			else {
 				LOG_MSG((msg.c_str()));
 			}
 		}
 	}
-	else if(x>-500&&x<-100&&z>75&&z<425){ // bed room
+	else if (x>-500&&x<-100&&z>75&&z<425) { // bed room
 		num=3;
-		if(m_roomState==2){
+		if (m_roomState==2) {
 			std::string msg = "RoboCupReferee/Robot is in [" + m_rooms[num] + "]" "/+400";
 			m_roomState=3;
-			if(m_ref != NULL){
+			if (m_ref != NULL) {
 				m_ref->sendMsgToSrv(msg.c_str());
 			}
-			else{
+			else {
 				LOG_MSG((msg.c_str()));
 			}
 		}
@@ -793,9 +792,9 @@ bool MyController::checkAvailablePos(float posObj, Target obj, int indPosOnTable
 {
 	bool available = true;
 
-	if(vec.size() > 0){
-		if( indPosOnTable == DOWN || indPosOnTable == UP ){
-			for(std::vector<Target>::iterator it = vec.begin(); it != vec.end() && available; ++it){
+	if (vec.size() > 0) {
+		if ( indPosOnTable == DOWN || indPosOnTable == UP ) {
+			for (std::vector<Target>::iterator it = vec.begin(); it != vec.end() && available; ++it) {
 				float xInf = it->x - 0.5 * it->length - 20;
 				float xSup = it->x + 0.5 * it->length + 20;
 				float xInfObj = posObj - 0.5 * obj.length;
@@ -805,8 +804,8 @@ bool MyController::checkAvailablePos(float posObj, Target obj, int indPosOnTable
 														 xInfObj > xSup && xSupObj > xSup);
 			}
 		}
-		else{
-			for(std::vector<Target>::iterator it = vec.begin(); it != vec.end() && available; ++it){
+		else {
+			for (std::vector<Target>::iterator it = vec.begin(); it != vec.end() && available; ++it) {
 				float zInf = it->z - 0.5 * it->width - 20;
 				float zSup = it->z + 0.5 * it->width + 20;
 				float zInfObj = posObj - 0.5 * obj.width;
@@ -823,14 +822,14 @@ bool MyController::checkAvailablePos(float posObj, Target obj, int indPosOnTable
 
 
 
-int MyController::getNextPosOnTable(int indPosOnTable, Table table){
+int MyController::getNextPosOnTable(int indPosOnTable, Table table) {
 	int j;
-	for(j=(indPosOnTable+1) % 4; j != indPosOnTable && table.reachable[j] == -1; j = (j + 1) % 4);
+	for (j=(indPosOnTable+1) % 4; j != indPosOnTable && table.reachable[j] == -1; j = (j + 1) % 4);
 
 	j--;
 
-	if(j != indPosOnTable){
-		if(j == 0)
+	if (j != indPosOnTable) {
+		if (j == 0)
 			j = 3;
 		else
 			j--;
@@ -843,34 +842,34 @@ int MyController::getNextPosOnTable(int indPosOnTable, Table table){
 }
 
 
-void MyController::getNextTable(int* indTab, int* indPosOnTable, Table* table, std::vector<Table> vecTable){
+void MyController::getNextTable(int* indTab, int* indPosOnTable, Table* table, std::vector<Table> vecTable) {
 	*indTab = (*indTab + 1) % vecTable.size();
 	*table = vecTable[*indTab];
 
 	bool posAvailable = false;
 
-	while( !posAvailable ) {
+	while (!posAvailable) {
 		*indPosOnTable = rand() % 4;
 		posAvailable = table->reachable[*indPosOnTable] != -1;
 	}
 }
 
-void MyController::performChange(int* indTab, int* indPosOnTable, Table* table, std::vector<Table> vecTable){
+void MyController::performChange(int* indTab, int* indPosOnTable, Table* table, std::vector<Table> vecTable) {
 	int randChange = rand() % 2; // rand to determine if we look for another position or another table
 
-	if(randChange == 1){
+	if (randChange == 1) {
 		int j = getNextPosOnTable(*indPosOnTable, *table);
 
-		if(j == -1){
+		if (j == -1) {
 			getNextTable(indTab, indPosOnTable, table, vecTable);
 		}
 
-		else{
+		else {
 			*indPosOnTable = j;
 		}
 	}
 
-	else{
+	else {
 		getNextTable(indTab, indPosOnTable, table, vecTable);
 	}
 }
@@ -878,7 +877,10 @@ void MyController::performChange(int* indTab, int* indPosOnTable, Table* table, 
 
 void MyController::reposObjects()
 {
-	for(std::map< std::string, std::vector<Target> >::iterator it = m_targets.begin(); it != m_targets.end(); ++it){
+	// Set random seed according to the number of trials. It provides the same random condition for all the competior
+	srand (trialCount);
+
+	for (std::map< std::string, std::vector<Target> >::iterator it = m_targets.begin(); it != m_targets.end(); ++it) {
 		std::vector<Table> vecTable = m_tables[it->first];
 		std::vector<Target> placedObjects;
 		int nbTables = vecTable.size();
@@ -886,7 +888,7 @@ void MyController::reposObjects()
 		float xObj;
 		float zObj;
 
-		for(std::vector<Target>::iterator it2 = it->second.begin(); it2 != it->second.end(); ++it2){
+		for (std::vector<Target>::iterator it2 = it->second.begin(); it2 != it->second.end(); ++it2) {
 			int indTab = rand() % nbTables;
 			Table table = vecTable[indTab];
 			bool posAvailable = false;
@@ -897,7 +899,7 @@ void MyController::reposObjects()
 			  we took a random table among the available ones and now we take a random
 			  position on this table (UP, DOWN, LEFT, RIGHT) if it's available
 			*/
-			while( !posAvailable ) {
+			while (!posAvailable) {
 				indPosOnTable = rand() % 4;
 				posAvailable = table.reachable[indPosOnTable] != -1;
 			}
@@ -909,64 +911,64 @@ void MyController::reposObjects()
 			  current table or change the table directly
 			*/
 
-			do{
+			do {
 				nbTries = 0;
 
-				if( indPosOnTable == DOWN || indPosOnTable == UP ){
+				if ( indPosOnTable == DOWN || indPosOnTable == UP ) {
 					yObj = table.y + 0.5 * table.height + 0.5 * it2->height + 1.75;
 					float xOffset = 10;
 					float xInf = table.x - 0.5 * table.length + xOffset;
 					float xSup = table.x + 0.5 * table.length - xOffset;
 					float zOffset = it2->width;
 
-					do{
+					do {
 						xObj = mapRange(rand(), 0,  RAND_MAX, xInf, xSup);
 						nbTries++;
-					} while(!checkAvailablePos(xObj, *it2, indPosOnTable, placedObjects) && nbTries < NUMBER_OF_REPETITION);
+					} while (!checkAvailablePos(xObj, *it2, indPosOnTable, placedObjects) && nbTries < NUMBER_OF_REPETITION);
 
-					if(nbTries >= 9){
+					if (nbTries >= 9) {
 						performChange(&indTab, &indPosOnTable, &table, vecTable);
 					}
 
-					else{
+					else {
 
-						if(indPosOnTable == DOWN){
+						if (indPosOnTable == DOWN) {
 							zObj = table.z + 0.5 * table.width - zOffset;
 						}
 
-						else{
+						else {
 							zObj = table.z - 0.5 * table.width + zOffset;
 						}
 					}
 				}
 
-				else{
+				else {
 					yObj = table.y + 0.5 * table.height + 0.5 * it2->height + 1.75;
 					float zOffset = 10;
 					float zSup = table.z - 0.5 * table.width + zOffset;
 					float zInf = table.z + 0.5 * table.width - zOffset;
 					float xOffset = it2->length;
 
-					do{
+					do {
 						zObj = mapRange(rand(), 0,  RAND_MAX, zInf, zSup);
 						nbTries++;
-					} while(!checkAvailablePos(zObj, *it2, indPosOnTable, placedObjects) && nbTries < NUMBER_OF_REPETITION);
+					} while (!checkAvailablePos(zObj, *it2, indPosOnTable, placedObjects) && nbTries < NUMBER_OF_REPETITION);
 
-					if(nbTries >= 9){
+					if (nbTries >= 9) {
 						performChange(&indTab, &indPosOnTable, &table, vecTable);
 					}
 
-					else{
-						if(indPosOnTable == RIGHT){
+					else {
+						if (indPosOnTable == RIGHT) {
 							xObj = table.x + 0.5 * table.length - xOffset;
 						}
 
-						else{
+						else {
 							xObj = table.x - 0.5 * table.length + xOffset;
 						}
 					}
 				}
-			}while(nbTries >= 9);
+			} while (nbTries >= 9);
 
 			SimObj* target = getObj(it2->name.c_str());
 			target->setPosition(Vector3d(xObj, yObj, zObj));
@@ -986,7 +988,7 @@ void MyController::reposObjects()
 	//reset robot position
 	RobotObj* robot = getRobotObj(roboName.c_str());
 
-     if(grasping == true)
+     if (grasping == true)
 		 {
             CParts * parts = robot->getParts("LARM_LINK7");
             parts->releaseObj();
@@ -1026,23 +1028,23 @@ void MyController::breakTask()
 	//takeAwayObjects();
 	//trialCount++;
 	std::string msg = "RoboCupReferee/reset/";
-	if(m_ref != NULL){
+	if (m_ref != NULL) {
 		// m_ref->sendMsgToSrv(msg.c_str());
 		 SimObj *robot;
 		 robot = this->getObj("robot_000");
 
 
 	}
-if(trialCount < NUMBER_OF_REPETITION)
-{
-		 broadcastMsg("Task_end");
-		 reposObjects();
-}
-	if(trialCount >= NUMBER_OF_REPETITION) {
+	if (trialCount < NUMBER_OF_REPETITION)
+		{
+			broadcastMsg("Task_end");
+			reposObjects();
+		}
+	if (trialCount >= NUMBER_OF_REPETITION) {
 		// resetRobotCondition();
 		LOG_MSG(("Mission_complete"));
 		broadcastMsg("Mission_complete");
-		if(m_ref != NULL){
+		if (m_ref != NULL) {
 			msg = "RoboCupReferee/time/- END -";
             m_ref->sendMsgToSrv(msg.c_str());
 		}
@@ -1130,7 +1132,7 @@ void MyController::initRoomsObjects()
 
 	vec2.push_back(tar);
 
-	m_tables["livingroom"] = vec;
+	m_tables ["livingroom"] = vec;
 	m_targets["livingroom"] = vec2;
 
 	vec.clear();
@@ -1140,10 +1142,10 @@ void MyController::initRoomsObjects()
 	tab.length = 32.1;
 	tab.width  = 54.2;
 	tab.height = 59.5;
-	tab.reachable[UP]    = 1;
-	tab.reachable[DOWN]  = 1;
+	tab.reachable[UP]    =  1;
+	tab.reachable[DOWN]  =  1;
 	tab.reachable[RIGHT] = -1;
-	tab.reachable[LEFT]  = 1;
+	tab.reachable[LEFT]  =  1;
 	entity = getObj(tab.name.c_str());
 	entity->getPosition(posf);
 	tab.x = posf.x()-10;
@@ -1155,10 +1157,10 @@ void MyController::initRoomsObjects()
 	tab.length = 165;
 	tab.width  = 50.8;
 	tab.height = 59.7;
-	tab.reachable[UP]    = 1;
+	tab.reachable[UP]    =  1;
 	tab.reachable[DOWN]  = -1;
 	tab.reachable[RIGHT] = -1;
-	tab.reachable[LEFT]  = 1;
+	tab.reachable[LEFT]  =  1;
 	entity = getObj(tab.name.c_str());
 	entity->getPosition(posf);
 	tab.x = posf.x()-10;
@@ -1194,7 +1196,7 @@ void MyController::initRoomsObjects()
 
 	vec2.push_back(tar);
 
-	m_tables["lobby"] = vec;
+	m_tables ["lobby"] = vec;
 	m_targets["lobby"] = vec2;
 
 	vec.clear();
@@ -1239,7 +1241,7 @@ void MyController::initRoomsObjects()
 
 	vec2.push_back(tar);
 
-	m_tables["kitchen"] = vec;
+	m_tables ["kitchen"] = vec;
 	m_targets["kitchen"] = vec2;
 
 	vec.clear();
@@ -1249,7 +1251,7 @@ void MyController::initRoomsObjects()
 	tab.length = 32.1;
 	tab.width  = 34.2;
 	tab.height = 59.5;
-	tab.reachable[UP]    = 1;
+	tab.reachable[UP]    =  1;
 	tab.reachable[DOWN]  = -1;
 	tab.reachable[RIGHT] = -1;
 	tab.reachable[LEFT]  = -1;
@@ -1265,7 +1267,7 @@ void MyController::initRoomsObjects()
 	tab.length = 167;
 	tab.width  = 24.9;
 	tab.height = 58.8;
-	tab.reachable[UP]    = 1;
+	tab.reachable[UP]    =  1;
 	tab.reachable[DOWN]  = -1;
 	tab.reachable[RIGHT] = -1;
 	tab.reachable[LEFT]  = -1;
@@ -1304,25 +1306,30 @@ void MyController::initRoomsObjects()
 
 	vec2.push_back(tar);
 
-	m_tables["bedroom"] = vec;
+	m_tables ["bedroom"] = vec;
 	m_targets["bedroom"] = vec2;
 }
-bool MyController::checkRobotFinished(){
+
+
+bool MyController::checkRobotFinished()
+{
 	Vector3d posR;
 	getObj(roboName.c_str())->getPosition(posR);
 
 	return pow( ( posR.x() - humanPos.x() ), 2) + pow( ( posR.z() - humanPos.z() ), 2) < (radius * radius);
 }
 
+
 template<typename Type>
-int MyController::contains(std::vector<Type> vec, Type key){
+int MyController::contains(std::vector<Type> vec, Type key)
+{
 	bool found = false;
 	int i;
-	for(i = 0 ; i < vec.size() && !found; i++){
+	for (i = 0 ; i < vec.size() && !found; i++) {
 		found = vec[i] == key;
 	}
 
-	if(!found)
+	if (!found)
 		i = -1;
 	else
 		i--;
@@ -1330,14 +1337,16 @@ int MyController::contains(std::vector<Type> vec, Type key){
 	return i;
 }
 
-int MyController::contains(std::vector<Target> vec, std::string key){
+
+int MyController::contains(std::vector<Target> vec, std::string key)
+{
 	bool found = false;
 	int i;
-	for(i = 0 ; i < vec.size() && !found; i++){
+	for (i = 0 ; i < vec.size() && !found; i++) {
 		found = vec[i].name == key;
 	}
 
-	if(!found)
+	if (!found)
 		i = -1;
 	else
 		i--;
@@ -1345,26 +1354,31 @@ int MyController::contains(std::vector<Target> vec, std::string key){
 	return i;
 }
 
-int MyController::contains(std::vector<Table> vec, std::string key){
+
+int MyController::contains(std::vector<Table> vec, std::string key)
+{
 	bool found = false;
 	int i;
-	for(i = 0 ; i < vec.size() && !found; i++){
+	for (i = 0 ; i < vec.size() && !found; i++) {
 		found = vec[i].name == key;
 	}
 
-	if(!found)
+	if (!found)
 		i = -1;
 	else
 		i--;
 
 	return i;
 }
-float MyController::mapRange(float s, float a1, float a2, float b1, float b2){
+
+
+float MyController::mapRange(float s, float a1, float a2, float b1, float b2)
+{
 	return b1 + ( (s-a1) * (b2-b1) ) / (a2 - a1);
 }
 /*
-  void MyController::takeAwayObjects(){
-  for(std::vector<Target>::iterator it = m_entities[trialCount].begin(); it != m_entities[trialCount].end(); ++it){
+  void MyController::takeAwayObjects() {
+  for (std::vector<Target>::iterator it = m_entities[trialCount].begin(); it != m_entities[trialCount].end(); ++it) {
   SimObj* target = getObj(it->name.c_str());
   target->setPosition(Vector3d(100000, 100000, 100000));
   }
