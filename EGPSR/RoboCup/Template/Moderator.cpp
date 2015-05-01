@@ -63,6 +63,7 @@ public:
 	// void takeAwayObjects();
 
 private:
+	FILE* fp;             // File to keep the number of trials
 	BaseService *m_ref;   // Referee service
 	double retValue;      // Refresh rate of the modification
 	bool   colState;      // Collision state
@@ -146,8 +147,8 @@ void MyController::onInit(InitEvent &evt)
 	crrPos  = Vector3d(0,0,0);
 	prv1Pos = Vector3d(0,0,0);
 
-	Obj_pos  = Vector3d(0,0,0);
-	PrObj_pos  = Vector3d(0,0,0);
+	Obj_pos   = Vector3d(0,0,0);
+	PrObj_pos = Vector3d(0,0,0);
 
 	room_msg = "";
 	object_msg = "" ;
@@ -261,18 +262,25 @@ void MyController::onInit(InitEvent &evt)
 	entNum = m_entNames.size();
 	srand (2);
 
-	reposObjects();
+	// Set the trial number from file "trialnum.txt"
 	trialCount = 0;
-	//srand(time(NULL));
+	if ((fp = fopen("trialnum.txt", "r")) == NULL) {
+		LOG_MSG(("trialnum.txt not found. Set trialCount = 0"));
+	}
+	else {
+		fscanf(fp, "%d", &trialCount);
+		LOG_MSG(("Set taskNum: %d", trialCount));
+		fclose(fp);
+		if (trialCount<0 || trialCount>=NUMBER_OF_REPETITION) {
+			LOG_MSG(("trialnum is wrong (%d). Set trialCount = 0", trialCount));
+			trialCount = 0;
+		}
+	}
 
-	/*for (int i=0; i<10; i++) {
-	  reposObjects();
-	  //usleep(5000000);
-	  }*/
+	reposObjects();
+
 
 	// std::cout << "robot is in the circle? " << checkRobotFinished() << std::endl;
-
-
 
 	isCleaningUp = false;
 
