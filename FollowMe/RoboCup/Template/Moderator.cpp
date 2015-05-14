@@ -7,6 +7,8 @@
 #include <unistd.h>
 
 #define MAX_TRIAL 20
+#define MAX_SCORE 1000
+#define PENALTY "-100"
 
 char start_msg[]  = "Task_start";
 char end_msg[]    = "Task_end";
@@ -65,6 +67,8 @@ private:
 	double endTime;
 	struct timeval t0, t1;
 
+	double penalty;
+
 	bool sendEndMsg();
 	bool echoEndMsg;
 };
@@ -87,6 +91,8 @@ void MyController::onInit(InitEvent &evt)
 
 	task = false;
 	taskNum = 0;
+
+	penalty = 0;
 
 	if((fp = fopen("tasknum.txt", "r")) == NULL) {
 		printf("File do not exist:trial.txt\n");
@@ -225,13 +231,16 @@ double MyController::onAction(ActionEvent &evt)
 				colState = false;
 			}
 
-			std::string msg = "RoboCupReferee/Collision" "/-100";
+			penalty += atof(PENALTY);
+			if (penalty + MAX_SCORE >= 0){
+				std::string msg = "RoboCupReferee/Collision" "/" + (std::string)PENALTY;
 
-			if(m_ref != NULL){
-				m_ref->sendMsgToSrv(msg.c_str());
-			}
-			else{
-				LOG_MSG((msg.c_str()));
+				if (m_ref != NULL){
+					m_ref->sendMsgToSrv(msg.c_str());
+				}
+				else{
+					LOG_MSG((msg.c_str()));
+				}
 			}
 			break;
 		}
@@ -365,7 +374,7 @@ void MyController::breakTask()
 {
 	//task = false;
 	taskNum++;
-
+	penalty = 0;
 	if(taskNum == MAX_TRIAL){
 		resetCondition();
 		LOG_MSG(("End of all tasks"));
@@ -382,8 +391,52 @@ void MyController::resetCondition()
 	robot->setWheelVelocity(0.0, 0.0);
 	//robot->setRotation(initialRotation);
 	//robot->setPosition(initialPosition);
+	robot->setJointVelocity("HEAD_JOINT0", 0.0, 0.0);
+	robot->setJointVelocity("HEAD_JOINT1", 0.0, 0.0);
+
+	robot->setJointVelocity("LARM_JOINT0", 0.0, 0.0);
+	robot->setJointVelocity("LARM_JOINT1", 0.0, 0.0);
+	robot->setJointVelocity("LARM_JOINT3", 0.0, 0.0);
+	robot->setJointVelocity("LARM_JOINT4", 0.0, 0.0);
+	robot->setJointVelocity("LARM_JOINT5", 0.0, 0.0);
+	robot->setJointVelocity("LARM_JOINT6", 0.0, 0.0);
+	robot->setJointVelocity("LARM_JOINT7", 0.0, 0.0);
+
+	robot->setJointVelocity("RARM_JOINT0", 0.0, 0.0);
 	robot->setJointVelocity("RARM_JOINT1", 0.0, 0.0);
+	robot->setJointVelocity("RARM_JOINT3", 0.0, 0.0);
 	robot->setJointVelocity("RARM_JOINT4", 0.0, 0.0);
+	robot->setJointVelocity("RARM_JOINT5", 0.0, 0.0);
+	robot->setJointVelocity("RARM_JOINT6", 0.0, 0.0);
+	robot->setJointVelocity("RARM_JOINT7", 0.0, 0.0);
+
+	robot->setJointVelocity("WAIST_JOINT0", 0.0, 0.0);
+	robot->setJointVelocity("WAIST_JOINT1", 0.0, 0.0);
+	robot->setJointVelocity("WAIST_JOINT2", 0.0, 0.0);
+
+	
+	robot->setJointAngle("HEAD_JOINT0", 0.0);
+	robot->setJointAngle("HEAD_JOINT1", 0.0);
+
+	robot->setJointAngle("LARM_JOINT0", 0.0);
+	robot->setJointAngle("LARM_JOINT1", 0.0);
+	robot->setJointAngle("LARM_JOINT3", 0.0);
+	robot->setJointAngle("LARM_JOINT4", 0.0);
+	robot->setJointAngle("LARM_JOINT5", 0.0);
+	robot->setJointAngle("LARM_JOINT6", 0.0);
+	robot->setJointAngle("LARM_JOINT7", 0.0);
+
+	robot->setJointAngle("RARM_JOINT0", 0.0);
+	robot->setJointAngle("RARM_JOINT1", 0.0);
+	robot->setJointAngle("RARM_JOINT3", 0.0);
+	robot->setJointAngle("RARM_JOINT4", 0.0);
+	robot->setJointAngle("RARM_JOINT5", 0.0);
+	robot->setJointAngle("RARM_JOINT6", 0.0);
+	robot->setJointAngle("RARM_JOINT7", 0.0);
+
+	robot->setJointAngle("WAIST_JOINT0", 0.0);
+	robot->setJointAngle("WAIST_JOINT1", 0.0);
+	robot->setJointAngle("WAIST_JOINT2", 0.0);
 	robot->setJointAngle("RARM_JOINT1", 0.0);
 	robot->setJointAngle("RARM_JOINT4", 0.0);
 

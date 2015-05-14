@@ -278,7 +278,7 @@ void MyController::onInit(InitEvent &evt)
 	}
 
 	reposObjects();
-
+	trialCount = 0;
 
 	// std::cout << "robot is in the circle? " << checkRobotFinished() << std::endl;
 
@@ -886,7 +886,7 @@ void MyController::performChange(int* indTab, int* indPosOnTable, Table* table, 
 void MyController::reposObjects()
 {
 	// Set random seed according to the number of trials. It provides the same random condition for all the competior
-	srand (trialCount);
+	srand (1);
 
 	for (std::map< std::string, std::vector<Target> >::iterator it = m_targets.begin(); it != m_targets.end(); ++it) {
 		std::vector<Table> vecTable = m_tables[it->first];
@@ -998,8 +998,10 @@ void MyController::reposObjects()
 
      if (grasping == true)
 		 {
-            CParts * parts = robot->getParts("LARM_LINK7");
-            parts->releaseObj();
+            CParts * lparts = robot->getParts("LARM_LINK7");
+            lparts->releaseObj();
+			CParts * rparts = robot->getParts("RARM_LINK7");
+			rparts->releaseObj();
             grasping = false;
 
 		 }
@@ -1008,20 +1010,52 @@ void MyController::reposObjects()
 		 Rotation rot;
 		 rot.setQuaternion(1, 0, 0, 0);
          robot->setRotation(rot);
-         robot->setJointVelocity("LARM_JOINT0", 0.0,0.0);
-         robot->setJointAngle("LARM_JOINT0", 0.0);
-		 robot->setJointVelocity("LARM_JOINT1", 0.0,0.0);
+		 robot->setJointVelocity("HEAD_JOINT0", 0.0, 0.0);
+		 robot->setJointVelocity("HEAD_JOINT1", 0.0, 0.0);
+
+		 robot->setJointVelocity("LARM_JOINT0", 0.0, 0.0);
+		 robot->setJointVelocity("LARM_JOINT1", 0.0, 0.0);
+		 robot->setJointVelocity("LARM_JOINT3", 0.0, 0.0);
+		 robot->setJointVelocity("LARM_JOINT4", 0.0, 0.0);
+		 robot->setJointVelocity("LARM_JOINT5", 0.0, 0.0);
+		 robot->setJointVelocity("LARM_JOINT6", 0.0, 0.0);
+		 robot->setJointVelocity("LARM_JOINT7", 0.0, 0.0);
+
+		 robot->setJointVelocity("RARM_JOINT0", 0.0, 0.0);
+		 robot->setJointVelocity("RARM_JOINT1", 0.0, 0.0);
+		 robot->setJointVelocity("RARM_JOINT3", 0.0, 0.0);
+		 robot->setJointVelocity("RARM_JOINT4", 0.0, 0.0);
+		 robot->setJointVelocity("RARM_JOINT5", 0.0, 0.0);
+		 robot->setJointVelocity("RARM_JOINT6", 0.0, 0.0);
+		 robot->setJointVelocity("RARM_JOINT7", 0.0, 0.0);
+
+		 robot->setJointVelocity("WAIST_JOINT0", 0.0, 0.0);
+		 robot->setJointVelocity("WAIST_JOINT1", 0.0, 0.0);
+		 robot->setJointVelocity("WAIST_JOINT2", 0.0, 0.0);
+
+
+		 robot->setJointAngle("HEAD_JOINT0", 0.0);
+		 robot->setJointAngle("HEAD_JOINT1", 0.0);
+
+		 robot->setJointAngle("LARM_JOINT0", 0.0);
 		 robot->setJointAngle("LARM_JOINT1", 0.0);
-		 robot->setJointVelocity("LARM_JOINT3", 0.0,0.0);
 		 robot->setJointAngle("LARM_JOINT3", 0.0);
-		 robot->setJointVelocity("LARM_JOINT4", 0.0,0.0);
 		 robot->setJointAngle("LARM_JOINT4", 0.0);
-		 robot->setJointVelocity("LARM_JOINT5", 0.0,0.0);
 		 robot->setJointAngle("LARM_JOINT5", 0.0);
-         robot->setJointVelocity("LARM_JOINT6", 0.0,0.0);
-         robot->setJointAngle("LARM_JOINT6", 0.0);
-         robot->setJointVelocity("LARM_JOINT7", 0.0,0.0);
-         robot->setJointAngle("LARM_JOINT7", 0.0);
+		 robot->setJointAngle("LARM_JOINT6", 0.0);
+		 robot->setJointAngle("LARM_JOINT7", 0.0);
+
+		 robot->setJointAngle("RARM_JOINT0", 0.0);
+		 robot->setJointAngle("RARM_JOINT1", 0.0);
+		 robot->setJointAngle("RARM_JOINT3", 0.0);
+		 robot->setJointAngle("RARM_JOINT4", 0.0);
+		 robot->setJointAngle("RARM_JOINT5", 0.0);
+		 robot->setJointAngle("RARM_JOINT6", 0.0);
+		 robot->setJointAngle("RARM_JOINT7", 0.0);
+
+		 robot->setJointAngle("WAIST_JOINT0", 0.0);
+		 robot->setJointAngle("WAIST_JOINT1", 0.0);
+		 robot->setJointAngle("WAIST_JOINT2", 0.0);
          
          trialCount++;
          std::cout << "trial count is  " << trialCount << std::endl;
