@@ -315,7 +315,7 @@ double MyController::onAction(ActionEvent &evt)
 					addx += dx;
 					addz += dz;
 					usleep(sleeptime);
-					my->setPosition(pos.x()+addx, HEIGHT[i], pos.z()+addz);
+					my->setPosition(pos.x()+addx, HEIGHT[j], pos.z()+addz);
 					my->setJointAngle("LARM_JOINT1", DEG2RAD(LARM_JOINT1[j]));
 					my->setJointAngle("LARM_JOINT3", DEG2RAD(LARM_JOINT3[j]));
 					my->setJointAngle("RARM_JOINT1", DEG2RAD(RARM_JOINT1[j]));
@@ -333,7 +333,7 @@ double MyController::onAction(ActionEvent &evt)
 					addx += dx;
 					addz += dz;
 					usleep(sleeptime);
-					my->setPosition(pos.x()+addx, HEIGHT[i], pos.z()+addz);
+					my->setPosition(pos.x()+addx, HEIGHT[j], pos.z()+addz);
 					my->setJointAngle("RARM_JOINT1", DEG2RAD(LARM_JOINT1[j]));
 					my->setJointAngle("RARM_JOINT3", DEG2RAD(-LARM_JOINT3[j]));
 					my->setJointAngle("LARM_JOINT1", DEG2RAD(RARM_JOINT1[j]));
