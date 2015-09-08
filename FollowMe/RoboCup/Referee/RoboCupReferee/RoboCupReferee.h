@@ -1,36 +1,38 @@
 #pragma once
 #include "stdafx.h"
 #include <fstream>
+#include <vector>
 
-std::ofstream ofs("log.csv",std::ios::app);
+std::ofstream ofs("log.csv", std::ios::app);
+std::vector<int> tmp_total;
+std::vector<int> penalty;
 
+public ref class Referee : public sigverse::SIGService
+{
 
-public ref class Referee : public sigverse::SIGService  
-{  
-	
 public:
 	Referee(System::String^ name) : SIGService(name)
 	{
 		remainingTime = "";
 		tmp_score = gcnew System::Collections::Generic::List<int>();
-		tmp_msg  = gcnew System::Collections::Generic::List<System::String^>();
+		tmp_msg = gcnew System::Collections::Generic::List<System::String^>();
 		m_total = 0;
 		m_score = 0;
-		tmp_total = 0;
+		tmp_total.push_back(0);
 		trialCount = 0;
 		numberOfRepetition = 0;
-		penalty = 0;
+		penalty.push_back(0);
 		writeLog = true;
 	};
 	~Referee();
 	int getScore();
-	int getTmpTotal();
+	std::vector<int> getTmpTotal();
 	int getScoreSize();
 	int getMessageSize();
 	int getTotal();
 	int getTrialCount();
 	int getNumberOfRepetition();
-	int getPenalty();
+	std::vector<int> getPenalty();
 	void setTotal(int total){ m_total = total; }
 	System::String^ getMessage();
 	System::String^ getRemainingTime();
@@ -38,11 +40,9 @@ public:
 	virtual double onAction() override;
 	int m_total;
 	int m_score;
-	int tmp_total;
 	int trialCount;
 	int numberOfRepetition;
-	int penalty;
-	
+
 private:
 	System::Collections::Generic::List<int>^ tmp_score;
 	System::Collections::Generic::List<System::String^>^ tmp_msg;
@@ -81,7 +81,7 @@ int Referee::getTotal()
 	
 }
 
-int Referee::getTmpTotal()
+std::vector<int> Referee::getTmpTotal()
 {
 	return tmp_total;
 }
@@ -94,7 +94,7 @@ int Referee::getNumberOfRepetition()
 {
 	return numberOfRepetition;
 }
-int Referee::getPenalty()
+std::vector<int> Referee::getPenalty()
 {
 	return penalty;
 }
@@ -137,26 +137,27 @@ void Referee::onRecvMsg(sigverse::RecvMsgEvent ^evt)
 	// split
 	array<System::String^>^ split_msg = msg->Split(SepString, System::StringSplitOptions::None);
 	
+	writeLog = true;
+
 	if(split_msg[0] == "RoboCupReferee"){
 		// name
 		if(split_msg[1] == "time"){
 			remainingTime = split_msg[2];
+			writeLog = false;
 		}
 		else if (split_msg[1] == "start"){
 			tmp_msg->Add(split_msg[1]);
 		}
 		else if (split_msg[1] == "end"){
 			tmp_msg->Add(split_msg[1]);
-			int score = tmp_total + penalty;
-			if (score > 0){
-				m_total += score;
-			}
-			tmp_total = 0;
-			penalty = 0;
 		}
 		else if (split_msg[1] == "trial"){
 			trialCount = int::Parse(split_msg[2]);
 			numberOfRepetition = int::Parse(split_msg[3]);
+			while (tmp_total.size() < numberOfRepetition){
+				tmp_total.push_back(0);
+				penalty.push_back(0);
+			}
 		}
 		else{
 			tmp_msg->Add(split_msg[1]);		
@@ -164,19 +165,14 @@ void Referee::onRecvMsg(sigverse::RecvMsgEvent ^evt)
 			int score = int::Parse(split_msg[2]);
 			tmp_score->Add(score);
 			if (score >= 0){
-				tmp_total += score;
+				tmp_total[trialCount - 1] += score;
 			}
 			else{
-				penalty += score;
+				penalty[trialCount - 1] += score;
 			}
 		}
 	}
-	writeLog = true;
-	if (split_msg[0] == "RoboCupReferee"){
-		if (split_msg[1] == "time"){
-			writeLog = false;
-		}
-	}
+
 	if (writeLog == true){
 		std::string tmp = sysString2stdStrng(remainingTime);
 		ofs << tmp.c_str() << ",";

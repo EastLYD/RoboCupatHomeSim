@@ -2,6 +2,8 @@
 
 #include "RoboCupReferee.h"
 
+#define SCORE_RATE 0.5
+
 namespace RoboCupReferee {
 
 	using namespace System;
@@ -479,83 +481,96 @@ namespace RoboCupReferee {
 				m_srv->setAutoExitProc(true);
 				this->connect->Enabled = false;
 				this->button1->Enabled = true;
-				m_srv->m_total = int::Parse(this->textBox1->Text);
 				m_srv->trialCount = int::Parse(this->textBox3->Text);
 				m_srv->numberOfRepetition = int::Parse(this->textBox4->Text);
 			}
 		}
 	}
 	private: System::Void timer1_Tick(System::Object^  sender, System::EventArgs^  e) {
-		if (m_srv != nullptr){
-			m_srv->checkRecvData(100);
-			int ssize = m_srv->getScoreSize();
-			// メッセージが来た
-			for (int i = 0; i < ssize; i++){
-				int score = m_srv->getScore();
-				System::String^ msg = m_srv->getMessage();
-				System::String^ listitem_msg = msg;// + "                    " + score.ToString();
-				System::String^ listitem_score = score.ToString();
-				this->listBox1->Items->Add(listitem_msg);
-				this->listBox2->Items->Add(listitem_score);
-				if (checkBox1->Checked == true){
-					this->listBox1->SelectedIndex = listBox1->Items->Count - 1;
-					this->listBox2->SelectedIndex = listBox2->Items->Count - 1;
-					this->listBox1->ClearSelected();
-					this->listBox2->ClearSelected();
-				}
-			}
-			//commentを更新
-			int msize = m_srv->getMessageSize();
-			for (int i = 0; i < msize; i++){
-				System::String^ comment = m_srv->getMessage();
-				this->listBox1->Items->Add(comment);
-				this->listBox2->Items->Add("");
-				if (checkBox1->Checked == true){
-					this->listBox1->SelectedIndex = listBox1->Items->Count - 1;
-					this->listBox2->SelectedIndex = listBox2->Items->Count - 1;
-					this->listBox1->ClearSelected();
-					this->listBox2->ClearSelected();
-				}
-			}
-			if (listBox1->Focused == true){
-				this->listBox2->SelectedIndex = this->listBox1->SelectedIndex;
-			}
-			else if (listBox2->Focused == true){
-				this->listBox1->SelectedIndex = this->listBox2->SelectedIndex;
-			}
-			//試行を繰り返す回数と現在の試行回数を更新
-			int trialCount = m_srv->getTrialCount();
-			this->textBox3->Text = trialCount.ToString();
-			int numberOfRepetition = m_srv->getNumberOfRepetition();
-			this->textBox4->Text = numberOfRepetition.ToString();
+				 if (m_srv != nullptr){
+					 m_srv->checkRecvData(100);
+					 int ssize = m_srv->getScoreSize();
+					 // メッセージが来た
+					 for (int i = 0; i < ssize; i++){
+						 int score = m_srv->getScore();
+						 System::String^ msg = m_srv->getMessage();
+						 System::String^ listitem_msg = msg;// + "                    " + score.ToString();
+						 System::String^ listitem_score = score.ToString();
+						 this->listBox1->Items->Add(listitem_msg);
+						 this->listBox2->Items->Add(listitem_score);
+						 if (checkBox1->Checked == true){
+							 this->listBox1->SelectedIndex = listBox1->Items->Count - 1;
+							 this->listBox2->SelectedIndex = listBox2->Items->Count - 1;
+							 this->listBox1->ClearSelected();
+							 this->listBox2->ClearSelected();
+						 }
+					 }
 
-			//TotalとScoreを更新
-			int total = m_srv->getTotal();
-			int tmpTotal = m_srv->getTmpTotal();
-			if (radioButton2->Checked == true){
-				total /= 2;
-				tmpTotal /= 2;
-			}
-			else if (radioButton3->Checked == true){
-				total /= 4;
-				tmpTotal /= 4;
-			}
-			int penalty = m_srv->getPenalty();
-			tmpTotal += penalty;
-			if (tmpTotal > 0){
-				total += tmpTotal;
-			}
-			this->textBox1->Text = total.ToString();
-			this->textBox5->Text = tmpTotal.ToString();
 
-			System::String^ msg = m_srv->getRemainingTime();
-			if (msg != ""){
-				this->textBox2->Text = msg;
-			}
-			else{
-				this->textBox2->Text = "00:00";
-			}
-		}
+					 //commentを更新
+					 int msize = m_srv->getMessageSize();
+					 for (int i = 0; i < msize; i++){
+						 System::String^ comment = m_srv->getMessage();
+						 this->listBox1->Items->Add(comment);
+						 this->listBox2->Items->Add("");
+						 if (checkBox1->Checked == true){
+							 this->listBox1->SelectedIndex = listBox1->Items->Count - 1;
+							 this->listBox2->SelectedIndex = listBox2->Items->Count - 1;
+							 this->listBox1->ClearSelected();
+							 this->listBox2->ClearSelected();
+						 }
+					 }
+					 if (listBox1->Focused == true){
+						 this->listBox2->SelectedIndex = this->listBox1->SelectedIndex;
+					 }
+					 else if (listBox2->Focused == true){
+						 this->listBox1->SelectedIndex = this->listBox2->SelectedIndex;
+					 }
+
+
+					 //試行を繰り返す回数と現在の試行回数を更新
+					 int trialCount = m_srv->getTrialCount();
+					 this->textBox3->Text = trialCount.ToString();
+					 int numberOfRepetition = m_srv->getNumberOfRepetition();
+					 this->textBox4->Text = numberOfRepetition.ToString();
+
+
+					 //TotalとScoreを更新
+					 double scoreRate = 1.0;
+					 if (radioButton2->Checked == true){
+						 scoreRate *= SCORE_RATE;
+					 }
+					 else if (radioButton3->Checked == true){
+						 scoreRate *= SCORE_RATE * SCORE_RATE;
+					 }
+					 std::vector<int> penalty = m_srv->getPenalty();
+					 std::vector<int> tmpTotal = m_srv->getTmpTotal();
+
+					 double score = 0;
+					 if (0 < trialCount && trialCount <= tmpTotal.size()){
+						 score = tmpTotal[trialCount - 1] * scoreRate + penalty[trialCount - 1];
+					 }
+					 this->textBox5->Text = score.ToString();
+
+					 double total = 0;
+					 for (int i = 0; i < trialCount; i++){
+						 score = tmpTotal[i] * scoreRate + penalty[i];
+						 if (score < 0) score = 0;
+						 total += score;
+					 }
+
+					 this->textBox1->Text = total.ToString();
+
+
+					 //Timeを更新
+					 System::String^ msg = m_srv->getRemainingTime();
+					 if (msg != ""){
+						 this->textBox2->Text = msg;
+					 }
+					 else{
+						 this->textBox2->Text = "00:00";
+					 }
+				 }
 	}
 	private: System::Void button1_Click_2(System::Object^  sender, System::EventArgs^  e) {
 		m_srv->disconnect();

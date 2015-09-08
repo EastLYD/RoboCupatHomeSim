@@ -1004,66 +1004,65 @@ void MyController::reposObjects()
 	//reset robot position
 	RobotObj* robot = getRobotObj(roboName.c_str());
 
-     if (grasping == true)
-		 {
+     if (grasping == true){
             CParts * lparts = robot->getParts("LARM_LINK7");
             lparts->releaseObj();
 			CParts * rparts = robot->getParts("RARM_LINK7");
 			rparts->releaseObj();
             grasping = false;
 
-		 }
-		 robot->setWheelVelocity(0.0,0.0);
-		 robot->setPosition(robotInitialPos);
-		 Rotation rot;
-		 rot.setQuaternion(1, 0, 0, 0);
-         robot->setRotation(rot);
-		 robot->setJointVelocity("HEAD_JOINT0", 0.0, 0.0);
-		 robot->setJointVelocity("HEAD_JOINT1", 0.0, 0.0);
+	}
+	robot->setWheelVelocity(0.0,0.0);
+	robot->setPosition(robotInitialPos);
+	Rotation rot;
+	rot.setQuaternion(1, 0, 0, 0);
+    robot->setRotation(rot);
+	robot->setJointVelocity("HEAD_JOINT0", 0.0, 0.0);
+	robot->setJointVelocity("HEAD_JOINT1", 0.0, 0.0);
 
-		 robot->setJointVelocity("LARM_JOINT0", 0.0, 0.0);
-		 robot->setJointVelocity("LARM_JOINT1", 0.0, 0.0);
-		 robot->setJointVelocity("LARM_JOINT3", 0.0, 0.0);
-		 robot->setJointVelocity("LARM_JOINT4", 0.0, 0.0);
-		 robot->setJointVelocity("LARM_JOINT5", 0.0, 0.0);
-		 robot->setJointVelocity("LARM_JOINT6", 0.0, 0.0);
-		 robot->setJointVelocity("LARM_JOINT7", 0.0, 0.0);
+	robot->setJointVelocity("LARM_JOINT0", 0.0, 0.0);
+	robot->setJointVelocity("LARM_JOINT1", 0.0, 0.0);
+	robot->setJointVelocity("LARM_JOINT3", 0.0, 0.0);
+	robot->setJointVelocity("LARM_JOINT4", 0.0, 0.0);
+	robot->setJointVelocity("LARM_JOINT5", 0.0, 0.0);
+	robot->setJointVelocity("LARM_JOINT6", 0.0, 0.0);
+	robot->setJointVelocity("LARM_JOINT7", 0.0, 0.0);
 
-		 robot->setJointVelocity("RARM_JOINT0", 0.0, 0.0);
-		 robot->setJointVelocity("RARM_JOINT1", 0.0, 0.0);
-		 robot->setJointVelocity("RARM_JOINT3", 0.0, 0.0);
-		 robot->setJointVelocity("RARM_JOINT4", 0.0, 0.0);
-		 robot->setJointVelocity("RARM_JOINT5", 0.0, 0.0);
-		 robot->setJointVelocity("RARM_JOINT6", 0.0, 0.0);
-		 robot->setJointVelocity("RARM_JOINT7", 0.0, 0.0);
+	robot->setJointVelocity("RARM_JOINT0", 0.0, 0.0);
+	robot->setJointVelocity("RARM_JOINT1", 0.0, 0.0);
+	robot->setJointVelocity("RARM_JOINT3", 0.0, 0.0);
+	robot->setJointVelocity("RARM_JOINT4", 0.0, 0.0);
+	robot->setJointVelocity("RARM_JOINT5", 0.0, 0.0);
+	robot->setJointVelocity("RARM_JOINT6", 0.0, 0.0);
+	robot->setJointVelocity("RARM_JOINT7", 0.0, 0.0);
 
-		 robot->setJointVelocity("WAIST_JOINT0", 0.0, 0.0);
-		 robot->setJointVelocity("WAIST_JOINT1", 0.0, 0.0);
-		 robot->setJointVelocity("WAIST_JOINT2", 0.0, 0.0);
+	robot->setJointVelocity("WAIST_JOINT0", 0.0, 0.0);
+	robot->setJointVelocity("WAIST_JOINT1", 0.0, 0.0);
+	robot->setJointVelocity("WAIST_JOINT2", 0.0, 0.0);
 
 
-		 robot->setJointAngle("HEAD_JOINT0", 0.0);
-		 robot->setJointAngle("HEAD_JOINT1", 0.0);
+	robot->setJointAngle("HEAD_JOINT0", 0.0);
+	robot->setJointAngle("HEAD_JOINT1", 0.0);
 
-		 robot->setJointAngle("LARM_JOINT0", 0.0);
-		 robot->setJointAngle("LARM_JOINT1", 0.0);
-		 robot->setJointAngle("LARM_JOINT3", 0.0);
-		 robot->setJointAngle("LARM_JOINT4", 0.0);
-		 robot->setJointAngle("LARM_JOINT5", 0.0);
-		 robot->setJointAngle("LARM_JOINT6", 0.0);
-		 robot->setJointAngle("LARM_JOINT7", 0.0);
+	robot->setJointAngle("LARM_JOINT0", 0.0);
+	robot->setJointAngle("LARM_JOINT1", 0.0);
+	robot->setJointAngle("LARM_JOINT3", 0.0);
+	robot->setJointAngle("LARM_JOINT4", 0.0);
+	robot->setJointAngle("LARM_JOINT5", 0.0);
+	robot->setJointAngle("LARM_JOINT6", 0.0);
+	robot->setJointAngle("LARM_JOINT7", 0.0);
 
-		 robot->setJointAngle("RARM_JOINT0", 0.0);
-		 robot->setJointAngle("RARM_JOINT1", 0.0);
-		 robot->setJointAngle("RARM_JOINT3", 0.0);
-		 robot->setJointAngle("RARM_JOINT4", 0.0);
-		 robot->setJointAngle("RARM_JOINT5", 0.0);
-		 robot->setJointAngle("RARM_JOINT6", 0.0);
-		 robot->setJointAngle("RARM_JOINT7", 0.0);
+	robot->setJointAngle("RARM_JOINT0", 0.0);
+	robot->setJointAngle("RARM_JOINT1", 0.0);
+	robot->setJointAngle("RARM_JOINT3", 0.0);
+	robot->setJointAngle("RARM_JOINT4", 0.0);
+	robot->setJointAngle("RARM_JOINT5", 0.0);
+	robot->setJointAngle("RARM_JOINT6", 0.0);
+	robot->setJointAngle("RARM_JOINT7", 0.0);
 
-		 robot->setJointAngle("WAIST_JOINT0", 0.0);
-		 robot->setJointAngle("WAIST_JOINT1", 0.0);
-		 robot->setJointAngle("WAIST_JOINT2", 0.0);
+	robot->setJointAngle("WAIST_JOINT0", 0.0);
+	robot->setJointAngle("WAIST_JOINT1", 0.0);
+	robot->setJointAngle("WAIST_JOINT2", 0.0);
          
 }
 

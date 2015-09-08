@@ -379,6 +379,9 @@ void MyController::breakTask()
 		resetCondition();
 		LOG_MSG(("End of all tasks"));
 		broadcastMsg("End of all tasks");
+		if (m_ref != NULL) {
+			m_ref->sendMsgToSrv("RoboCupReferee/time/- END -");
+		}
 	}
 }
 
