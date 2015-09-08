@@ -95,6 +95,7 @@ namespace RoboCupReferee {
 	private: System::Windows::Forms::RadioButton^  radioButton3;
 	private: System::Windows::Forms::TextBox^  textBox5;
 	private: System::Windows::Forms::Label^  label8;
+	private: System::Windows::Forms::CheckBox^  checkBox1;
 			 bool m_connected;
 			 //srv->connect("socio4.iir.nii.ac.jp", 9333);
 
@@ -129,6 +130,7 @@ namespace RoboCupReferee {
 				 this->radioButton3 = (gcnew System::Windows::Forms::RadioButton());
 				 this->textBox5 = (gcnew System::Windows::Forms::TextBox());
 				 this->label8 = (gcnew System::Windows::Forms::Label());
+				 this->checkBox1 = (gcnew System::Windows::Forms::CheckBox());
 				 this->SuspendLayout();
 				 // 
 				 // label1
@@ -136,10 +138,9 @@ namespace RoboCupReferee {
 				 this->label1->AutoSize = true;
 				 this->label1->Font = (gcnew System::Drawing::Font(L"HGSｺﾞｼｯｸE", 15.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 					 static_cast<System::Byte>(128)));
-				 this->label1->Location = System::Drawing::Point(316, 416);
-				 this->label1->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
+				 this->label1->Location = System::Drawing::Point(237, 333);
 				 this->label1->Name = L"label1";
-				 this->label1->Size = System::Drawing::Size(71, 27);
+				 this->label1->Size = System::Drawing::Size(57, 21);
 				 this->label1->TabIndex = 0;
 				 this->label1->Text = L"Total";
 				 this->label1->Click += gcnew System::EventHandler(this, &Form1::label1_Click);
@@ -149,10 +150,9 @@ namespace RoboCupReferee {
 				 this->connect->Enabled = false;
 				 this->connect->Font = (gcnew System::Drawing::Font(L"HGPｺﾞｼｯｸE", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 					 static_cast<System::Byte>(128)));
-				 this->connect->Location = System::Drawing::Point(1, 515);
-				 this->connect->Margin = System::Windows::Forms::Padding(4);
+				 this->connect->Location = System::Drawing::Point(1, 412);
 				 this->connect->Name = L"connect";
-				 this->connect->Size = System::Drawing::Size(118, 42);
+				 this->connect->Size = System::Drawing::Size(88, 34);
 				 this->connect->TabIndex = 1;
 				 this->connect->Text = L"Connect";
 				 this->connect->UseVisualStyleBackColor = true;
@@ -167,10 +167,9 @@ namespace RoboCupReferee {
 				 // button1
 				 // 
 				 this->button1->Font = (gcnew System::Drawing::Font(L"HGPｺﾞｼｯｸE", 14.25F));
-				 this->button1->Location = System::Drawing::Point(121, 515);
-				 this->button1->Margin = System::Windows::Forms::Padding(4);
+				 this->button1->Location = System::Drawing::Point(91, 412);
 				 this->button1->Name = L"button1";
-				 this->button1->Size = System::Drawing::Size(157, 42);
+				 this->button1->Size = System::Drawing::Size(118, 34);
 				 this->button1->TabIndex = 2;
 				 this->button1->Text = L"Disconnect";
 				 this->button1->UseVisualStyleBackColor = true;
@@ -180,10 +179,9 @@ namespace RoboCupReferee {
 				 // 
 				 this->button2->Font = (gcnew System::Drawing::Font(L"HGPｺﾞｼｯｸE", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 					 static_cast<System::Byte>(128)));
-				 this->button2->Location = System::Drawing::Point(399, 515);
-				 this->button2->Margin = System::Windows::Forms::Padding(4);
+				 this->button2->Location = System::Drawing::Point(299, 412);
 				 this->button2->Name = L"button2";
-				 this->button2->Size = System::Drawing::Size(120, 42);
+				 this->button2->Size = System::Drawing::Size(90, 34);
 				 this->button2->TabIndex = 3;
 				 this->button2->Text = L"Initialize";
 				 this->button2->UseVisualStyleBackColor = true;
@@ -197,12 +195,11 @@ namespace RoboCupReferee {
 				 this->listBox1->ForeColor = System::Drawing::SystemColors::Menu;
 				 this->listBox1->FormattingEnabled = true;
 				 this->listBox1->HorizontalScrollbar = true;
-				 this->listBox1->ItemHeight = 26;
-				 this->listBox1->Location = System::Drawing::Point(8, 56);
-				 this->listBox1->Margin = System::Windows::Forms::Padding(4);
+				 this->listBox1->ItemHeight = 21;
+				 this->listBox1->Location = System::Drawing::Point(6, 45);
 				 this->listBox1->Name = L"listBox1";
 				 this->listBox1->RightToLeft = System::Windows::Forms::RightToLeft::No;
-				 this->listBox1->Size = System::Drawing::Size(384, 238);
+				 this->listBox1->Size = System::Drawing::Size(289, 172);
 				 this->listBox1->TabIndex = 4;
 				 this->listBox1->SelectedIndexChanged += gcnew System::EventHandler(this, &Form1::listBox1_SelectedIndexChanged);
 				 // 
@@ -211,10 +208,9 @@ namespace RoboCupReferee {
 				 this->label2->AutoSize = true;
 				 this->label2->Font = (gcnew System::Drawing::Font(L"HGSｺﾞｼｯｸE", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 					 static_cast<System::Byte>(128)));
-				 this->label2->Location = System::Drawing::Point(390, 32);
-				 this->label2->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
+				 this->label2->Location = System::Drawing::Point(292, 26);
 				 this->label2->Name = L"label2";
-				 this->label2->Size = System::Drawing::Size(56, 20);
+				 this->label2->Size = System::Drawing::Size(46, 16);
 				 this->label2->TabIndex = 5;
 				 this->label2->Text = L"Score";
 				 // 
@@ -224,11 +220,10 @@ namespace RoboCupReferee {
 				 this->textBox1->Font = (gcnew System::Drawing::Font(L"MS UI Gothic", 18, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 					 static_cast<System::Byte>(128)));
 				 this->textBox1->ForeColor = System::Drawing::SystemColors::InactiveBorder;
-				 this->textBox1->Location = System::Drawing::Point(394, 409);
-				 this->textBox1->Margin = System::Windows::Forms::Padding(4);
+				 this->textBox1->Location = System::Drawing::Point(296, 327);
 				 this->textBox1->Name = L"textBox1";
 				 this->textBox1->RightToLeft = System::Windows::Forms::RightToLeft::No;
-				 this->textBox1->Size = System::Drawing::Size(113, 37);
+				 this->textBox1->Size = System::Drawing::Size(86, 31);
 				 this->textBox1->TabIndex = 6;
 				 this->textBox1->Text = L"0";
 				 this->textBox1->TextAlign = System::Windows::Forms::HorizontalAlignment::Right;
@@ -241,11 +236,10 @@ namespace RoboCupReferee {
 				 this->listBox2->ForeColor = System::Drawing::SystemColors::Menu;
 				 this->listBox2->FormattingEnabled = true;
 				 this->listBox2->HorizontalScrollbar = true;
-				 this->listBox2->ItemHeight = 26;
-				 this->listBox2->Location = System::Drawing::Point(385, 56);
-				 this->listBox2->Margin = System::Windows::Forms::Padding(4);
+				 this->listBox2->ItemHeight = 21;
+				 this->listBox2->Location = System::Drawing::Point(289, 45);
 				 this->listBox2->Name = L"listBox2";
-				 this->listBox2->Size = System::Drawing::Size(127, 238);
+				 this->listBox2->Size = System::Drawing::Size(96, 172);
 				 this->listBox2->TabIndex = 7;
 				 // 
 				 // label3
@@ -253,10 +247,9 @@ namespace RoboCupReferee {
 				 this->label3->AutoSize = true;
 				 this->label3->Font = (gcnew System::Drawing::Font(L"HGSｺﾞｼｯｸE", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 					 static_cast<System::Byte>(128)));
-				 this->label3->Location = System::Drawing::Point(17, 32);
-				 this->label3->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
+				 this->label3->Location = System::Drawing::Point(13, 26);
 				 this->label3->Name = L"label3";
-				 this->label3->Size = System::Drawing::Size(87, 20);
+				 this->label3->Size = System::Drawing::Size(71, 16);
 				 this->label3->TabIndex = 8;
 				 this->label3->Text = L"Comment";
 				 // 
@@ -266,11 +259,10 @@ namespace RoboCupReferee {
 				 this->textBox2->Font = (gcnew System::Drawing::Font(L"MS UI Gothic", 18, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 					 static_cast<System::Byte>(128)));
 				 this->textBox2->ForeColor = System::Drawing::SystemColors::InactiveBorder;
-				 this->textBox2->Location = System::Drawing::Point(222, 347);
-				 this->textBox2->Margin = System::Windows::Forms::Padding(4);
+				 this->textBox2->Location = System::Drawing::Point(166, 278);
 				 this->textBox2->Name = L"textBox2";
 				 this->textBox2->RightToLeft = System::Windows::Forms::RightToLeft::No;
-				 this->textBox2->Size = System::Drawing::Size(86, 37);
+				 this->textBox2->Size = System::Drawing::Size(66, 31);
 				 this->textBox2->TabIndex = 6;
 				 this->textBox2->Text = L"00:00";
 				 this->textBox2->TextAlign = System::Windows::Forms::HorizontalAlignment::Right;
@@ -280,10 +272,9 @@ namespace RoboCupReferee {
 				 this->label4->AutoSize = true;
 				 this->label4->Font = (gcnew System::Drawing::Font(L"HGSｺﾞｼｯｸE", 15.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 					 static_cast<System::Byte>(128)));
-				 this->label4->Location = System::Drawing::Point(148, 354);
-				 this->label4->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
+				 this->label4->Location = System::Drawing::Point(111, 283);
 				 this->label4->Name = L"label4";
-				 this->label4->Size = System::Drawing::Size(66, 27);
+				 this->label4->Size = System::Drawing::Size(53, 21);
 				 this->label4->TabIndex = 0;
 				 this->label4->Text = L"Time";
 				 this->label4->Click += gcnew System::EventHandler(this, &Form1::label1_Click);
@@ -294,11 +285,10 @@ namespace RoboCupReferee {
 				 this->textBox3->Font = (gcnew System::Drawing::Font(L"MS UI Gothic", 18, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 					 static_cast<System::Byte>(128)));
 				 this->textBox3->ForeColor = System::Drawing::SystemColors::InactiveBorder;
-				 this->textBox3->Location = System::Drawing::Point(348, 463);
-				 this->textBox3->Margin = System::Windows::Forms::Padding(4);
+				 this->textBox3->Location = System::Drawing::Point(261, 370);
 				 this->textBox3->Name = L"textBox3";
 				 this->textBox3->RightToLeft = System::Windows::Forms::RightToLeft::No;
-				 this->textBox3->Size = System::Drawing::Size(57, 37);
+				 this->textBox3->Size = System::Drawing::Size(44, 31);
 				 this->textBox3->TabIndex = 10;
 				 this->textBox3->Text = L"0";
 				 this->textBox3->TextAlign = System::Windows::Forms::HorizontalAlignment::Right;
@@ -308,10 +298,9 @@ namespace RoboCupReferee {
 				 this->label5->AutoSize = true;
 				 this->label5->Font = (gcnew System::Drawing::Font(L"HGSｺﾞｼｯｸE", 15.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 					 static_cast<System::Byte>(128)));
-				 this->label5->Location = System::Drawing::Point(135, 470);
-				 this->label5->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
+				 this->label5->Location = System::Drawing::Point(101, 376);
 				 this->label5->Name = L"label5";
-				 this->label5->Size = System::Drawing::Size(205, 27);
+				 this->label5->Size = System::Drawing::Size(161, 21);
 				 this->label5->TabIndex = 9;
 				 this->label5->Text = L"Number of Trials";
 				 // 
@@ -320,10 +309,9 @@ namespace RoboCupReferee {
 				 this->label6->AutoSize = true;
 				 this->label6->Font = (gcnew System::Drawing::Font(L"HGSｺﾞｼｯｸE", 20.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 					 static_cast<System::Byte>(128)));
-				 this->label6->Location = System::Drawing::Point(412, 466);
-				 this->label6->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
+				 this->label6->Location = System::Drawing::Point(309, 373);
 				 this->label6->Name = L"label6";
-				 this->label6->Size = System::Drawing::Size(33, 34);
+				 this->label6->Size = System::Drawing::Size(27, 27);
 				 this->label6->TabIndex = 11;
 				 this->label6->Text = L"/";
 				 this->label6->Click += gcnew System::EventHandler(this, &Form1::label6_Click);
@@ -334,11 +322,10 @@ namespace RoboCupReferee {
 				 this->textBox4->Font = (gcnew System::Drawing::Font(L"MS UI Gothic", 18, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 					 static_cast<System::Byte>(128)));
 				 this->textBox4->ForeColor = System::Drawing::SystemColors::InactiveBorder;
-				 this->textBox4->Location = System::Drawing::Point(450, 463);
-				 this->textBox4->Margin = System::Windows::Forms::Padding(4);
+				 this->textBox4->Location = System::Drawing::Point(338, 370);
 				 this->textBox4->Name = L"textBox4";
 				 this->textBox4->RightToLeft = System::Windows::Forms::RightToLeft::No;
-				 this->textBox4->Size = System::Drawing::Size(57, 37);
+				 this->textBox4->Size = System::Drawing::Size(44, 31);
 				 this->textBox4->TabIndex = 12;
 				 this->textBox4->Text = L"0";
 				 this->textBox4->TextAlign = System::Windows::Forms::HorizontalAlignment::Right;
@@ -347,10 +334,9 @@ namespace RoboCupReferee {
 				 // 
 				 this->button3->Font = (gcnew System::Drawing::Font(L"HGPｺﾞｼｯｸE", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 					 static_cast<System::Byte>(128)));
-				 this->button3->Location = System::Drawing::Point(281, 515);
-				 this->button3->Margin = System::Windows::Forms::Padding(4);
+				 this->button3->Location = System::Drawing::Point(211, 412);
 				 this->button3->Name = L"button3";
-				 this->button3->Size = System::Drawing::Size(117, 42);
+				 this->button3->Size = System::Drawing::Size(88, 34);
 				 this->button3->TabIndex = 13;
 				 this->button3->Text = L"Give Up";
 				 this->button3->UseVisualStyleBackColor = true;
@@ -361,10 +347,9 @@ namespace RoboCupReferee {
 				 this->label7->AutoSize = true;
 				 this->label7->Font = (gcnew System::Drawing::Font(L"HGSｺﾞｼｯｸE", 15.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 					 static_cast<System::Byte>(128)));
-				 this->label7->Location = System::Drawing::Point(1, 312);
-				 this->label7->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
+				 this->label7->Location = System::Drawing::Point(1, 250);
 				 this->label7->Name = L"label7";
-				 this->label7->Size = System::Drawing::Size(290, 27);
+				 this->label7->Size = System::Drawing::Size(227, 21);
 				 this->label7->TabIndex = 14;
 				 this->label7->Text = L"Use of special functions";
 				 // 
@@ -372,39 +357,33 @@ namespace RoboCupReferee {
 				 // 
 				 this->radioButton1->AutoSize = true;
 				 this->radioButton1->Checked = true;
-				 this->radioButton1->Location = System::Drawing::Point(315, 320);
-				 this->radioButton1->Margin = System::Windows::Forms::Padding(4);
+				 this->radioButton1->Location = System::Drawing::Point(236, 256);
 				 this->radioButton1->Name = L"radioButton1";
-				 this->radioButton1->Size = System::Drawing::Size(62, 19);
+				 this->radioButton1->Size = System::Drawing::Size(49, 16);
 				 this->radioButton1->TabIndex = 15;
 				 this->radioButton1->TabStop = true;
 				 this->radioButton1->Text = L"None";
 				 this->radioButton1->UseVisualStyleBackColor = true;
-				 this->radioButton1->CheckedChanged += gcnew System::EventHandler(this, &Form1::radioButton1_CheckedChanged);
 				 // 
 				 // radioButton2
 				 // 
 				 this->radioButton2->AutoSize = true;
-				 this->radioButton2->Location = System::Drawing::Point(381, 320);
-				 this->radioButton2->Margin = System::Windows::Forms::Padding(4);
+				 this->radioButton2->Location = System::Drawing::Point(286, 256);
 				 this->radioButton2->Name = L"radioButton2";
-				 this->radioButton2->Size = System::Drawing::Size(65, 19);
+				 this->radioButton2->Size = System::Drawing::Size(53, 16);
 				 this->radioButton2->TabIndex = 16;
 				 this->radioButton2->Text = L"Either";
 				 this->radioButton2->UseVisualStyleBackColor = true;
-				 this->radioButton2->CheckedChanged += gcnew System::EventHandler(this, &Form1::radioButton2_CheckedChanged);
 				 // 
 				 // radioButton3
 				 // 
 				 this->radioButton3->AutoSize = true;
-				 this->radioButton3->Location = System::Drawing::Point(451, 320);
-				 this->radioButton3->Margin = System::Windows::Forms::Padding(4);
+				 this->radioButton3->Location = System::Drawing::Point(338, 256);
 				 this->radioButton3->Name = L"radioButton3";
-				 this->radioButton3->Size = System::Drawing::Size(59, 19);
+				 this->radioButton3->Size = System::Drawing::Size(47, 16);
 				 this->radioButton3->TabIndex = 17;
 				 this->radioButton3->Text = L"Both";
 				 this->radioButton3->UseVisualStyleBackColor = true;
-				 this->radioButton3->CheckedChanged += gcnew System::EventHandler(this, &Form1::radioButton3_CheckedChanged);
 				 // 
 				 // textBox5
 				 // 
@@ -412,11 +391,10 @@ namespace RoboCupReferee {
 				 this->textBox5->Font = (gcnew System::Drawing::Font(L"MS UI Gothic", 18, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 					 static_cast<System::Byte>(128)));
 				 this->textBox5->ForeColor = System::Drawing::SystemColors::InactiveBorder;
-				 this->textBox5->Location = System::Drawing::Point(394, 347);
-				 this->textBox5->Margin = System::Windows::Forms::Padding(4);
+				 this->textBox5->Location = System::Drawing::Point(296, 278);
 				 this->textBox5->Name = L"textBox5";
 				 this->textBox5->RightToLeft = System::Windows::Forms::RightToLeft::No;
-				 this->textBox5->Size = System::Drawing::Size(113, 37);
+				 this->textBox5->Size = System::Drawing::Size(86, 31);
 				 this->textBox5->TabIndex = 19;
 				 this->textBox5->Text = L"0";
 				 this->textBox5->TextAlign = System::Windows::Forms::HorizontalAlignment::Right;
@@ -427,19 +405,31 @@ namespace RoboCupReferee {
 				 this->label8->AutoSize = true;
 				 this->label8->Font = (gcnew System::Drawing::Font(L"HGSｺﾞｼｯｸE", 15.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 					 static_cast<System::Byte>(128)));
-				 this->label8->Location = System::Drawing::Point(316, 354);
-				 this->label8->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
+				 this->label8->Location = System::Drawing::Point(237, 283);
 				 this->label8->Name = L"label8";
-				 this->label8->Size = System::Drawing::Size(76, 27);
+				 this->label8->Size = System::Drawing::Size(61, 21);
 				 this->label8->TabIndex = 18;
 				 this->label8->Text = L"Score";
 				 // 
+				 // checkBox1
+				 // 
+				 this->checkBox1->AutoSize = true;
+				 this->checkBox1->Checked = true;
+				 this->checkBox1->CheckState = System::Windows::Forms::CheckState::Checked;
+				 this->checkBox1->Location = System::Drawing::Point(302, 220);
+				 this->checkBox1->Name = L"checkBox1";
+				 this->checkBox1->Size = System::Drawing::Size(80, 16);
+				 this->checkBox1->TabIndex = 20;
+				 this->checkBox1->Text = L"Auto scroll";
+				 this->checkBox1->UseVisualStyleBackColor = true;
+				 // 
 				 // Form1
 				 // 
-				 this->AutoScaleDimensions = System::Drawing::SizeF(8, 15);
+				 this->AutoScaleDimensions = System::Drawing::SizeF(6, 12);
 				 this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 				 this->BackColor = System::Drawing::SystemColors::ButtonFace;
-				 this->ClientSize = System::Drawing::Size(520, 570);
+				 this->ClientSize = System::Drawing::Size(390, 456);
+				 this->Controls->Add(this->checkBox1);
 				 this->Controls->Add(this->textBox5);
 				 this->Controls->Add(this->label8);
 				 this->Controls->Add(this->radioButton3);
@@ -462,7 +452,6 @@ namespace RoboCupReferee {
 				 this->Controls->Add(this->connect);
 				 this->Controls->Add(this->label4);
 				 this->Controls->Add(this->label1);
-				 this->Margin = System::Windows::Forms::Padding(4);
 				 this->Name = L"Form1";
 				 this->RightToLeft = System::Windows::Forms::RightToLeft::No;
 				 this->Text = L"Robocup@home 2015";
@@ -508,21 +497,12 @@ namespace RoboCupReferee {
 				System::String^ listitem_score = score.ToString();
 				this->listBox1->Items->Add(listitem_msg);
 				this->listBox2->Items->Add(listitem_score);
-				double total = m_srv->getTotal();
-				double tmpTotal = m_srv->getTmpTotal();
-				double penalty = m_srv->getPenalty();
-				if (radioButton2->Checked == true){
-					total /= 2;
-					tmpTotal /= 2;
+				if (checkBox1->Checked == true){
+					this->listBox1->SelectedIndex = listBox1->Items->Count - 1;
+					this->listBox2->SelectedIndex = listBox2->Items->Count - 1;
+					this->listBox1->ClearSelected();
+					this->listBox2->ClearSelected();
 				}
-				else if (radioButton3->Checked == true){
-					total /= 4;
-					tmpTotal /= 4;
-				}
-				double tmp = total + penalty;
-				this->textBox1->Text = tmp.ToString();
-				tmp = tmpTotal + penalty;
-				this->textBox5->Text = tmp.ToString();
 			}
 			//commentを更新
 			int msize = m_srv->getMessageSize();
@@ -530,12 +510,43 @@ namespace RoboCupReferee {
 				System::String^ comment = m_srv->getMessage();
 				this->listBox1->Items->Add(comment);
 				this->listBox2->Items->Add("");
+				if (checkBox1->Checked == true){
+					this->listBox1->SelectedIndex = listBox1->Items->Count - 1;
+					this->listBox2->SelectedIndex = listBox2->Items->Count - 1;
+					this->listBox1->ClearSelected();
+					this->listBox2->ClearSelected();
+				}
+			}
+			if (listBox1->Focused == true){
+				this->listBox2->SelectedIndex = this->listBox1->SelectedIndex;
+			}
+			else if (listBox2->Focused == true){
+				this->listBox1->SelectedIndex = this->listBox2->SelectedIndex;
 			}
 			//試行を繰り返す回数と現在の試行回数を更新
 			int trialCount = m_srv->getTrialCount();
 			this->textBox3->Text = trialCount.ToString();
 			int numberOfRepetition = m_srv->getNumberOfRepetition();
 			this->textBox4->Text = numberOfRepetition.ToString();
+
+			//TotalとScoreを更新
+			int total = m_srv->getTotal();
+			int tmpTotal = m_srv->getTmpTotal();
+			if (radioButton2->Checked == true){
+				total /= 2;
+				tmpTotal /= 2;
+			}
+			else if (radioButton3->Checked == true){
+				total /= 4;
+				tmpTotal /= 4;
+			}
+			int penalty = m_srv->getPenalty();
+			tmpTotal += penalty;
+			if (tmpTotal > 0){
+				total += tmpTotal;
+			}
+			this->textBox1->Text = total.ToString();
+			this->textBox5->Text = tmpTotal.ToString();
 
 			System::String^ msg = m_srv->getRemainingTime();
 			if (msg != ""){
@@ -567,43 +578,6 @@ namespace RoboCupReferee {
 	}
 	private: System::Void button3_Click(System::Object^  sender, System::EventArgs^  e) {
 		m_srv->sendMsgToCtr("moderator_0", "Give_up");
-	}
-	private: System::Void radioButton1_CheckedChanged(System::Object^  sender, System::EventArgs^  e) {
-		if (radioButton1->Checked == true){
-			radioButton2->Checked = false;
-			radioButton3->Checked = false;
-			double total = m_srv->getTotal();
-			double tmpTotal = m_srv->getTmpTotal();
-			this->textBox1->Text = total.ToString();
-			this->textBox5->Text = tmpTotal.ToString();
-		}
-
-	}
-	private: System::Void radioButton2_CheckedChanged(System::Object^  sender, System::EventArgs^  e) {
-		if (radioButton2->Checked == true){
-			radioButton1->Checked = false;
-			radioButton3->Checked = false;
-			double total = m_srv->getTotal() / 2;
-			double tmpTotal = m_srv->getTmpTotal() / 2;
-			double penalty = m_srv->getPenalty();
-			double tmp = total + penalty;
-			this->textBox1->Text = tmp.ToString();
-			tmp = tmpTotal + penalty;
-			this->textBox5->Text = tmp.ToString();
-		}
-	}
-	private: System::Void radioButton3_CheckedChanged(System::Object^  sender, System::EventArgs^  e) {
-		if (radioButton3->Checked == true){
-			radioButton1->Checked = false;
-			radioButton2->Checked = false;
-			double total = m_srv->getTotal() / 4;
-			double tmpTotal = m_srv->getTmpTotal() / 4;
-			double penalty = m_srv->getPenalty();
-			double tmp = total + penalty;
-			this->textBox1->Text = tmp.ToString();
-			tmp = tmpTotal + penalty;
-			this->textBox5->Text = tmp.ToString();
-		}
 	}
 	private: System::Void textBox5_TextChanged(System::Object^  sender, System::EventArgs^  e) {
 	}

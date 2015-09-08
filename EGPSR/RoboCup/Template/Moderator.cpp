@@ -6,7 +6,9 @@
 #include <fstream>
 #include <iomanip>
 
-#define NUMBER_OF_REPETITION   10 /// 10
+#define MAX_TRIAL 10
+#define MAX_SCORE 1200
+#define PENALTY "-100"
 
 enum Reachable{
   UP,
@@ -107,6 +109,8 @@ private:
 	double endTime;
 
 	bool Task_st;
+
+	int penalty;
 
 	std::string m_pointedObject;
 
@@ -271,15 +275,15 @@ void MyController::onInit(InitEvent &evt)
 		fscanf(fp, "%d", &trialCount);
 		LOG_MSG(("Set taskNum: %d", trialCount));
 		fclose(fp);
-		if (trialCount<0 || trialCount>=NUMBER_OF_REPETITION) {
+		if (trialCount<0 || trialCount >= MAX_TRIAL) {
 			LOG_MSG(("trialnum is wrong (%d). Set trialCount = 0", trialCount));
 			trialCount = 0;
 		}
 	}
 
-	reposObjects();
-	trialCount = 0;
+	penalty = 0;
 
+	reposObjects();
 	// std::cout << "robot is in the circle? " << checkRobotFinished() << std::endl;
 
 	isCleaningUp = false;
@@ -312,7 +316,7 @@ double MyController::onAction(ActionEvent &evt)
 	Vector3d rsLenVec(prv1Pos.x()-crrPos.x(), prv1Pos.y()-crrPos.y(), prv1Pos.z()-crrPos.z());
 	rsLen = rsLenVec.length();
 
-	if (Task_st == true && trialCount < NUMBER_OF_REPETITION)
+	if (Task_st == true && trialCount < MAX_TRIAL)
 		{
 			broadcastMsg("Task_start");
 			// printf("tast_start moderator \n");
@@ -320,7 +324,7 @@ double MyController::onAction(ActionEvent &evt)
 			std::stringstream trial_ss;
 			trial_ss << "RoboCupReferee/trial/";
 			trial_ss << trialCount + 1 << "/";
-			trial_ss << NUMBER_OF_REPETITION;
+			trial_ss << MAX_TRIAL;
 			if (m_ref != NULL) {
 				m_ref->sendMsgToSrv(trial_ss.str().c_str());
 			}
@@ -328,7 +332,7 @@ double MyController::onAction(ActionEvent &evt)
 				LOG_MSG((trial_ss.str().c_str()));
 			}
 		}
-	if (Task_st == true && trialCount >= NUMBER_OF_REPETITION)
+	if (Task_st == true && trialCount >= MAX_TRIAL)
 		{
 			// resetRobotCondition();
 			LOG_MSG(("Mission_complete"));
@@ -361,13 +365,17 @@ double MyController::onAction(ActionEvent &evt)
 						r_my->setPosition(prv1Pos);
 					}
 
-					std::string msg = "RoboCupReferee/Collision with [" + m_entNames[k] + "]" "/-100";
-					if (m_ref != NULL) {
-						m_ref->sendMsgToSrv(msg.c_str());
+					penalty += atof(PENALTY);
+					if (penalty + MAX_SCORE >= 0){
+						std::string msg = "RoboCupReferee/Collision with [" + m_entNames[k] + "]/" + (std::string)PENALTY;
+						if (m_ref != NULL) {
+							m_ref->sendMsgToSrv(msg.c_str());
+						}
+						else {
+							LOG_MSG((msg.c_str()));
+						}
 					}
-					else {
-						LOG_MSG((msg.c_str()));
-					}
+
 					break;
 				}
 			}
@@ -712,7 +720,7 @@ void MyController::onCheckObject()
 		}
 	else
 		{
-			std::string msg = "RoboCupReferee/Robot is in [" + m_pointedObject + "]" "/+400";
+			std::string msg = "RoboCupReferee/Robot grasp the [" + m_pointedObject + "]" "/+400";
 
 			if (m_ref != NULL) {
 				m_ref->sendMsgToSrv(msg.c_str());
@@ -932,7 +940,7 @@ void MyController::reposObjects()
 					do {
 						xObj = mapRange(rand(), 0,  RAND_MAX, xInf, xSup);
 						nbTries++;
-					} while (!checkAvailablePos(xObj, *it2, indPosOnTable, placedObjects) && nbTries < NUMBER_OF_REPETITION);
+					} while (!checkAvailablePos(xObj, *it2, indPosOnTable, placedObjects) && nbTries < MAX_TRIAL);
 
 					if (nbTries >= 9) {
 						performChange(&indTab, &indPosOnTable, &table, vecTable);
@@ -960,7 +968,7 @@ void MyController::reposObjects()
 					do {
 						zObj = mapRange(rand(), 0,  RAND_MAX, zInf, zSup);
 						nbTries++;
-					} while (!checkAvailablePos(zObj, *it2, indPosOnTable, placedObjects) && nbTries < NUMBER_OF_REPETITION);
+					} while (!checkAvailablePos(zObj, *it2, indPosOnTable, placedObjects) && nbTries < MAX_TRIAL);
 
 					if (nbTries >= 9) {
 						performChange(&indTab, &indPosOnTable, &table, vecTable);
@@ -1057,9 +1065,6 @@ void MyController::reposObjects()
 		 robot->setJointAngle("WAIST_JOINT1", 0.0);
 		 robot->setJointAngle("WAIST_JOINT2", 0.0);
          
-         trialCount++;
-         std::cout << "trial count is  " << trialCount << std::endl;
-         
 }
 
 
@@ -1068,21 +1073,25 @@ void MyController::breakTask()
 	LOG_MSG(("start of breakTask"));
 	isCleaningUp = false;
 	//takeAwayObjects();
-	//trialCount++;
+	
+	trialCount++;
+
+	penalty = 0;
+
 	std::string msg = "RoboCupReferee/reset/";
 	if (m_ref != NULL) {
-		// m_ref->sendMsgToSrv(msg.c_str());
+		 m_ref->sendMsgToSrv(msg.c_str());
 		 SimObj *robot;
 		 robot = this->getObj("robot_000");
 
 
 	}
-	if (trialCount < NUMBER_OF_REPETITION)
+	if (trialCount < MAX_TRIAL)
 		{
 			broadcastMsg("Task_end");
 			reposObjects();
 		}
-	if (trialCount >= NUMBER_OF_REPETITION) {
+	if (trialCount >= MAX_TRIAL) {
 		// resetRobotCondition();
 		LOG_MSG(("Mission_complete"));
 		broadcastMsg("Mission_complete");

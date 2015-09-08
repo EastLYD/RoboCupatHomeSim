@@ -9,40 +9,44 @@ public ref class Referee : public sigverse::SIGService
 public:
 	Referee(System::String^ name) : SIGService(name)
 	{
+		remainingTime = "";
 		tmp_score = gcnew System::Collections::Generic::List<int>();
-		tmp_msg  = gcnew System::Collections::Generic::List<System::String^>();
+		tmp_msg = gcnew System::Collections::Generic::List<System::String^>();
 		m_total = 0;
-		tmp_total = 0;
 		m_score = 0;
+		tmp_total = 0;
 		trialCount = 0;
 		numberOfRepetition = 0;
 		penalty = 0;
+		writeLog = true;
 	};
 	~Referee();
-	double getScore();
-	double getTmpTotal();
+	int getScore();
+	int getTmpTotal();
 	int getScoreSize();
 	int getMessageSize();
-	double getPenalty();
-	double getTotal();
+	int getTotal();
 	int getTrialCount();
 	int getNumberOfRepetition();
+	int getPenalty();
 	void setTotal(int total){ m_total = total; }
 	System::String^ getMessage();
 	System::String^ getRemainingTime();
 	virtual void onRecvMsg(sigverse::RecvMsgEvent ^evt) override;
 	virtual double onAction() override;
-	double m_total;
-	double m_score;
-	double tmp_total;
+	int m_total;
+	int m_score;
+	int tmp_total;
 	int trialCount;
 	int numberOfRepetition;
-	double penalty;
+	int penalty;
 	
 private:
 	System::Collections::Generic::List<int>^ tmp_score;
 	System::Collections::Generic::List<System::String^>^ tmp_msg;
 	System::String^ remainingTime;
+	std::string sysString2stdStrng(System::String^ sys_str);
+	bool writeLog;
 };
 
   
@@ -51,30 +55,33 @@ Referee::~Referee()
   this->disconnect();  
 }  
 
-double Referee::getScore()
+std::string Referee::sysString2stdStrng(System::String^ sys_str)
+{
+	std::string tmp;
+	System::IntPtr mptr;
+	mptr = System::Runtime::InteropServices::Marshal::StringToHGlobalAnsi(sys_str);
+	tmp = static_cast<const char*>(mptr.ToPointer());
+	System::Runtime::InteropServices::Marshal::FreeHGlobal(mptr);
+	return tmp;
+}
+
+int Referee::getScore()
 {
 	int score = tmp_score[0];
 	tmp_score->RemoveAt(0);
-	
+
 	return score;
 }
 
-double Referee::getTotal()
+int Referee::getTotal()
 {
-	if (tmp_total > 0){
-		return m_total + tmp_total;
-	}
 	return m_total;
+
 }
 
-double Referee::getTmpTotal()
+int Referee::getTmpTotal()
 {
 	return tmp_total;
-}
-
-double Referee::getPenalty()
-{
-	return penalty;
 }
 
 int Referee::getTrialCount()
@@ -85,11 +92,15 @@ int Referee::getNumberOfRepetition()
 {
 	return numberOfRepetition;
 }
+int Referee::getPenalty()
+{
+	return penalty;
+}
 System::String^ Referee::getMessage()
 {
 	System::String^ msg = tmp_msg[0];
 	tmp_msg->RemoveAt(0);
-	
+
 	return msg;
 }
 
@@ -103,10 +114,10 @@ int Referee::getMessageSize()
 	return tmp_msg->Count;
 }
 
-double Referee::onAction()  
-{  
-  return 10.0;  
-}  
+double Referee::onAction()
+{
+	return 10.0;
+}
 
 System::String^ Referee::getRemainingTime()
 {
@@ -122,22 +133,7 @@ void Referee::onRecvMsg(sigverse::RecvMsgEvent ^evt)
 	array<System::String^>^ SepString={"/"};
 
 	// split
-	std::string tmp1;
-	System::IntPtr mptr1 = System::Runtime::InteropServices::Marshal::StringToHGlobalAnsi(evt->getSender());
-	tmp1 = static_cast<const char*>(mptr1.ToPointer());
-	System::Runtime::InteropServices::Marshal::FreeHGlobal(mptr1);
-	ofs << tmp1.c_str() << ",";
-
 	array<System::String^>^ split_msg = msg->Split(SepString, System::StringSplitOptions::None);
-	//sendMsg("SIGViewer", split_msg->Length.ToString());
-	for (int i = 0; i < split_msg->Length; i++){
-		std::string tmp;
-		System::IntPtr mptr = System::Runtime::InteropServices::Marshal::StringToHGlobalAnsi(split_msg[i]);
-		tmp = static_cast<const char*>(mptr.ToPointer());
-		System::Runtime::InteropServices::Marshal::FreeHGlobal(mptr);
-		ofs << tmp.c_str() << ",";
-	}
-	ofs << "\n";
 
 	if(split_msg[0] == "RoboCupReferee"){
 		// name
@@ -146,10 +142,12 @@ void Referee::onRecvMsg(sigverse::RecvMsgEvent ^evt)
 		}
 		else if (split_msg[1] == "reset"){
 			tmp_msg->Add(split_msg[1]);
-			if (tmp_total > 0){
-				m_total += tmp_total;
+			int score = tmp_total + penalty;
+			if (score > 0){
+				m_total += score;
 			}
 			tmp_total = 0;
+			penalty = 0;
 		}
 		else if (split_msg[1] == "trial"){
 			trialCount = int::Parse(split_msg[2]);
@@ -157,19 +155,36 @@ void Referee::onRecvMsg(sigverse::RecvMsgEvent ^evt)
 		}
 		else{
 			tmp_msg->Add(split_msg[1]);
-		
 			// score
-			m_score = int::Parse(split_msg[2]);
-			tmp_score->Add(m_score);
-			if (m_score > 0){
-				tmp_total += m_score;
+			int score = int::Parse(split_msg[2]);
+			tmp_score->Add(score);
+			if (score >= 0){
+				tmp_total += score;
 			}
 			else{
-				penalty += m_score;
-				if (penalty < -1200){
-					penalty = -1200;
-				}
+				penalty += score;
 			}
 		}
+	}
+	writeLog = true;
+	if (split_msg[0] == "RoboCupReferee"){
+		if (split_msg[1] == "time"){
+			writeLog = false;
+		}
+	}
+	if (writeLog == true){
+		std::string tmp = sysString2stdStrng(remainingTime);
+		ofs << tmp.c_str() << ",";
+
+		tmp = sysString2stdStrng(evt->getSender());
+		ofs << tmp.c_str() << ",";
+
+		array<System::String^>^ split_msg = msg->Split(SepString, System::StringSplitOptions::None);
+		//sendMsg("SIGViewer", split_msg->Length.ToString());
+		for (int i = 0; i < split_msg->Length; i++){
+			tmp = sysString2stdStrng(split_msg[i]);
+			ofs << tmp.c_str() << ",";
+		}
+		ofs << "\n";
 	}
 }
