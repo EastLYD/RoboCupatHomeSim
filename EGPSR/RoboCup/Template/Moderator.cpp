@@ -7,8 +7,12 @@
 #include <iomanip>
 
 #define MAX_TRIAL 10
+#define RANDOM_TRIAL 70
 #define MAX_SCORE 1200
 #define PENALTY "-100"
+#define SCORE_OPERATION_1 "+400"
+#define SCORE_OPERATION_2 "+400"
+#define SCORE_OPERATION_3 "+400"
 
 enum Reachable{
   UP,
@@ -688,7 +692,7 @@ void MyController::onCheckPositionfrontHuman()
 	printf("The distance to human is %f\n", distance);
 	if (distance <  radius )
 		{
-			std::string msg = "RoboCupReferee/Robot is in [" + final + "]" "/+400";
+			std::string msg = "RoboCupReferee/Robot is in [" + final + "]/" + (std::string)SCORE_OPERATION_3;
 
 			if (m_ref != NULL) {
 				m_ref->sendMsgToSrv(msg.c_str());
@@ -720,7 +724,7 @@ void MyController::onCheckObject()
 		}
 	else
 		{
-			std::string msg = "RoboCupReferee/Robot grasp the [" + m_pointedObject + "]" "/+400";
+			std::string msg = "RoboCupReferee/Robot grasp the [" + m_pointedObject + "]/" + (std::string)SCORE_OPERATION_2;
 
 			if (m_ref != NULL) {
 				m_ref->sendMsgToSrv(msg.c_str());
@@ -744,7 +748,7 @@ void MyController::onCheckRoom()
 		{ // bed room
 			num=0;
 			if (m_roomState==3) {
-				std::string msg = "RoboCupReferee/Robot is in [" + m_rooms[num] + "]" "/+400";
+				std::string msg = "RoboCupReferee/Robot is in [" + m_rooms[num] + "]/" + (std::string)SCORE_OPERATION_1;
 				m_roomState=0;
 				if (m_ref != NULL) {
 					m_ref->sendMsgToSrv(msg.c_str());
@@ -757,7 +761,7 @@ void MyController::onCheckRoom()
 	else if (x>100&&x<500&&z>75&&z<425) { // kitchen
 		num=1;
 		if (m_roomState==0) {
-			std::string msg = "RoboCupReferee/Robot is in [" + m_rooms[num] + "]" "/+400";
+			std::string msg = "RoboCupReferee/Robot is in [" + m_rooms[num] + "]/" + (std::string)SCORE_OPERATION_1;
 			m_roomState=1;
 			if (m_ref != NULL) {
 				m_ref->sendMsgToSrv(msg.c_str());
@@ -770,7 +774,7 @@ void MyController::onCheckRoom()
 	else if (x>-500&&x<-100&&z>-425&&z<-75) { // lobby
 		num=2;
 		if (m_roomState==1) {
-			std::string msg = "RoboCupReferee/Robot is in [" + m_rooms[num] + "]" "/+400";
+			std::string msg = "RoboCupReferee/Robot is in [" + m_rooms[num] + "]/" + (std::string)SCORE_OPERATION_1;
 			m_roomState=2;
 			if (m_ref != NULL) {
 				m_ref->sendMsgToSrv(msg.c_str());
@@ -783,7 +787,7 @@ void MyController::onCheckRoom()
 	else if (x>-500&&x<-100&&z>75&&z<425) { // bed room
 		num=3;
 		if (m_roomState==2) {
-			std::string msg = "RoboCupReferee/Robot is in [" + m_rooms[num] + "]" "/+400";
+			std::string msg = "RoboCupReferee/Robot is in [" + m_rooms[num] + "]/" + (std::string)SCORE_OPERATION_1;
 			m_roomState=3;
 			if (m_ref != NULL) {
 				m_ref->sendMsgToSrv(msg.c_str());
@@ -894,7 +898,7 @@ void MyController::performChange(int* indTab, int* indPosOnTable, Table* table, 
 void MyController::reposObjects()
 {
 	// Set random seed according to the number of trials. It provides the same random condition for all the competior
-	srand (1);
+	srand (trialCount);
 
 	for (std::map< std::string, std::vector<Target> >::iterator it = m_targets.begin(); it != m_targets.end(); ++it) {
 		std::vector<Table> vecTable = m_tables[it->first];
@@ -940,9 +944,9 @@ void MyController::reposObjects()
 					do {
 						xObj = mapRange(rand(), 0,  RAND_MAX, xInf, xSup);
 						nbTries++;
-					} while (!checkAvailablePos(xObj, *it2, indPosOnTable, placedObjects) && nbTries < MAX_TRIAL);
+					} while (!checkAvailablePos(xObj, *it2, indPosOnTable, placedObjects) && nbTries < RANDOM_TRIAL);
 
-					if (nbTries >= 9) {
+					if (nbTries >= RANDOM_TRIAL) {
 						performChange(&indTab, &indPosOnTable, &table, vecTable);
 					}
 
@@ -968,9 +972,9 @@ void MyController::reposObjects()
 					do {
 						zObj = mapRange(rand(), 0,  RAND_MAX, zInf, zSup);
 						nbTries++;
-					} while (!checkAvailablePos(zObj, *it2, indPosOnTable, placedObjects) && nbTries < MAX_TRIAL);
+					} while (!checkAvailablePos(zObj, *it2, indPosOnTable, placedObjects) && nbTries < RANDOM_TRIAL);
 
-					if (nbTries >= 9) {
+					if (nbTries >= RANDOM_TRIAL) {
 						performChange(&indTab, &indPosOnTable, &table, vecTable);
 					}
 
@@ -984,7 +988,7 @@ void MyController::reposObjects()
 						}
 					}
 				}
-			} while (nbTries >= 9);
+			} while (nbTries >= RANDOM_TRIAL);
 
 			SimObj* target = getObj(it2->name.c_str());
 			target->setPosition(Vector3d(xObj, yObj, zObj));
