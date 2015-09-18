@@ -198,10 +198,10 @@ namespace RoboCupReferee {
 			this->listBox1->FormattingEnabled = true;
 			this->listBox1->HorizontalScrollbar = true;
 			this->listBox1->ItemHeight = 21;
-			this->listBox1->Location = System::Drawing::Point(6, 45);
+			this->listBox1->Location = System::Drawing::Point(4, 45);
 			this->listBox1->Name = L"listBox1";
 			this->listBox1->RightToLeft = System::Windows::Forms::RightToLeft::No;
-			this->listBox1->Size = System::Drawing::Size(289, 172);
+			this->listBox1->Size = System::Drawing::Size(311, 172);
 			this->listBox1->TabIndex = 4;
 			this->listBox1->SelectedIndexChanged += gcnew System::EventHandler(this, &Form1::listBox1_SelectedIndexChanged);
 			// 
@@ -210,7 +210,7 @@ namespace RoboCupReferee {
 			this->label2->AutoSize = true;
 			this->label2->Font = (gcnew System::Drawing::Font(L"HGSºÞ¼¯¸E", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(128)));
-			this->label2->Location = System::Drawing::Point(292, 26);
+			this->label2->Location = System::Drawing::Point(316, 26);
 			this->label2->Name = L"label2";
 			this->label2->Size = System::Drawing::Size(46, 16);
 			this->label2->TabIndex = 5;
@@ -239,9 +239,9 @@ namespace RoboCupReferee {
 			this->listBox2->FormattingEnabled = true;
 			this->listBox2->HorizontalScrollbar = true;
 			this->listBox2->ItemHeight = 21;
-			this->listBox2->Location = System::Drawing::Point(289, 45);
+			this->listBox2->Location = System::Drawing::Point(311, 45);
 			this->listBox2->Name = L"listBox2";
-			this->listBox2->Size = System::Drawing::Size(96, 172);
+			this->listBox2->Size = System::Drawing::Size(76, 172);
 			this->listBox2->TabIndex = 7;
 			// 
 			// label3

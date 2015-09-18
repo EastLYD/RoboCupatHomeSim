@@ -146,10 +146,12 @@ void Referee::onRecvMsg(sigverse::RecvMsgEvent ^evt)
 			writeLog = false;
 		}
 		else if (split_msg[1] == "start"){
-			tmp_msg->Add(split_msg[1]);
+			System::String^ msg = System::String::Concat(split_msg[2], split_msg[1]);
+			tmp_msg->Add(msg);
 		}
 		else if (split_msg[1] == "end"){
-			tmp_msg->Add(split_msg[1]);
+			System::String^ msg = System::String::Concat(split_msg[2], split_msg[1]);
+			tmp_msg->Add(msg);
 		}
 		else if (split_msg[1] == "trial"){
 			trialCount = int::Parse(split_msg[2]);
