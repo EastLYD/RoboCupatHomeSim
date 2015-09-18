@@ -6,6 +6,7 @@
 #include <fstream>
 #include <iomanip>
 
+#define JOINT_NUM 7
 #define MAX_TRIAL 10
 #define RANDOM_TRIAL 50
 #define MAX_SCORE 1200
@@ -14,7 +15,7 @@
 #define SCORE_OPERATION_2 "+400"
 #define SCORE_OPERATION_3 "+400"
 
-enum Reachable{
+enum SideOfTable{
   UP,
   DOWN,
   LEFT,
@@ -47,26 +48,23 @@ class MyController : public Controller {
 public:
 	void   onInit(InitEvent &evt);
 	double onAction(ActionEvent&);
-	void   onCheckCollision();
 	void   onCheckRoom();
 	void   onCheckObject();
 	void   onRecvMsg(RecvMsgEvent &evt);
 	void   onCheckPositionfrontHuman();
-	bool   checkAvailablePos(float posObj, Target obj, int indPosOnTable, std::vector<Target> vec);
+	bool   checkAvailablePos(float posObj, Target obj, int sideOfTableIndex, std::vector<Target> vec);
 	int    contains(std::vector<Table> vec, std::string key);
 	int    contains(std::vector<Target> vec, std::string key);
 	template<typename Type>
 	int    contains(std::vector<Type> vec, Type key);
-	int    getNextPosOnTable(int indPosOnTable, Table table);
-	void   getNextTable(int* indTab, int* indPosOnTable, Table* table, std::vector<Table> vecTable);
-	void   performChange(int* indTab, int* indPosOnTable, Table* table, std::vector<Table> vecTable);
+	int    getNextSideOfTable(int sideOfTableIndex, Table table);
+	void   getNextTable(int* indTab, int* sideOfTableIndex, Table* table, std::vector<Table> vecTable);
+	void   performChange(int* indTab, int* sideOfTableIndex, Table* table, std::vector<Table> vecTable);
 	float  mapRange(float s, float a1, float a2, float b1, float b2);
 	bool   checkRobotFinished();
 	void   initRoomsObjects();
 	void   reposObjects();
-	void   onCheckFinalPosition();
 	void   breakTask();
-	// void takeAwayObjects();
 
 private:
 	FILE* fp;             // File to keep the number of trials
@@ -77,10 +75,9 @@ private:
 	std::string roboName; // Robot's name
 	std::string mdName;   // Moderator's name
 	std::string humanName;   // Human's name
-	const static unsigned int jtnum=7;
 	std::vector<std::string> jointName;
-	double prv1JAng_r[jtnum];
-	double crrJAng_r[jtnum];
+	double prv1JAng_r[JOINT_NUM];
+	double crrJAng_r[JOINT_NUM];
 
 	std::vector<std::string> m_entities;
 	std::vector<std::string> m_entNames;
@@ -123,8 +120,8 @@ private:
 
 	bool unable_collision;
 
-	std::map< std::string, std::vector<Target> > m_targets; //key is the name of the room
-	std::map< std::string, std::vector<Table> > m_tables; //key is the name of the room
+	std::map< std::string, std::vector<Target> > targetsMap; //key is the name of the room
+	std::map< std::string, std::vector<Table> > tablesMap; //key is the name of the room
 	Vector3d robotInitialPos;
 	Vector3d humanPos;
 	float radius;
@@ -142,7 +139,7 @@ void MyController::onInit(InitEvent &evt)
 	m_pointedObject = "";
 	initRoomsObjects();
 
-	int i, cnt;
+	int i, entityNum;
 	Task_st = true;
 	time_display = true;
 	retValue = 0.01;
@@ -170,78 +167,46 @@ void MyController::onInit(InitEvent &evt)
 	radius = 200;
 
 	getAllEntities(m_entities);
-/*
-  // select objects to be observed
-  cnt = m_entities.size();
-  for (i=0;i<cnt;i++) {
-    if((m_entities[i] != mdName) &&
-       (m_entities[i] != roboName) &&
-       (m_entities[i] != "trashbox_0") &&
-       (m_entities[i] != "trashbox_1") &&
-       (m_entities[i] != "trashbox_2") &&
-       (m_entities[i] != "petbottle_0") &&
-       (m_entities[i] != "petbottle_1") &&
-       (m_entities[i] != "petbottle_2") &&
-       (m_entities[i] != "petbottle_3") &&
-       (m_entities[i] != "petbottle_4") &&
-       (m_entities[i] != "banana") &&
-       (m_entities[i] != "chigarette") &&
-       (m_entities[i] != "chocolate") &&
-       (m_entities[i] != "mayonaise_0") &&
-       (m_entities[i] != "mayonaise_1") &&
-       (m_entities[i] != "mugcup") &&
-       (m_entities[i] != "can_0") &&
-       (m_entities[i] != "can_1") &&
-       (m_entities[i] != "can_2") &&
-       (m_entities[i] != "can_3") &&
-       (m_entities[i] != "apple") &&
-       (m_entities[i] != "clock") &&
-       (m_entities[i] != "kettle") ) {
-      m_entNames.push_back(m_entities[i]);
-    }
-  }
-  entNum = m_entNames.size();
-*/
 
-	cnt = m_entities.size();
+	entityNum = m_entities.size();
 
-	for (i=0;i<cnt;i++) {
+	for (i=0;i<entityNum;i++) {
 		int found;
 		SimObj* entity = getObj(m_entities[i].c_str());
 		Vector3d pos;
 		entity->getPosition(pos);
 
-		if ( ( found = contains( m_tables["livingroom"], m_entities[i] ) ) != -1  ) {
-			if (m_tables["livingroom"][found].name != "Buffet1" )
+		if ( ( found = contains( tablesMap["livingroom"], m_entities[i] ) ) != -1  ) {
+			if (tablesMap["livingroom"][found].name != "Buffet1" )
 			{
-			m_tables["livingroom"][found].x = pos.x();
-			m_tables["livingroom"][found].y = pos.y();
-			m_tables["livingroom"][found].z = pos.z();
+			tablesMap["livingroom"][found].x = pos.x();
+			tablesMap["livingroom"][found].y = pos.y();
+			tablesMap["livingroom"][found].z = pos.z();
 			}
 		}
 
-		else if ( ( found = contains( m_tables["bedroom"], m_entities[i] ) ) != -1 ) {
-		if (m_tables["bedroom"][found].name != "Side board2" && m_tables["bedroom"][found].name != "Side table1")
+		else if ( ( found = contains( tablesMap["bedroom"], m_entities[i] ) ) != -1 ) {
+		if (tablesMap["bedroom"][found].name != "Side board2" && tablesMap["bedroom"][found].name != "Side table1")
 			{
-			m_tables["bedroom"][found].x = pos.x();
-			m_tables["bedroom"][found].y = pos.y();
-			m_tables["bedroom"][found].z = pos.z();
+			tablesMap["bedroom"][found].x = pos.x();
+			tablesMap["bedroom"][found].y = pos.y();
+			tablesMap["bedroom"][found].z = pos.z();
 			}
 		}
 
-		else if ( ( found = contains( m_tables["lobby"], m_entities[i] ) ) != -1 ) {
-		if (m_tables["lobby"][found].name != "Buffet2" && m_tables["lobby"][found].name != "Side board1")
+		else if ( ( found = contains( tablesMap["lobby"], m_entities[i] ) ) != -1 ) {
+		if (tablesMap["lobby"][found].name != "Buffet2" && tablesMap["lobby"][found].name != "Side board1")
 			{
-			m_tables["lobby"][found].x = pos.x();
-			m_tables["lobby"][found].y = pos.y();
-			m_tables["lobby"][found].z = pos.z();
+			tablesMap["lobby"][found].x = pos.x();
+			tablesMap["lobby"][found].y = pos.y();
+			tablesMap["lobby"][found].z = pos.z();
 			}
 		}
 
-		else if ( ( found = contains( m_tables["kitchen"], m_entities[i] ) ) != -1 ) {
-			m_tables["kitchen"][found].x = pos.x();
-			m_tables["kitchen"][found].y = pos.y();
-			m_tables["kitchen"][found].z = pos.z();
+		else if ( ( found = contains( tablesMap["kitchen"], m_entities[i] ) ) != -1 ) {
+			tablesMap["kitchen"][found].x = pos.x();
+			tablesMap["kitchen"][found].y = pos.y();
+			tablesMap["kitchen"][found].z = pos.z();
 		}
 
 		if ((m_entities[i] != mdName) &&
@@ -263,7 +228,6 @@ void MyController::onInit(InitEvent &evt)
 		   (m_entities[i] != "can_2") &&
 		   (m_entities[i] != "can_3") ) {
 			m_entNames.push_back(m_entities[i]);
-			//std::cout << "entitie: " << m_entities[i] << " pushed!" << std::endl;
 		}
 
 	}
@@ -288,7 +252,6 @@ void MyController::onInit(InitEvent &evt)
 	penalty = 0;
 
 	reposObjects();
-	// std::cout << "robot is in the circle? " << checkRobotFinished() << std::endl;
 
 	isCleaningUp = false;
 
@@ -323,7 +286,6 @@ double MyController::onAction(ActionEvent &evt)
 	if (Task_st == true && trialCount < MAX_TRIAL)
 		{
 			broadcastMsg("Task_start");
-			// printf("tast_start moderator \n");
 			Task_st = false;
 
 			std::stringstream trial_ss;
@@ -346,7 +308,6 @@ double MyController::onAction(ActionEvent &evt)
 		}
 	if (Task_st == true && trialCount >= MAX_TRIAL)
 		{
-			// resetRobotCondition();
 			LOG_MSG(("Mission_complete"));
 			broadcastMsg("Mission_complete");
 			if (m_ref != NULL) {
@@ -356,9 +317,6 @@ double MyController::onAction(ActionEvent &evt)
 			Task_st = false;
 		}
 
-	onCheckCollision();
-
-	// onCheckObject();
 	for (int k=0;k<entNum;k++) {
 		SimObj* locObj = getObj(m_entNames[k].c_str());
 		CParts *parts = locObj->getMainParts();
@@ -370,10 +328,8 @@ double MyController::onAction(ActionEvent &evt)
 					colState=true;       // collided with main body of robot
 
 					if (rsLen == 0.0) {
-						//        pcolState=true;
 						r_my->setRotation(prv1Rot);
 					} else {
-						//        pcolState=false;
 						r_my->setPosition(prv1Pos);
 					}
 
@@ -393,17 +349,14 @@ double MyController::onAction(ActionEvent &evt)
 			}
 	}
 
-	//  if (!colState && !pcolState) {
 	if (!colState) {
 		prv1Pos=crrPos;
 		prv1Rot=crrRot;
-		//colState=false;     // reset collision condition
 	} else if (pcolState) {
-		for (int i=0;i<jtnum;i++) prv1JAng_r[i]=crrJAng_r[i];
+		for (int i=0;i<JOINT_NUM;i++) prv1JAng_r[i]=crrJAng_r[i];
 		pcolState = false;
 	} else {
 		//Do nothing on "collided" condition
-		//    LOG_MSG((colPtName.c_str()));
 		colState = false;
 	}
 
@@ -419,12 +372,10 @@ double MyController::onAction(ActionEvent &evt)
 
 	if ( time_display == true)
 		{
-			//if (evt.time() - startTime > endTime) {
 			if (elapsedTime > endTime) {
 				LOG_MSG(("Time_over"));
 				broadcastMsg("Time_over");
 				breakTask();
-				//time_ss << "RoboCupReferee/time/00:00:00";
 			}
 			else {
 				double remainedTime = endTime - elapsedTime;
@@ -436,15 +387,10 @@ double MyController::onAction(ActionEvent &evt)
 				time_ss.str("");
 				time_ss <<  "RoboCupReferee/time/";
 				time_ss << std::setw(2) << std::setfill('0') << min << ":";
-				time_ss << std::setw(2) << std::setfill('0') << sec;// << ":";
-               //  time_ss << "youuu";
-				//time_ss << std::setw(2) << std::setfill('0') << msec;
+				time_ss << std::setw(2) << std::setfill('0') << sec;
 			}
 			if (m_ref != NULL) {
-				std::string mess;
-				mess =time_ss.str();
-				m_ref->sendMsgToSrv(mess.c_str());
-				 //std::cout << "Message to referee : " << time_ss.str() << std::endl;
+				m_ref->sendMsgToSrv(time_ss.str().c_str());
 			}
 			else {
 				LOG_MSG((time_ss.str().c_str()));
@@ -465,50 +411,30 @@ void MyController::onRecvMsg(RecvMsgEvent &evt)
 
 	// 送信者がゴミ認識サービスの場合
 	char *all_msg = (char*)evt.getMsg();
-	//std::string msg;
-	msg= evt.getMsg();
 	std::size_t found=0;
 	std::size_t found2=0;
 	std::size_t found3=0;
 	std::string task;
 
-	//std::ifstream fin;
-	// fin.open(fileNam_my.c_str());
 	bool dest = false;
 
 	if (sender == "man_000")
 		{
-            //broadcastMsgToSrv(msg.c_str());
-			// std::cout << "the message Moderator is "  + msg  << std::endl ;
 			found = msg.find("Go to the ",0);
 			if (found != std::string::npos) {
 				task = msg.substr(found+10);
-				// rooms.push_back(room);
-				// printf("task %s \n",task);
-				// std::cout << "Task : "+ task  << std::endl;
 			}
 
 			found2 = task.find(", grasp the ",0);
 			if (found3 != std::string::npos) {
 				room_msg = task.substr(0,found2);
-				// rooms.push_back(room);
-				// printf("room %s \n",room_msg);
-				//  std::cout << "room : "+room_msg  << std::endl;
 			}
-
 
 			found3 = task.find(" and come back here",found);
 			if (found3 != std::string::npos) {
 				object_msg = task.substr(found2+12,found3-found2-12);
-				//buf = buf.substr(found+1);
-				//  objects.push_back(object);
-				// cout << "object"+object_msg  ;
-				// std::cout << "object : "+object_msg  << std::endl;
-				// printf("object %s \n",object_msg);
 			}
 
-
-			//  std::cout << "The moderator : " + room_msg  + "  and " +  object_msg + "|" << std::endl;
 			if (room_msg == "living room" ) {
 
 				m_roomState = 3;
@@ -620,8 +546,6 @@ void MyController::onRecvMsg(RecvMsgEvent &evt)
 		}
 	if (msg == "Start grasping process")
 		{
-			std:: string name;
-			//name = m_pointedObject;
 			SimObj *trash = getObj(m_pointedObject.c_str());
 			// get trash's position
 			trash->getPosition(Obj_pos);
@@ -643,9 +567,6 @@ void MyController::onRecvMsg(RecvMsgEvent &evt)
 		onCheckPositionfrontHuman();
 		LOG_MSG(("after onCheckPositionfronHuman"));
 		sleep(1);
-		LOG_MSG(("before reposObjects"));
-		//reposObjects();
-		LOG_MSG(("after reposObjects"));
 		startTime = 0.0;
         Task_st = true;
 		breakTask();
@@ -655,9 +576,6 @@ void MyController::onRecvMsg(RecvMsgEvent &evt)
 	{
 		LOG_MSG(("Task_end"));
 		broadcastMsg("Task_end");
-		LOG_MSG(("before reposObjects"));
-		//reposObjects();
-		LOG_MSG(("after reposObjects"));
 		startTime = 0.0;
 		breakTask();
 	}
@@ -668,36 +586,28 @@ void MyController::onRecvMsg(RecvMsgEvent &evt)
 		}
 }
 
-
-void MyController::onCheckCollision() {
-}
-
 void MyController::onCheckPositionfrontHuman()
 {
-	Vector3d rob_pos;
-	Vector3d hum_pos;
+	Vector3d robot_pos;
+	Vector3d human_pos;
 	Vector3d dist;
 	double distance;
 	distance = 0;
-	std::string avat;
-	std::string rob;
 	std::string final;
 	final = "Front Human";
-	avat = "man_000";
-	rob = "robot_000";
-	rob_pos =  Vector3d(0, 0, 0);
-	hum_pos =  Vector3d(0, 0, 0);
+	robot_pos =  Vector3d(0, 0, 0);
+	human_pos =  Vector3d(0, 0, 0);
 	dist =  Vector3d(0, 0, 0);
-	SimObj *avatar = getObj(avat.c_str());
-	SimObj *robot = getObj(rob.c_str());
+	SimObj *avatar = getObj(humanName.c_str());
+	SimObj *robot = getObj(roboName.c_str());
 
 	// get trash's position
-	robot->getPosition(rob_pos);
-	avatar ->getPosition(hum_pos);
-	dist = rob_pos;
-	dist -= hum_pos;
+	robot->getPosition(robot_pos);
+	avatar ->getPosition(human_pos);
+	dist = robot_pos;
+	dist -= human_pos;
 	distance = dist.length();
-	printf("The distance to human is %f\n", distance);
+	LOG_MSG(("The distance to human is %f", distance));
 	if (distance <  radius )
 		{
 			std::string msg = "RoboCupReferee/Robot is in [" + final + "]/" + (std::string)SCORE_OPERATION_3;
@@ -713,16 +623,9 @@ void MyController::onCheckPositionfrontHuman()
 }
 
 
-void MyController::onCheckFinalPosition()
-{
-}
-
-
 void MyController::onCheckObject()
 {
-	std:: string name;
-	name = m_pointedObject;
-	SimObj *trash = getObj(name.c_str());
+	SimObj *trash = getObj(m_pointedObject.c_str());
 	// get trash's position
 	trash->getPosition(Obj_pos);
 
@@ -765,7 +668,7 @@ void MyController::onCheckRoom()
 					LOG_MSG((msg.c_str()));
 				}
 			}
-		}
+	}
 	else if (x>100&&x<500&&z>75&&z<425) { // kitchen
 		num=1;
 		if (m_roomState==0) {
@@ -816,12 +719,12 @@ void MyController::onCheckRoom()
   check if the position, posObj, where we want to put the object, obj, is
   available compared to the already placed objects contained in the vector, vec
 */
-bool MyController::checkAvailablePos(float posObj, Target obj, int indPosOnTable, std::vector<Target> vec)
+bool MyController::checkAvailablePos(float posObj, Target obj, int sideOfTableIndex, std::vector<Target> vec)
 {
 	bool available = true;
 
 	if (vec.size() > 0) {
-		if ( indPosOnTable == DOWN || indPosOnTable == UP ) {
+		if ( sideOfTableIndex == DOWN || sideOfTableIndex == UP ) {
 			for (std::vector<Target>::iterator it = vec.begin(); it != vec.end() && available; ++it) {
 				float xInf = it->x - 0.5 * it->length - 20;
 				float xSup = it->x + 0.5 * it->length + 20;
@@ -850,13 +753,13 @@ bool MyController::checkAvailablePos(float posObj, Target obj, int indPosOnTable
 
 
 
-int MyController::getNextPosOnTable(int indPosOnTable, Table table) {
+int MyController::getNextSideOfTable(int sideOfTableIndex, Table table) {
 	int j;
-	for (j=(indPosOnTable+1) % 4; j != indPosOnTable && table.reachable[j] == -1; j = (j + 1) % 4);
+	for (j=(sideOfTableIndex+1) % 4; j != sideOfTableIndex && table.reachable[j] == -1; j = (j + 1) % 4);
 
 	j--;
 
-	if (j != indPosOnTable) {
+	if (j != sideOfTableIndex) {
 		if (j == 0)
 			j = 3;
 		else
@@ -870,35 +773,35 @@ int MyController::getNextPosOnTable(int indPosOnTable, Table table) {
 }
 
 
-void MyController::getNextTable(int* indTab, int* indPosOnTable, Table* table, std::vector<Table> vecTable) {
+void MyController::getNextTable(int* indTab, int* sideOfTableIndex, Table* table, std::vector<Table> vecTable) {
 	*indTab = (*indTab + 1) % vecTable.size();
 	*table = vecTable[*indTab];
 
 	bool posAvailable = false;
 
 	while (!posAvailable) {
-		*indPosOnTable = rand() % 4;
-		posAvailable = table->reachable[*indPosOnTable] != -1;
+		*sideOfTableIndex = rand() % 4;
+		posAvailable = table->reachable[*sideOfTableIndex] != -1;
 	}
 }
 
-void MyController::performChange(int* indTab, int* indPosOnTable, Table* table, std::vector<Table> vecTable) {
+void MyController::performChange(int* indTab, int* sideOfTableIndex, Table* table, std::vector<Table> vecTable) {
 	int randChange = rand() % 2; // rand to determine if we look for another position or another table
 
 	if (randChange == 1) {
-		int j = getNextPosOnTable(*indPosOnTable, *table);
+		int j = getNextSideOfTable(*sideOfTableIndex, *table);
 
 		if (j == -1) {
-			getNextTable(indTab, indPosOnTable, table, vecTable);
+			getNextTable(indTab, sideOfTableIndex, table, vecTable);
 		}
 
 		else {
-			*indPosOnTable = j;
+			*sideOfTableIndex = j;
 		}
 	}
 
 	else {
-		getNextTable(indTab, indPosOnTable, table, vecTable);
+		getNextTable(indTab, sideOfTableIndex, table, vecTable);
 	}
 }
 
@@ -908,8 +811,8 @@ void MyController::reposObjects()
 	// Set random seed according to the number of trials. It provides the same random condition for all the competior
 	srand (trialCount);
 
-	for (std::map< std::string, std::vector<Target> >::iterator it = m_targets.begin(); it != m_targets.end(); ++it) {
-		std::vector<Table> vecTable = m_tables[it->first];
+	for (std::map< std::string, std::vector<Target> >::iterator it = targetsMap.begin(); it != targetsMap.end(); ++it) {
+		std::vector<Table> vecTable = tablesMap[it->first];
 		std::vector<Target> placedObjects;
 		int nbTables = vecTable.size();
 		float yObj;
@@ -920,7 +823,7 @@ void MyController::reposObjects()
 			int indTab = rand() % nbTables;
 			Table table = vecTable[indTab];
 			bool posAvailable = false;
-			int indPosOnTable;
+			int sideOfTableIndex;
 			int nbTries;
 
 			/*
@@ -928,8 +831,8 @@ void MyController::reposObjects()
 			  position on this table (UP, DOWN, LEFT, RIGHT) if it's available
 			*/
 			while (!posAvailable) {
-				indPosOnTable = rand() % 4;
-				posAvailable = table.reachable[indPosOnTable] != -1;
+				sideOfTableIndex = rand() % 4;
+				posAvailable = table.reachable[sideOfTableIndex] != -1;
 			}
 
 			/*
@@ -942,7 +845,7 @@ void MyController::reposObjects()
 			do {
 				nbTries = 0;
 
-				if ( indPosOnTable == DOWN || indPosOnTable == UP ) {
+				if ( sideOfTableIndex == DOWN || sideOfTableIndex == UP ) {
 					yObj = table.y + 0.5 * table.height + 0.5 * it2->height + 1.75;
 					float xOffset = 10;
 					float xInf = table.x - 0.5 * table.length + xOffset;
@@ -952,15 +855,16 @@ void MyController::reposObjects()
 					do {
 						xObj = mapRange(rand(), 0,  RAND_MAX, xInf, xSup);
 						nbTries++;
-					} while (!checkAvailablePos(xObj, *it2, indPosOnTable, placedObjects) && nbTries < RANDOM_TRIAL);
+					} while (!checkAvailablePos(xObj, *it2, sideOfTableIndex, placedObjects) && nbTries < RANDOM_TRIAL);
 
 					if (nbTries >= RANDOM_TRIAL) {
-						performChange(&indTab, &indPosOnTable, &table, vecTable);
+						LOG_MSG(("start performChange"));
+						performChange(&indTab, &sideOfTableIndex, &table, vecTable);
 					}
 
 					else {
 
-						if (indPosOnTable == DOWN) {
+						if (sideOfTableIndex == DOWN) {
 							zObj = table.z + 0.5 * table.width - zOffset;
 						}
 
@@ -980,14 +884,15 @@ void MyController::reposObjects()
 					do {
 						zObj = mapRange(rand(), 0,  RAND_MAX, zInf, zSup);
 						nbTries++;
-					} while (!checkAvailablePos(zObj, *it2, indPosOnTable, placedObjects) && nbTries < RANDOM_TRIAL);
+					} while (!checkAvailablePos(zObj, *it2, sideOfTableIndex, placedObjects) && nbTries < RANDOM_TRIAL);
 
 					if (nbTries >= RANDOM_TRIAL) {
-						performChange(&indTab, &indPosOnTable, &table, vecTable);
+						LOG_MSG(("start performChange"));
+						performChange(&indTab, &sideOfTableIndex, &table, vecTable);
 					}
 
 					else {
-						if (indPosOnTable == RIGHT) {
+						if (sideOfTableIndex == RIGHT) {
 							xObj = table.x + 0.5 * table.length - xOffset;
 						}
 
@@ -1123,254 +1028,254 @@ void MyController::breakTask()
 
 void MyController::initRoomsObjects()
 {
-	std::vector<Table> vec;
-	Table tab;
-	std::vector<Target> vec2;
-	Target tar;
+	std::vector<Table> tableVector;
+	Table table;
+	std::vector<Target> targetVector;
+	Target target;
     Vector3d posf;
     SimObj* entity ;
     /*
-	tab.name = "Buffet1";
-	tab.length = 32.1;
-	tab.width  = 54.2;
-	tab.height = 59.5;
-	tab.reachable[UP]    = 1;
-	tab.reachable[DOWN]  = 1;
-	tab.reachable[RIGHT] = 1;
-	tab.reachable[LEFT]  = -1;
-	entity = getObj(tab.name.c_str());
+	table.name = "Buffet1";
+	table.length = 32.1;
+	table.width  = 54.2;
+	table.height = 59.5;
+	table.reachable[UP]    = 1;
+	table.reachable[DOWN]  = 1;
+	table.reachable[RIGHT] = 1;
+	table.reachable[LEFT]  = -1;
+	entity = getObj(table.name.c_str());
 	entity->getPosition(posf);
-	tab.x = posf.x()+10;
-	tab.y = posf.y();
-	tab.z = posf.z();
-	vec.push_back(tab);
+	table.x = posf.x()+10;
+	table.y = posf.y();
+	table.z = posf.z();
+	vec.push_back(table);
     
-	tab.name = "Dinner table1";
-	tab.length = 135;
-	tab.width  = 75.9;
-	tab.height = 59.2;
-	tab.reachable[UP]    = 1;
-	tab.reachable[DOWN]  = 1;
-	tab.reachable[RIGHT] = 1;
-	tab.reachable[LEFT]  = 1;
+	table.name = "Dinner table1";
+	table.length = 135;
+	table.width  = 75.9;
+	table.height = 59.2;
+	table.reachable[UP]    = 1;
+	table.reachable[DOWN]  = 1;
+	table.reachable[RIGHT] = 1;
+	table.reachable[LEFT]  = 1;
 
-	vec.push_back(tab);
+	vec.push_back(table);
      */
-	tab.name = "Couch_table1";
-	tab.length = 128;
-	tab.width  = 65.8;
-	tab.height = 59.8;
-	tab.reachable[UP]    = 1;
-	tab.reachable[DOWN]  = 1;
-	tab.reachable[RIGHT] = 1;
-	tab.reachable[LEFT]  = 1;
+	table.name = "Couch_table1";
+	table.length = 128;
+	table.width  = 65.8;
+	table.height = 59.8;
+	table.reachable[UP]    = 1;
+	table.reachable[DOWN]  = 1;
+	table.reachable[RIGHT] = 1;
+	table.reachable[LEFT]  = 1;
 
-	vec.push_back(tab);
+	tableVector.push_back(table);
 
-	tar.name = "apple_0";
-	tar.length = 6.51;
-	tar.width  = 6.86;
-	tar.height = 7.75;
+	target.name = "apple_0";
+	target.length = 6.51;
+	target.width  = 6.86;
+	target.height = 7.75;
 
-	vec2.push_back(tar);
+	targetVector.push_back(target);
 
-	tar.name = "petbottle_0";
-	tar.length = 7.11;
-	tar.width  = 7.11;
-	tar.height = 22.3;
+	target.name = "petbottle_0";
+	target.length = 7.11;
+	target.width  = 7.11;
+	target.height = 22.3;
 
-	vec2.push_back(tar);
+	targetVector.push_back(target);
 
-	tar.name = "can_0";
-	tar.length = 5.14;
-	tar.width  = 5.14;
-	tar.height = 9.07;
+	target.name = "can_0";
+	target.length = 5.14;
+	target.width  = 5.14;
+	target.height = 9.07;
 
-	vec2.push_back(tar);
+	targetVector.push_back(target);
 
-	tar.name = "mugcup_0";
-	tar.length = 11.7;
-	tar.width  = 11.7;
-	tar.height = 7.98;
+	target.name = "mugcup_0";
+	target.length = 11.7;
+	target.width  = 11.7;
+	target.height = 7.98;
 
-	vec2.push_back(tar);
+	targetVector.push_back(target);
 
-	m_tables ["livingroom"] = vec;
-	m_targets["livingroom"] = vec2;
+	tablesMap ["livingroom"] = tableVector;
+	targetsMap["livingroom"] = targetVector;
 
-	vec.clear();
-	vec2.clear();
+	tableVector.clear();
+	targetVector.clear();
 
-	tab.name = "Buffet2";
-	tab.length = 32.1;
-	tab.width  = 54.2;
-	tab.height = 59.5;
-	tab.reachable[UP]    =  1;
-	tab.reachable[DOWN]  =  1;
-	tab.reachable[RIGHT] = -1;
-	tab.reachable[LEFT]  =  1;
-	entity = getObj(tab.name.c_str());
+	table.name = "Buffet2";
+	table.length = 32.1;
+	table.width  = 54.2;
+	table.height = 59.5;
+	table.reachable[UP]    =  1;
+	table.reachable[DOWN]  =  1;
+	table.reachable[RIGHT] = -1;
+	table.reachable[LEFT]  =  1;
+	entity = getObj(table.name.c_str());
 	entity->getPosition(posf);
-	tab.x = posf.x()-10;
-	tab.y = posf.y();
-	tab.z = posf.z();
-	vec.push_back(tab);
+	table.x = posf.x()-10;
+	table.y = posf.y();
+	table.z = posf.z();
+	tableVector.push_back(table);
 
-	tab.name = "Side board1";
-	tab.length = 165;
-	tab.width  = 50.8;
-	tab.height = 59.7;
-	tab.reachable[UP]    =  1;
-	tab.reachable[DOWN]  = -1;
-	tab.reachable[RIGHT] = -1;
-	tab.reachable[LEFT]  =  1;
-	entity = getObj(tab.name.c_str());
+	table.name = "Side board1";
+	table.length = 165;
+	table.width  = 50.8;
+	table.height = 59.7;
+	table.reachable[UP]    =  1;
+	table.reachable[DOWN]  = -1;
+	table.reachable[RIGHT] = -1;
+	table.reachable[LEFT]  =  1;
+	entity = getObj(table.name.c_str());
 	entity->getPosition(posf);
-	tab.x = posf.x()-10;
-	tab.y = posf.y();
-	tab.z = posf.z();
-	vec.push_back(tab);
+	table.x = posf.x()-10;
+	table.y = posf.y();
+	table.z = posf.z();
+	tableVector.push_back(table);
 
-	tar.name = "apple_1";
-	tar.length = 6.51;
-	tar.width  = 6.86;
-	tar.height = 7.75;
+	target.name = "apple_1";
+	target.length = 6.51;
+	target.width  = 6.86;
+	target.height = 7.75;
 
-	vec2.push_back(tar);
+	targetVector.push_back(target);
 
-	tar.name = "petbottle_1";
-	tar.length = 7.11;
-	tar.width  = 7.11;
-	tar.height = 22.3;
+	target.name = "petbottle_1";
+	target.length = 7.11;
+	target.width  = 7.11;
+	target.height = 22.3;
 
-	vec2.push_back(tar);
+	targetVector.push_back(target);
 
-	tar.name = "can_1";
-	tar.length = 5.14;
-	tar.width  = 5.14;
-	tar.height = 9.07;
+	target.name = "can_1";
+	target.length = 5.14;
+	target.width  = 5.14;
+	target.height = 9.07;
 
-	vec2.push_back(tar);
+	targetVector.push_back(target);
 
-	tar.name = "mugcup_1";
-	tar.length = 11.7;
-	tar.width  = 11.7;
-	tar.height = 7.98;
+	target.name = "mugcup_1";
+	target.length = 11.7;
+	target.width  = 11.7;
+	target.height = 7.98;
 
-	vec2.push_back(tar);
+	targetVector.push_back(target);
 
-	m_tables ["lobby"] = vec;
-	m_targets["lobby"] = vec2;
+	tablesMap ["lobby"] = tableVector;
+	targetsMap["lobby"] = targetVector;
 
-	vec.clear();
-	vec2.clear();
+	tableVector.clear();
+	targetVector.clear();
 
-	tab.name = "Kitchen Table1";
-	tab.length = 140;
-	tab.width  = 85;
-	tab.height = 59.4;
-	tab.reachable[UP]    = 1;
-	tab.reachable[DOWN]  = 1;
-	tab.reachable[RIGHT] = 1;
-	tab.reachable[LEFT]  = 1;
+	table.name = "Kitchen Table1";
+	table.length = 140;
+	table.width  = 85;
+	table.height = 59.4;
+	table.reachable[UP]    = 1;
+	table.reachable[DOWN]  = 1;
+	table.reachable[RIGHT] = 1;
+	table.reachable[LEFT]  = 1;
 
-	vec.push_back(tab);
+	tableVector.push_back(table);
 
-	tar.name = "apple_2";
-	tar.length = 6.51;
-	tar.width  = 6.86;
-	tar.height = 7.75;
+	target.name = "apple_2";
+	target.length = 6.51;
+	target.width  = 6.86;
+	target.height = 7.75;
 
-	vec2.push_back(tar);
+	targetVector.push_back(target);
 
-	tar.name = "petbottle_2";
-	tar.length = 7.11;
-	tar.width  = 7.11;
-	tar.height = 22.3;
+	target.name = "petbottle_2";
+	target.length = 7.11;
+	target.width  = 7.11;
+	target.height = 22.3;
 
-	vec2.push_back(tar);
+	targetVector.push_back(target);
 
-	tar.name = "can_2";
-	tar.length = 5.14;
-	tar.width  = 5.14;
-	tar.height = 9.07;
+	target.name = "can_2";
+	target.length = 5.14;
+	target.width  = 5.14;
+	target.height = 9.07;
 
-	vec2.push_back(tar);
+	targetVector.push_back(target);
 
-	tar.name = "mugcup_2";
-	tar.length = 11.7;
-	tar.width  = 11.7;
-	tar.height = 7.98;
+	target.name = "mugcup_2";
+	target.length = 11.7;
+	target.width  = 11.7;
+	target.height = 7.98;
 
-	vec2.push_back(tar);
+	targetVector.push_back(target);
 
-	m_tables ["kitchen"] = vec;
-	m_targets["kitchen"] = vec2;
+	tablesMap ["kitchen"] = tableVector;
+	targetsMap["kitchen"] = targetVector;
 
-	vec.clear();
-	vec2.clear();
+	tableVector.clear();
+	targetVector.clear();
 
-	tab.name = "Side table1";
-	tab.length = 32.1;
-	tab.width  = 34.2;
-	tab.height = 59.5;
-	tab.reachable[UP]    =  1;
-	tab.reachable[DOWN]  = -1;
-	tab.reachable[RIGHT] = -1;
-	tab.reachable[LEFT]  = -1;
-	entity = getObj(tab.name.c_str());
+	table.name = "Side table1";
+	table.length = 32.1;
+	table.width  = 34.2;
+	table.height = 59.5;
+	table.reachable[UP]    =  1;
+	table.reachable[DOWN]  = -1;
+	table.reachable[RIGHT] = -1;
+	table.reachable[LEFT]  = -1;
+	entity = getObj(table.name.c_str());
 	entity->getPosition(posf);
 
-    tab.x = posf.x()-10;
-	tab.y = posf.y();
-	tab.z = posf.z()-10;
-	vec.push_back(tab);
+    table.x = posf.x()-10;
+	table.y = posf.y();
+	table.z = posf.z()-10;
+	tableVector.push_back(table);
 
-	tab.name = "Side board2";
-	tab.length = 167;
-	tab.width  = 24.9;
-	tab.height = 58.8;
-	tab.reachable[UP]    =  1;
-	tab.reachable[DOWN]  = -1;
-	tab.reachable[RIGHT] = -1;
-	tab.reachable[LEFT]  = -1;
-	entity = getObj(tab.name.c_str());
+	table.name = "Side board2";
+	table.length = 167;
+	table.width  = 24.9;
+	table.height = 58.8;
+	table.reachable[UP]    =  1;
+	table.reachable[DOWN]  = -1;
+	table.reachable[RIGHT] = -1;
+	table.reachable[LEFT]  = -1;
+	entity = getObj(table.name.c_str());
 	entity->getPosition(posf);
-	tab.x = posf.x()+10;
-	tab.y = posf.y();
-	tab.z = posf.z()-10;
-	vec.push_back(tab);
+	table.x = posf.x()+10;
+	table.y = posf.y();
+	table.z = posf.z()-10;
+	tableVector.push_back(table);
 
-	tar.name = "apple_3";
-	tar.length = 6.51;
-	tar.width  = 6.86;
-	tar.height = 7.75;
+	target.name = "apple_3";
+	target.length = 6.51;
+	target.width  = 6.86;
+	target.height = 7.75;
 
-	vec2.push_back(tar);
+	targetVector.push_back(target);
 
-	tar.name = "petbottle_3";
-	tar.length = 7.11;
-	tar.width  = 7.11;
-	tar.height = 22.3;
+	target.name = "petbottle_3";
+	target.length = 7.11;
+	target.width  = 7.11;
+	target.height = 22.3;
 
-	vec2.push_back(tar);
+	targetVector.push_back(target);
 
-	tar.name = "can_3";
-	tar.length = 5.14;
-	tar.width  = 5.14;
-	tar.height = 9.07;
+	target.name = "can_3";
+	target.length = 5.14;
+	target.width  = 5.14;
+	target.height = 9.07;
 
-	vec2.push_back(tar);
+	targetVector.push_back(target);
 
-	tar.name = "mugcup_3";
-	tar.length = 11.7;
-	tar.width  = 11.7;
-	tar.height = 7.98;
+	target.name = "mugcup_3";
+	target.length = 11.7;
+	target.width  = 11.7;
+	target.height = 7.98;
 
-	vec2.push_back(tar);
+	targetVector.push_back(target);
 
-	m_tables ["bedroom"] = vec;
-	m_targets["bedroom"] = vec2;
+	tablesMap ["bedroom"] = tableVector;
+	targetsMap["bedroom"] = targetVector;
 }
 
 
