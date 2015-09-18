@@ -7,7 +7,7 @@
 #include <iomanip>
 
 #define MAX_TRIAL 10
-#define RANDOM_TRIAL 70
+#define RANDOM_TRIAL 50
 #define MAX_SCORE 1200
 #define PENALTY "-100"
 #define SCORE_OPERATION_1 "+400"
@@ -325,15 +325,23 @@ double MyController::onAction(ActionEvent &evt)
 			broadcastMsg("Task_start");
 			// printf("tast_start moderator \n");
 			Task_st = false;
+
 			std::stringstream trial_ss;
 			trial_ss << "RoboCupReferee/trial/";
 			trial_ss << trialCount + 1 << "/";
 			trial_ss << MAX_TRIAL;
+
+			std::stringstream start_ss;
+			start_ss << "RoboCupReferee/start/Trial ";
+			start_ss << trialCount + 1 << " /";
+
 			if (m_ref != NULL) {
 				m_ref->sendMsgToSrv(trial_ss.str().c_str());
+				m_ref->sendMsgToSrv(start_ss.str().c_str());
 			}
 			else {
 				LOG_MSG((trial_ss.str().c_str()));
+				LOG_MSG((start_ss.str().c_str()));
 			}
 		}
 	if (Task_st == true && trialCount >= MAX_TRIAL)
@@ -1076,19 +1084,20 @@ void MyController::breakTask()
 	LOG_MSG(("start of breakTask"));
 	isCleaningUp = false;
 	//takeAwayObjects();
-	
-	trialCount++;
 
+	std::stringstream end_ss;
+			end_ss << "RoboCupReferee/end/Trial ";
+			end_ss << trialCount + 1 << " /";
+	if (m_ref != NULL) {
+		m_ref->sendMsgToSrv(end_ss.str().c_str());
+	}
+	else {
+		LOG_MSG((end_ss.str().c_str()));
+	}
+		
+	trialCount++;
 	penalty = 0;
 
-	std::string msg = "RoboCupReferee/reset/";
-	if (m_ref != NULL) {
-		 m_ref->sendMsgToSrv(msg.c_str());
-		 SimObj *robot;
-		 robot = this->getObj("robot_000");
-
-
-	}
 	if (trialCount < MAX_TRIAL)
 		{
 			broadcastMsg("Task_end");
@@ -1099,7 +1108,7 @@ void MyController::breakTask()
 		LOG_MSG(("Mission_complete"));
 		broadcastMsg("Mission_complete");
 		if (m_ref != NULL) {
-			msg = "RoboCupReferee/time/- END -";
+			std::string msg = "RoboCupReferee/time/- END -";
             m_ref->sendMsgToSrv(msg.c_str());
 		}
 		Task_st = false;

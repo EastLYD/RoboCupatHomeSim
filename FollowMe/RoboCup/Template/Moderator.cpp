@@ -167,17 +167,19 @@ double MyController::onAction(ActionEvent &evt)
 		trial_ss << "RoboCupReferee/trial/";
 		trial_ss << taskNum + 1 << "/";
 		trial_ss << MAX_TRIAL;
-		if (m_ref != NULL){
+		
+		std::stringstream start_ss;
+		start_ss << "RoboCupReferee/start/Trial ";
+		start_ss << taskNum + 1 << " /";
+		
+		if (m_ref != NULL) {
 			m_ref->sendMsgToSrv(trial_ss.str().c_str());
+			m_ref->sendMsgToSrv(start_ss.str().c_str());
 		}
-		else{
+		else {
 			LOG_MSG((trial_ss.str().c_str()));
+			LOG_MSG((start_ss.str().c_str()));
 		}
-
-		if(m_ref != NULL){
-			m_ref->sendMsgToSrv("RoboCupReferee/start");
-		}
-		LOG_MSG(("RoboCupReferee/start"));
 
 		LOG_MSG(("task num: %d",taskNum+1));
 
@@ -267,10 +269,17 @@ double MyController::onAction(ActionEvent &evt)
 	if(elapsedTime > endTime){
 		LOG_MSG(("Time_over"));
 		broadcastMsg("Time_over");
-		if(m_ref != NULL){
-			m_ref->sendMsgToSrv("RoboCupReferee/end");
+
+		std::stringstream end_ss;
+		end_ss << "RoboCupReferee/end/Trial ";
+		end_ss << taskNum + 1 << " /";
+		if (m_ref != NULL) {
+			m_ref->sendMsgToSrv(end_ss.str().c_str());
 		}
-		LOG_MSG(("RoboCupReferee/end"));
+		else {
+			LOG_MSG((end_ss.str().c_str()));
+		}
+
 		task = false;
 		sleep(3);
 		breakTask();
@@ -313,10 +322,17 @@ void MyController::onRecvMsg(RecvMsgEvent &evt)
 				usleep(100000);
 				broadcastMsg(end_msg);
 			}*/
-			if(m_ref != NULL){
-				m_ref->sendMsgToSrv("RoboCupReferee/end");
-				LOG_MSG(("RoboCupReferee/end"));
+
+			std::stringstream end_ss;
+			end_ss << "RoboCupReferee/end/Trial ";
+			end_ss << taskNum + 1 << " /";
+			if (m_ref != NULL) {
+				m_ref->sendMsgToSrv(end_ss.str().c_str());
 			}
+			else {
+				LOG_MSG((end_ss.str().c_str()));
+			}
+
 			task = false;
 			sleep(3);
 			breakTask();
@@ -329,10 +345,17 @@ void MyController::onRecvMsg(RecvMsgEvent &evt)
 			usleep(100000);
 			broadcastMsg(end_msg);
 		}*/
-		if(m_ref != NULL){
-			m_ref->sendMsgToSrv("RoboCupReferee/end");
-			LOG_MSG(("RoboCupReferee/end"));
+		
+		std::stringstream end_ss;
+		end_ss << "RoboCupReferee/end/Trial ";
+		end_ss << taskNum + 1 << " /";
+		if (m_ref != NULL) {
+			m_ref->sendMsgToSrv(end_ss.str().c_str());
 		}
+		else {
+			LOG_MSG((end_ss.str().c_str()));
+		}
+
 		task = false;
 		sleep(3);
 		breakTask();
@@ -343,10 +366,17 @@ void MyController::onRecvMsg(RecvMsgEvent &evt)
 	}
 	if(msg == next_msg){
 		broadcastMsg(end_msg);
-		if(m_ref != NULL){
-			m_ref->sendMsgToSrv("RoboCupReferee/end");
-			LOG_MSG(("RoboCupReferee/end"));
+
+		std::stringstream end_ss;
+		end_ss << "RoboCupReferee/end/Trial ";
+		end_ss << taskNum + 1 << " /";
+		if (m_ref != NULL) {
+			m_ref->sendMsgToSrv(end_ss.str().c_str());
 		}
+		else {
+			LOG_MSG((end_ss.str().c_str()));
+		}
+
 		task = false;
 		sleep(3);
 		breakTask();
