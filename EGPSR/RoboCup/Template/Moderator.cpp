@@ -8,7 +8,7 @@
 
 #define JOINT_NUM 7
 #define MAX_TRIAL 10
-#define RANDOM_TRIAL 50
+#define RANDOM_TRIAL 10
 #define MAX_SCORE 1200
 #define PENALTY "-100"
 #define SCORE_OPERATION_1 "+400"
@@ -58,11 +58,12 @@ public:
 	template<typename Type>
 	int    contains(std::vector<Type> vec, Type key);
 	int    getNextSideOfTable(int sideOfTableIndex, Table table);
-	void   getNextTable(int* indTab, int* sideOfTableIndex, Table* table, std::vector<Table> vecTable);
-	void   performChange(int* indTab, int* sideOfTableIndex, Table* table, std::vector<Table> vecTable);
+	void   getNextTable(int* tableIndex, int* sideOfTableIndex, Table* table, std::vector<Table> vecTable);
+	void   performChange(int* tableIndex, int* sideOfTableIndex, Table* table, std::vector<Table> vecTable);
 	float  mapRange(float s, float a1, float a2, float b1, float b2);
 	bool   checkRobotFinished();
 	void   initRoomsObjects();
+	void   resetRobotCondition();
 	void   reposObjects();
 	void   breakTask();
 
@@ -171,44 +172,6 @@ void MyController::onInit(InitEvent &evt)
 	entityNum = m_entities.size();
 
 	for (i=0;i<entityNum;i++) {
-		int found;
-		SimObj* entity = getObj(m_entities[i].c_str());
-		Vector3d pos;
-		entity->getPosition(pos);
-
-		if ( ( found = contains( tablesMap["livingroom"], m_entities[i] ) ) != -1  ) {
-			if (tablesMap["livingroom"][found].name != "Buffet1" )
-			{
-			tablesMap["livingroom"][found].x = pos.x();
-			tablesMap["livingroom"][found].y = pos.y();
-			tablesMap["livingroom"][found].z = pos.z();
-			}
-		}
-
-		else if ( ( found = contains( tablesMap["bedroom"], m_entities[i] ) ) != -1 ) {
-		if (tablesMap["bedroom"][found].name != "Side board2" && tablesMap["bedroom"][found].name != "Side table1")
-			{
-			tablesMap["bedroom"][found].x = pos.x();
-			tablesMap["bedroom"][found].y = pos.y();
-			tablesMap["bedroom"][found].z = pos.z();
-			}
-		}
-
-		else if ( ( found = contains( tablesMap["lobby"], m_entities[i] ) ) != -1 ) {
-		if (tablesMap["lobby"][found].name != "Buffet2" && tablesMap["lobby"][found].name != "Side board1")
-			{
-			tablesMap["lobby"][found].x = pos.x();
-			tablesMap["lobby"][found].y = pos.y();
-			tablesMap["lobby"][found].z = pos.z();
-			}
-		}
-
-		else if ( ( found = contains( tablesMap["kitchen"], m_entities[i] ) ) != -1 ) {
-			tablesMap["kitchen"][found].x = pos.x();
-			tablesMap["kitchen"][found].y = pos.y();
-			tablesMap["kitchen"][found].z = pos.z();
-		}
-
 		if ((m_entities[i] != mdName) &&
 		   (m_entities[i] != roboName) &&
 		   (m_entities[i] != "apple_0") &&
@@ -232,7 +195,6 @@ void MyController::onInit(InitEvent &evt)
 
 	}
 	entNum = m_entNames.size();
-	srand (2);
 
 	// Set the trial number from file "trialnum.txt"
 	trialCount = 0;
@@ -656,7 +618,7 @@ void MyController::onCheckRoom()
 
 	LOG_MSG(("Check robot position, select from 4 rooms"));
 	if (x>-100&&x<500&&z>-425&&z<75)	// living room
-		{ // bed room
+		{
 			num=0;
 			if (m_roomState==3) {
 				std::string msg = "RoboCupReferee/Robot is in [" + m_rooms[num] + "]/" + (std::string)SCORE_OPERATION_1;
@@ -773,9 +735,9 @@ int MyController::getNextSideOfTable(int sideOfTableIndex, Table table) {
 }
 
 
-void MyController::getNextTable(int* indTab, int* sideOfTableIndex, Table* table, std::vector<Table> vecTable) {
-	*indTab = (*indTab + 1) % vecTable.size();
-	*table = vecTable[*indTab];
+void MyController::getNextTable(int* tableIndex, int* sideOfTableIndex, Table* table, std::vector<Table> vecTable) {
+	*tableIndex = (*tableIndex + 1) % vecTable.size();
+	*table = vecTable[*tableIndex];
 
 	bool posAvailable = false;
 
@@ -785,14 +747,14 @@ void MyController::getNextTable(int* indTab, int* sideOfTableIndex, Table* table
 	}
 }
 
-void MyController::performChange(int* indTab, int* sideOfTableIndex, Table* table, std::vector<Table> vecTable) {
+void MyController::performChange(int* tableIndex, int* sideOfTableIndex, Table* table, std::vector<Table> vecTable) {
 	int randChange = rand() % 2; // rand to determine if we look for another position or another table
 
 	if (randChange == 1) {
 		int j = getNextSideOfTable(*sideOfTableIndex, *table);
 
 		if (j == -1) {
-			getNextTable(indTab, sideOfTableIndex, table, vecTable);
+			getNextTable(tableIndex, sideOfTableIndex, table, vecTable);
 		}
 
 		else {
@@ -801,123 +763,12 @@ void MyController::performChange(int* indTab, int* sideOfTableIndex, Table* tabl
 	}
 
 	else {
-		getNextTable(indTab, sideOfTableIndex, table, vecTable);
+		getNextTable(tableIndex, sideOfTableIndex, table, vecTable);
 	}
 }
 
-
-void MyController::reposObjects()
+void MyController::resetRobotCondition()
 {
-	// Set random seed according to the number of trials. It provides the same random condition for all the competior
-	srand (trialCount);
-
-	for (std::map< std::string, std::vector<Target> >::iterator it = targetsMap.begin(); it != targetsMap.end(); ++it) {
-		std::vector<Table> vecTable = tablesMap[it->first];
-		std::vector<Target> placedObjects;
-		int nbTables = vecTable.size();
-		float yObj;
-		float xObj;
-		float zObj;
-
-		for (std::vector<Target>::iterator it2 = it->second.begin(); it2 != it->second.end(); ++it2) {
-			int indTab = rand() % nbTables;
-			Table table = vecTable[indTab];
-			bool posAvailable = false;
-			int sideOfTableIndex;
-			int nbTries;
-
-			/*
-			  we took a random table among the available ones and now we take a random
-			  position on this table (UP, DOWN, LEFT, RIGHT) if it's available
-			*/
-			while (!posAvailable) {
-				sideOfTableIndex = rand() % 4;
-				posAvailable = table.reachable[sideOfTableIndex] != -1;
-			}
-
-			/*
-			  This loop is made mainly to avoid placing different objects at the same
-			  spot. If we try to place the object 10 times and it doesn't succeed in
-			  finding an available spot then we try to find another position on the
-			  current table or change the table directly
-			*/
-
-			do {
-				nbTries = 0;
-
-				if ( sideOfTableIndex == DOWN || sideOfTableIndex == UP ) {
-					yObj = table.y + 0.5 * table.height + 0.5 * it2->height + 1.75;
-					float xOffset = 10;
-					float xInf = table.x - 0.5 * table.length + xOffset;
-					float xSup = table.x + 0.5 * table.length - xOffset;
-					float zOffset = it2->width;
-
-					do {
-						xObj = mapRange(rand(), 0,  RAND_MAX, xInf, xSup);
-						nbTries++;
-					} while (!checkAvailablePos(xObj, *it2, sideOfTableIndex, placedObjects) && nbTries < RANDOM_TRIAL);
-
-					if (nbTries >= RANDOM_TRIAL) {
-						LOG_MSG(("start performChange"));
-						performChange(&indTab, &sideOfTableIndex, &table, vecTable);
-					}
-
-					else {
-
-						if (sideOfTableIndex == DOWN) {
-							zObj = table.z + 0.5 * table.width - zOffset;
-						}
-
-						else {
-							zObj = table.z - 0.5 * table.width + zOffset;
-						}
-					}
-				}
-
-				else {
-					yObj = table.y + 0.5 * table.height + 0.5 * it2->height + 1.75;
-					float zOffset = 10;
-					float zSup = table.z - 0.5 * table.width + zOffset;
-					float zInf = table.z + 0.5 * table.width - zOffset;
-					float xOffset = it2->length;
-
-					do {
-						zObj = mapRange(rand(), 0,  RAND_MAX, zInf, zSup);
-						nbTries++;
-					} while (!checkAvailablePos(zObj, *it2, sideOfTableIndex, placedObjects) && nbTries < RANDOM_TRIAL);
-
-					if (nbTries >= RANDOM_TRIAL) {
-						LOG_MSG(("start performChange"));
-						performChange(&indTab, &sideOfTableIndex, &table, vecTable);
-					}
-
-					else {
-						if (sideOfTableIndex == RIGHT) {
-							xObj = table.x + 0.5 * table.length - xOffset;
-						}
-
-						else {
-							xObj = table.x - 0.5 * table.length + xOffset;
-						}
-					}
-				}
-			} while (nbTries >= RANDOM_TRIAL);
-
-			SimObj* target = getObj(it2->name.c_str());
-			target->setPosition(Vector3d(xObj, yObj, zObj));
-			Rotation rot;
-			rot.setQuaternion(1, 0, 0, 0);
-            target->setRotation(rot);
-			it2->x = xObj;
-			it2->y = yObj;
-			it2->z = zObj;
-
-			placedObjects.push_back(*it2);
-		}
-
-		placedObjects.clear();
-	}
-
 	//reset robot position
 	RobotObj* robot = getRobotObj(roboName.c_str());
 
@@ -980,6 +831,116 @@ void MyController::reposObjects()
 	robot->setJointAngle("WAIST_JOINT0", 0.0);
 	robot->setJointAngle("WAIST_JOINT1", 0.0);
 	robot->setJointAngle("WAIST_JOINT2", 0.0);
+}
+
+void MyController::reposObjects()
+{
+	// Set random seed according to the number of trials. It provides the same random condition for all the competior
+	srand (trialCount);
+
+	for (std::map< std::string, std::vector<Target> >::iterator it = targetsMap.begin(); it != targetsMap.end(); ++it) {
+		std::vector<Table> vecTable = tablesMap[it->first];
+		std::vector<Target> placedObjects;
+		int tablesNum = vecTable.size();
+		float yObj;
+		float xObj;
+		float zObj;
+
+		for (std::vector<Target>::iterator it2 = it->second.begin(); it2 != it->second.end(); ++it2) {
+			int tableIndex = rand() % tablesNum;
+			Table table = vecTable[tableIndex];
+			bool posAvailable = false;
+			int sideOfTableIndex;
+			int triesNum;
+
+			/*
+			  we took a random table among the available ones and now we take a random
+			  position on this table (UP, DOWN, LEFT, RIGHT) if it's available
+			*/
+			while (!posAvailable) {
+				sideOfTableIndex = rand() % 4;
+				posAvailable = table.reachable[sideOfTableIndex] != -1;
+			}
+
+			/*
+			  This loop is made mainly to avoid placing different objects at the same
+			  spot. If we try to place the object 10 times and it doesn't succeed in
+			  finding an available spot then we try to find another position on the
+			  current table or change the table directly
+			*/
+			do {
+				triesNum = 0;
+
+				yObj = table.y + 0.5 * table.height + 0.5 * it2->height + 1.75;
+
+				if ( sideOfTableIndex == DOWN || sideOfTableIndex == UP ) {
+					float xOffset = 10;
+					float xInf = table.x - 0.5 * table.length + xOffset;
+					float xSup = table.x + 0.5 * table.length - xOffset;
+					float zOffset = it2->width;
+
+					do {
+						xObj = mapRange(rand(), 0,  RAND_MAX, xInf, xSup);
+						triesNum++;
+					} while (!checkAvailablePos(xObj, *it2, sideOfTableIndex, placedObjects) && triesNum < RANDOM_TRIAL);
+
+					if (triesNum >= RANDOM_TRIAL) {
+						performChange(&tableIndex, &sideOfTableIndex, &table, vecTable);
+					}
+
+					else {
+
+						if (sideOfTableIndex == DOWN) {
+							zObj = table.z + 0.5 * table.width - zOffset;
+						}
+
+						else {
+							zObj = table.z - 0.5 * table.width + zOffset;
+						}
+					}
+				}
+
+				else {
+					float zOffset = 10;
+					float zSup = table.z - 0.5 * table.width + zOffset;
+					float zInf = table.z + 0.5 * table.width - zOffset;
+					float xOffset = it2->length;
+
+					do {
+						zObj = mapRange(rand(), 0,  RAND_MAX, zInf, zSup);
+						triesNum++;
+					} while (!checkAvailablePos(zObj, *it2, sideOfTableIndex, placedObjects) && triesNum < RANDOM_TRIAL);
+
+					if (triesNum >= RANDOM_TRIAL) {
+						performChange(&tableIndex, &sideOfTableIndex, &table, vecTable);
+					}
+
+					else {
+						if (sideOfTableIndex == RIGHT) {
+							xObj = table.x + 0.5 * table.length - xOffset;
+						}
+
+						else {
+							xObj = table.x - 0.5 * table.length + xOffset;
+						}
+					}
+				}
+			} while (triesNum >= RANDOM_TRIAL);
+
+			SimObj* target = getObj(it2->name.c_str());
+			target->setPosition(Vector3d(xObj, yObj, zObj));
+			Rotation rot;
+			rot.setQuaternion(1, 0, 0, 0);
+            target->setRotation(rot);
+			it2->x = xObj;
+			it2->y = yObj;
+			it2->z = zObj;
+
+			placedObjects.push_back(*it2);
+		}
+
+		placedObjects.clear();
+	}
          
 }
 
@@ -1006,10 +967,10 @@ void MyController::breakTask()
 	if (trialCount < MAX_TRIAL)
 		{
 			broadcastMsg("Task_end");
+			resetRobotCondition();
 			reposObjects();
 		}
 	if (trialCount >= MAX_TRIAL) {
-		// resetRobotCondition();
 		LOG_MSG(("Mission_complete"));
 		broadcastMsg("Mission_complete");
 		if (m_ref != NULL) {
@@ -1034,7 +995,9 @@ void MyController::initRoomsObjects()
 	Target target;
     Vector3d posf;
     SimObj* entity ;
-    /*
+
+	float margin = 10.0;    
+
 	table.name = "Buffet1";
 	table.length = 32.1;
 	table.width  = 54.2;
@@ -1045,10 +1008,11 @@ void MyController::initRoomsObjects()
 	table.reachable[LEFT]  = -1;
 	entity = getObj(table.name.c_str());
 	entity->getPosition(posf);
-	table.x = posf.x()+10;
+	table.x = posf.x() + margin;
 	table.y = posf.y();
 	table.z = posf.z();
-	vec.push_back(table);
+
+	tableVector.push_back(table);
     
 	table.name = "Dinner table1";
 	table.length = 135;
@@ -1058,9 +1022,14 @@ void MyController::initRoomsObjects()
 	table.reachable[DOWN]  = 1;
 	table.reachable[RIGHT] = 1;
 	table.reachable[LEFT]  = 1;
+	entity = getObj(table.name.c_str());
+	entity->getPosition(posf);
+	table.x = posf.x();
+	table.y = posf.y();
+	table.z = posf.z();
 
-	vec.push_back(table);
-     */
+	tableVector.push_back(table);
+     
 	table.name = "Couch_table1";
 	table.length = 128;
 	table.width  = 65.8;
@@ -1069,6 +1038,11 @@ void MyController::initRoomsObjects()
 	table.reachable[DOWN]  = 1;
 	table.reachable[RIGHT] = 1;
 	table.reachable[LEFT]  = 1;
+	entity = getObj(table.name.c_str());
+	entity->getPosition(posf);
+	table.x = posf.x();
+	table.y = posf.y();
+	table.z = posf.z();
 
 	tableVector.push_back(table);
 
@@ -1116,7 +1090,7 @@ void MyController::initRoomsObjects()
 	table.reachable[LEFT]  =  1;
 	entity = getObj(table.name.c_str());
 	entity->getPosition(posf);
-	table.x = posf.x()-10;
+	table.x = posf.x() - margin;
 	table.y = posf.y();
 	table.z = posf.z();
 	tableVector.push_back(table);
@@ -1131,7 +1105,7 @@ void MyController::initRoomsObjects()
 	table.reachable[LEFT]  =  1;
 	entity = getObj(table.name.c_str());
 	entity->getPosition(posf);
-	table.x = posf.x()-10;
+	table.x = posf.x() - margin;
 	table.y = posf.y();
 	table.z = posf.z();
 	tableVector.push_back(table);
@@ -1178,6 +1152,11 @@ void MyController::initRoomsObjects()
 	table.reachable[DOWN]  = 1;
 	table.reachable[RIGHT] = 1;
 	table.reachable[LEFT]  = 1;
+	entity = getObj(table.name.c_str());
+	entity->getPosition(posf);
+	table.x = posf.x();
+	table.y = posf.y();
+	table.z = posf.z();
 
 	tableVector.push_back(table);
 
@@ -1226,9 +1205,9 @@ void MyController::initRoomsObjects()
 	entity = getObj(table.name.c_str());
 	entity->getPosition(posf);
 
-    table.x = posf.x()-10;
+    table.x = posf.x() - margin;
 	table.y = posf.y();
-	table.z = posf.z()-10;
+	table.z = posf.z() - margin;
 	tableVector.push_back(table);
 
 	table.name = "Side board2";
@@ -1241,9 +1220,9 @@ void MyController::initRoomsObjects()
 	table.reachable[LEFT]  = -1;
 	entity = getObj(table.name.c_str());
 	entity->getPosition(posf);
-	table.x = posf.x()+10;
+	table.x = posf.x() + margin;
 	table.y = posf.y();
-	table.z = posf.z()-10;
+	table.z = posf.z() - margin;
 	tableVector.push_back(table);
 
 	target.name = "apple_3";
@@ -1344,14 +1323,6 @@ float MyController::mapRange(float s, float a1, float a2, float b1, float b2)
 {
 	return b1 + ( (s-a1) * (b2-b1) ) / (a2 - a1);
 }
-/*
-  void MyController::takeAwayObjects() {
-  for (std::vector<Target>::iterator it = m_entities[trialCount].begin(); it != m_entities[trialCount].end(); ++it) {
-  SimObj* target = getObj(it->name.c_str());
-  target->setPosition(Vector3d(100000, 100000, 100000));
-  }
-  }
-*/
 
 extern "C" Controller * createController() {
 	return new MyController;
