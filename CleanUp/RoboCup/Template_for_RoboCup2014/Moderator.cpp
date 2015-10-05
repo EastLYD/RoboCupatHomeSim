@@ -7,36 +7,36 @@
 #include <unistd.h>
 
 enum Reachable{
-  UP,
-  DOWN,
-  LEFT,
-  RIGHT
+	UP,
+	DOWN,
+	LEFT,
+	RIGHT
 };
 
 typedef struct target{
-  std::string name;
+	std::string name;
 
-  float x;
-  float y;
-  float z;
+	float x;
+	float y;
+	float z;
 
-  float height; //bb on y-axis
-  float length; //bb on x-axis
-  float width; //bb on z-axis
+	float height; //bb on y-axis
+	float length; //bb on x-axis
+	float width; //bb on z-axis
 } Target;
 
 typedef struct table{
-  std::string name;
+	std::string name;
 
-  float x;
-  float y;
-  float z;
+	float x;
+	float y;
+	float z;
 
-  float length; //bb on x-axis
-  float height; //bb on y-axis
-  float width; //bb on z-axis
+	float length; //bb on x-axis
+	float height; //bb on y-axis
+	float width; //bb on z-axis
 
-  int reachable[4];
+	int reachable[4];
 } Table;
 
 class MyController : public Controller {
@@ -129,7 +129,7 @@ void MyController::onInit(InitEvent &evt)
 
 
 	//for(int i=0; i<m_targets.size(); i++){
-			//std::cout << "m_target: " << m_targets[i].name << std::endl;
+	//std::cout << "m_target: " << m_targets[i].name << std::endl;
 		
 	//}
 
@@ -151,7 +151,7 @@ void MyController::onInit(InitEvent &evt)
 	cnt = m_entities.size();
 	for(i = 0; i < cnt; i++){
 
-		if( (found = contains(m_tables, m_entities[i]) ) != -1 ){
+		if ((found = contains(m_tables, m_entities[i]) ) != -1) {
 			SimObj* entity = getObj(m_entities[i].c_str());
 			Vector3d pos;
 			entity->getPosition(pos);
@@ -161,7 +161,7 @@ void MyController::onInit(InitEvent &evt)
 			m_tables[found].z = pos.z();
 		}
 
-		if((m_entities[i] != mdName) &&
+		if ((m_entities[i] != mdName) &&
 		   (m_entities[i] != roboName) &&
 		   (m_entities[i] != "trashbox_0") &&
 		   (m_entities[i] != "trashbox_1") &&
@@ -205,12 +205,12 @@ void MyController::onInit(InitEvent &evt)
 
 double MyController::onAction(ActionEvent &evt)
 {
-	if(trialCount >= trialMax){
+	if (trialCount >= trialMax) {
 		return retValue;
 	}
 
 	// reset clean-up task
-	if(!isCleaningUp){
+	if (!isCleaningUp) {
 		double deadTime = 3.0;
 		resetRobotCondition();
 		//sleep(1);
@@ -229,8 +229,9 @@ double MyController::onAction(ActionEvent &evt)
 
 	// check whether Referee service is available or not
 	bool available = checkService("RoboCupReferee");
-	if(!available && m_ref != NULL) m_ref = NULL;
-	else if(available && m_ref == NULL){
+	if     (!available && m_ref != NULL)
+		m_ref = NULL;
+	else if (available && m_ref == NULL) {
 		m_ref = connectToService("RoboCupReferee");
 	}
 
@@ -253,9 +254,9 @@ double MyController::onAction(ActionEvent &evt)
 		CParts *parts = locObj->getMainParts();
 		bool state = parts->getCollisionState();
 
-		if(state){
+		if (state) {
 			colState=true;       // collided with main body of robot
-			if(rsLen == 0.0) {
+			if (rsLen == 0.0) {
 				//pcolState=true;
 				r_my->setRotation(prv1Rot);
 			} else {
@@ -264,25 +265,25 @@ double MyController::onAction(ActionEvent &evt)
 			}
 
 			std::string msg = "RoboCupReferee/Collision with [" + m_entNames[k] + "]" "/-100";
-			if(m_ref != NULL){
+			if (m_ref != NULL){
 				m_ref->sendMsgToSrv(msg.c_str());
 			}
-			else{
+			else {
 				LOG_MSG((msg.c_str()));
 			}
 			break;
 		}
 	}
 
-	//if(!colState && !pcolState){
-	if(!colState){
+	//if (!colState && !pcolState){
+	if (!colState){
 		prv1Pos=crrPos;
 		prv1Rot=crrRot;
 		//colState=false;     // reset collision condition
-	} else if(pcolState){
+	} else if (pcolState){
 		for(int i=0;i<jtnum;i++) prv1JAng_r[i]=crrJAng_r[i];
-			pcolState = false;
-		} else{
+		pcolState = false;
+	} else {
 		//Do nothing on "collided" condition
 		//LOG_MSG((colPtName.c_str()));
 		colState = false;
@@ -290,14 +291,14 @@ double MyController::onAction(ActionEvent &evt)
 
 	std::stringstream time_ss;
 	double elapsedTime = evt.time() - startTime;
-	//if(evt.time() - startTime > endTime){
-	if(elapsedTime > endTime){
+	//if (evt.time() - startTime > endTime){
+	if (elapsedTime > endTime){
 		LOG_MSG(("Time_over"));
 		broadcastMsg("Time_over");
 		breakTask();
 		//time_ss << "RoboCupReferee/time/00:00:00";
 	}
-	else{
+	else {
 		double remainedTime = endTime - elapsedTime;
 		int min, sec, msec;
 		sec = (int)remainedTime;
@@ -308,10 +309,10 @@ double MyController::onAction(ActionEvent &evt)
 		time_ss << std::setw(2) << std::setfill('0') << min << ":";
 		time_ss << std::setw(2) << std::setfill('0') << sec;
 	}
-	if(m_ref != NULL){
+	if (m_ref != NULL){
 		m_ref->sendMsgToSrv(time_ss.str().c_str());
 	}
-	else{
+	else {
 		LOG_MSG((time_ss.str().c_str()));
 	}
 
@@ -324,12 +325,12 @@ void MyController::onRecvMsg(RecvMsgEvent &evt)
 	std::string msg    = evt.getMsg();
 	LOG_MSG(("%s: %s",sender.c_str(), msg.c_str()));
 
-	if(/**sender == "robot_000" &&*/ msg == "Task_finished"){
+	if (/**sender == "robot_000" &&*/ msg == "Task_finished"){
 		LOG_MSG(("Task_end"));
 		broadcastMsg("Task_end");
 		breakTask();
 	}
-	if(/*sender == "robot_000" &&*/ msg == "Give_up"){
+	if (/*sender == "robot_000" &&*/ msg == "Give_up"){
 		LOG_MSG(("Task_end"));
 		broadcastMsg("Task_end");
 		breakTask();
@@ -372,11 +373,11 @@ void MyController::breakTask()
 	takeAwayObjects();
 	trialCount++;
 	std::string msg = "RoboCupReferee/reset/";
-	if(m_ref != NULL){
+	if (m_ref != NULL){
 		m_ref->sendMsgToSrv(msg.c_str());
 	}
 			
-	if(trialCount == trialMax){
+	if (trialCount == trialMax){
 		resetRobotCondition();
 		LOG_MSG(("Mission_complete"));
 		broadcastMsg("Mission_complete");
@@ -401,8 +402,8 @@ float MyController::mapRange(float s, float a1, float a2, float b1, float b2){
 bool MyController::checkAvailablePos(float posObj, Target obj, int indPosOnTable, std::vector<Target> vec){
 	bool available = true;
 
-	if(vec.size() > 0){
-		if( indPosOnTable == DOWN || indPosOnTable == UP ){
+	if (vec.size() > 0){
+		if ( indPosOnTable == DOWN || indPosOnTable == UP ){
 			for(std::vector<Target>::iterator it = vec.begin(); it != vec.end() && available; ++it){
 				float xInf = it->x - 0.5 * it->length - 20;
 				float xSup = it->x + 0.5 * it->length + 20;
@@ -410,11 +411,11 @@ bool MyController::checkAvailablePos(float posObj, Target obj, int indPosOnTable
 				float xSupObj = posObj + 0.5 * obj.length;
 
 				available = (xInfObj < xInf && xSupObj < xInf ||
-				xInfObj > xSup && xSupObj > xSup);
+														 xInfObj > xSup && xSupObj > xSup);
 			}
 		}
 
-		else{
+		else {
 			for(std::vector<Target>::iterator it = vec.begin(); it != vec.end() && available; ++it){
 				float zInf = it->z - 0.5 * it->width - 20;
 				float zSup = it->z + 0.5 * it->width + 20;
@@ -422,7 +423,7 @@ bool MyController::checkAvailablePos(float posObj, Target obj, int indPosOnTable
 				float zSupObj = posObj + 0.5 * obj.width;
 
 				available = (zInfObj < zInf && zSupObj < zInf ||
-				zInfObj > zSup && zSupObj > zSup);
+														 zInfObj > zSup && zSupObj > zSup);
 			}
 		}
 	}
@@ -436,8 +437,8 @@ int MyController::getNextPosOnTable(int indPosOnTable, Table table){
 
 	j--;
 
-	if(j != indPosOnTable){
-		if(j == 0)
+	if (j != indPosOnTable){
+		if (j == 0)
 			j = 3;
 		else
 			j--;
@@ -464,19 +465,19 @@ void MyController::getNextTable(int* indTab, int* indPosOnTable, Table* table, s
 void MyController::performChange(int* indTab, int* indPosOnTable, Table* table, std::vector<Table> vecTable){
 	int randChange = rand() % 2; // rand to determine if we look for another position or another table
 
-	if(randChange == 1){
+	if (randChange == 1){
 		int j = getNextPosOnTable(*indPosOnTable, *table);
 
-		if(j == -1){
+		if (j == -1){
 			getNextTable(indTab, indPosOnTable, table, vecTable);
 		}
 
-		else{
+		else {
 			*indPosOnTable = j;
 		}
 	}
 
-	else{
+	else {
 		getNextTable(indTab, indPosOnTable, table, vecTable);
 	}
 }
@@ -496,8 +497,8 @@ void MyController::reposObjects(){
 		int nbTries;
 
 		/*
-			we took a random table among the available ones and now we take a random
-			position on this table (UP, DOWN, LEFT, RIGHT) if it's available
+		  we took a random table among the available ones and now we take a random
+		  position on this table (UP, DOWN, LEFT, RIGHT) if it's available
 		*/
 		while( !posAvailable ) {
 			indPosOnTable = rand() % 4;
@@ -506,17 +507,17 @@ void MyController::reposObjects(){
 
 
 		/*
-			This loop is made mainly to avoid placing different objects at the same
-			spot. If we try to place the object 10 times and it doesn't succeed in
-			finding an available spot then we try to find another position on the
-			current table or change the table directly
+		  This loop is made mainly to avoid placing different objects at the same
+		  spot. If we try to place the object 10 times and it doesn't succeed in
+		  finding an available spot then we try to find another position on the
+		  current table or change the table directly
 		*/
 
 		do{
 			//std::cout << "probleme here MOUZEURFOUQUEUR" << std::endl;
 			nbTries = 0;
 
-			if( indPosOnTable == DOWN || indPosOnTable == UP ){
+			if ( indPosOnTable == DOWN || indPosOnTable == UP ){
 				yObj = table.y + 0.5 * table.height + 0.5 * it->height + 1.75;
 				float xOffset = it->length;
 				//float xOffset = 20;
@@ -530,23 +531,23 @@ void MyController::reposObjects(){
 					nbTries++;
 				} while(!checkAvailablePos(xObj, *it, indPosOnTable, placedObjects) && nbTries < 10);
 
-				if(nbTries >= 9){
+				if (nbTries >= 9){
 					performChange(&indTab, &indPosOnTable, &table, m_tables);
 				}
 
-				else{
+				else {
 
-					if(indPosOnTable == DOWN){
+					if (indPosOnTable == DOWN){
 						zObj = table.z + 0.5 * table.width - zOffset;
 					}
 
-					else{
-					zObj = table.z - 0.5 * table.width + zOffset;
+					else {
+						zObj = table.z - 0.5 * table.width + zOffset;
 					}
 				}
 			}
 
-			else{
+			else {
 				yObj = table.y + 0.5 * table.height + 0.5 * it->height + 2.0;
 				float zOffset = it->width;
 				float zSup = table.z - 0.5 * table.width + zOffset;
@@ -558,16 +559,16 @@ void MyController::reposObjects(){
 					nbTries++;
 				} while(!checkAvailablePos(zObj, *it, indPosOnTable, placedObjects) && nbTries < 10);
 
-				if(nbTries >= 9){
+				if (nbTries >= 9){
 					performChange(&indTab, &indPosOnTable, &table, m_tables);
 				}
 
-				else{
-					if(indPosOnTable == RIGHT){
+				else {
+					if (indPosOnTable == RIGHT){
 						xObj = table.x + 0.5 * table.length - xOffset;
 					}
 
-					else{
+					else {
 						xObj = table.x - 0.5 * table.length + xOffset;
 					}
 				}
@@ -667,9 +668,9 @@ std::map< int, std::vector<std::string> > MyController::parseFileTrials(std::str
 		std::cout << "\tBUFF: ";// << std::endl;
 		std::cout << buf << std::endl;
 		/*std::cout << "\tfound_name1: " << found_name1 << std::endl;
-		std::cout << "\tfound_name2: " << found_name1 << std::endl;
-		std::cout << "\tfound_name3: " << found_name1 << std::endl;
-		std::cout << "\tfound_name4: " << found_name1 << std::endl;
+		  std::cout << "\tfound_name2: " << found_name1 << std::endl;
+		  std::cout << "\tfound_name3: " << found_name1 << std::endl;
+		  std::cout << "\tfound_name4: " << found_name1 << std::endl;
 		*/
 		vec.push_back(buf.substr(0, found_name1));
 		vec.push_back(buf.substr(found_name1 + 1, found_name2 - found_name1 - 1));
@@ -701,7 +702,7 @@ int MyController::contains(std::vector<Type> vec, std::string key){
  		found = vec[i].name == key;
 	}
 
-	if(!found)
+	if (!found)
 		i = -1;
 	else
 		i--;
