@@ -16,25 +16,25 @@ enum Reachable{
 typedef struct target{
 	std::string name;
 
-	float x;
-	float y;
-	float z;
+	double x;
+	double y;
+	double z;
 
-	float height; //bb on y-axis
-	float length; //bb on x-axis
-	float width;  //bb on z-axis
+	double height; //bb on y-axis
+	double length; //bb on x-axis
+	double width;  //bb on z-axis
 } Target;
 
 typedef struct table{
 	std::string name;
 
-	float x;
-	float y;
-	float z;
+	double x;
+	double y;
+	double z;
 
-	float length; //bb on x-axis
-	float height; //bb on y-axis
-	float width;  //bb on z-axis
+	double length; //bb on x-axis
+	double height; //bb on y-axis
+	double width;  //bb on z-axis
 
 	int reachable[4];
 } Table;
@@ -96,12 +96,12 @@ private:
 	std::vector<Target> m_targets;
 	std::vector<Table> m_tables;
 
-	bool checkAvailablePos(float posObj, Target obj, int indPosOnTable, std::vector<Target> vec);
+	bool checkAvailablePos(double posObj, Target obj, int indPosOnTable, std::vector<Target> vec);
 	void reposObjects();
 	int getNextPosOnTable(int indPosOnTable, Table table);
 	void getNextTable(int* indTab, int* indPosOnTable, Table* table, std::vector<Table> vecTable);
 	void performChange(int* indTab, int* indPosOnTable, Table* table, std::vector<Table> vecTable);
-	float mapRange(float s, float a1, float a2, float b1, float b2);
+	double mapRange(double s, double a1, double a2, double b1, double b2);
 	void takeAwayObjects();
 
 	template<typename Obj>
@@ -391,7 +391,7 @@ void MyController::breakTask()
   b1: lower boundary of the arrival range
   b2: upper boundary of the arrival range
 */
-float MyController::mapRange(float s, float a1, float a2, float b1, float b2){
+double MyController::mapRange(double s, double a1, double a2, double b1, double b2){
 	return b1 + ( (s-a1) * (b2-b1) ) / (a2 - a1);
 }
 
@@ -399,16 +399,16 @@ float MyController::mapRange(float s, float a1, float a2, float b1, float b2){
   check if the position, posObj, where we want to put the object, obj, is
   available compared to the already placed objects contained in the vector, vec
 */
-bool MyController::checkAvailablePos(float posObj, Target obj, int indPosOnTable, std::vector<Target> vec){
+bool MyController::checkAvailablePos(double posObj, Target obj, int indPosOnTable, std::vector<Target> vec){
 	bool available = true;
 
 	if (vec.size() > 0){
 		if ( indPosOnTable == DOWN || indPosOnTable == UP ){
 			for(std::vector<Target>::iterator it = vec.begin(); it != vec.end() && available; ++it){
-				float xInf = it->x - 0.5 * it->length - 20;
-				float xSup = it->x + 0.5 * it->length + 20;
-				float xInfObj = posObj - 0.5 * obj.length;
-				float xSupObj = posObj + 0.5 * obj.length;
+				double xInf = it->x - 0.5 * it->length - 20;
+				double xSup = it->x + 0.5 * it->length + 20;
+				double xInfObj = posObj - 0.5 * obj.length;
+				double xSupObj = posObj + 0.5 * obj.length;
 
 				available = (xInfObj < xInf && xSupObj < xInf ||
 														 xInfObj > xSup && xSupObj > xSup);
@@ -417,10 +417,10 @@ bool MyController::checkAvailablePos(float posObj, Target obj, int indPosOnTable
 
 		else {
 			for(std::vector<Target>::iterator it = vec.begin(); it != vec.end() && available; ++it){
-				float zInf = it->z - 0.5 * it->width - 20;
-				float zSup = it->z + 0.5 * it->width + 20;
-				float zInfObj = posObj - 0.5 * obj.width;
-				float zSupObj = posObj + 0.5 * obj.width;
+				double zInf = it->z - 0.5 * it->width - 20;
+				double zSup = it->z + 0.5 * it->width + 20;
+				double zInfObj = posObj - 0.5 * obj.width;
+				double zSupObj = posObj + 0.5 * obj.width;
 
 				available = (zInfObj < zInf && zSupObj < zInf ||
 														 zInfObj > zSup && zSupObj > zSup);
@@ -485,9 +485,9 @@ void MyController::performChange(int* indTab, int* indPosOnTable, Table* table, 
 void MyController::reposObjects(){
 	int nbTables = m_tables.size();
 	std::vector<Target> placedObjects;
-	float yObj;
-	float xObj;
-	float zObj;
+	double yObj;
+	double xObj;
+	double zObj;
 
 	for(std::vector<Target>::iterator it = m_targetsOnTrial[trialCount].begin(); it != m_targetsOnTrial[trialCount].end(); ++it){
 		int indTab = rand() % nbTables;
@@ -519,12 +519,12 @@ void MyController::reposObjects(){
 
 			if ( indPosOnTable == DOWN || indPosOnTable == UP ){
 				yObj = table.y + 0.5 * table.height + 0.5 * it->height + 1.75;
-				float xOffset = it->length;
-				//float xOffset = 20;
-				float xInf = table.x - 0.5 * table.length + xOffset;
-				float xSup = table.x + 0.5 * table.length - xOffset;
-				float zOffset = it->width;
-				//float zOffset = 20;
+				double xOffset = it->length;
+				//double xOffset = 20;
+				double xInf = table.x - 0.5 * table.length + xOffset;
+				double xSup = table.x + 0.5 * table.length - xOffset;
+				double zOffset = it->width;
+				//double zOffset = 20;
 
 				do{
 					xObj = mapRange(rand(), 0,  RAND_MAX, xInf, xSup);
@@ -549,10 +549,10 @@ void MyController::reposObjects(){
 
 			else {
 				yObj = table.y + 0.5 * table.height + 0.5 * it->height + 2.0;
-				float zOffset = it->width;
-				float zSup = table.z - 0.5 * table.width + zOffset;
-				float zInf = table.z + 0.5 * table.width - zOffset;
-				float xOffset = it->length;
+				double zOffset = it->width;
+				double zSup = table.z - 0.5 * table.width + zOffset;
+				double zInf = table.z + 0.5 * table.width - zOffset;
+				double xOffset = it->length;
 
 				do{
 					zObj = mapRange(rand(), 0,  RAND_MAX, zInf, zSup);
