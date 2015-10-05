@@ -22,7 +22,7 @@ typedef struct target{
 
 	float height; //bb on y-axis
 	float length; //bb on x-axis
-	float width; //bb on z-axis
+	float width;  //bb on z-axis
 } Target;
 
 typedef struct table{
@@ -34,7 +34,7 @@ typedef struct table{
 
 	float length; //bb on x-axis
 	float height; //bb on y-axis
-	float width; //bb on z-axis
+	float width;  //bb on z-axis
 
 	int reachable[4];
 } Table;
@@ -456,7 +456,7 @@ void MyController::getNextTable(int* indTab, int* indPosOnTable, Table* table, s
 
 	bool posAvailable = false;
 
-	while( !posAvailable ) {
+	while (!posAvailable) {
 		*indPosOnTable = rand() % 4;
 		posAvailable = table->reachable[*indPosOnTable] != -1;
 	}
@@ -465,10 +465,10 @@ void MyController::getNextTable(int* indTab, int* indPosOnTable, Table* table, s
 void MyController::performChange(int* indTab, int* indPosOnTable, Table* table, std::vector<Table> vecTable){
 	int randChange = rand() % 2; // rand to determine if we look for another position or another table
 
-	if (randChange == 1){
+	if (randChange == 1) {
 		int j = getNextPosOnTable(*indPosOnTable, *table);
 
-		if (j == -1){
+		if (j == -1) {
 			getNextTable(indTab, indPosOnTable, table, vecTable);
 		}
 
@@ -500,7 +500,7 @@ void MyController::reposObjects(){
 		  we took a random table among the available ones and now we take a random
 		  position on this table (UP, DOWN, LEFT, RIGHT) if it's available
 		*/
-		while( !posAvailable ) {
+		while (!posAvailable) {
 			indPosOnTable = rand() % 4;
 			posAvailable = table.reachable[indPosOnTable] != -1;
 		}
@@ -529,7 +529,7 @@ void MyController::reposObjects(){
 				do{
 					xObj = mapRange(rand(), 0,  RAND_MAX, xInf, xSup);
 					nbTries++;
-				} while(!checkAvailablePos(xObj, *it, indPosOnTable, placedObjects) && nbTries < 10);
+				} while (!checkAvailablePos(xObj, *it, indPosOnTable, placedObjects) && nbTries < 10);
 
 				if (nbTries >= 9){
 					performChange(&indTab, &indPosOnTable, &table, m_tables);
@@ -573,7 +573,7 @@ void MyController::reposObjects(){
 					}
 				}
 			}
-		}while(nbTries >= 9);
+		} while (nbTries >= 9);
 
 		SimObj* target = getObj(it->name.c_str());
 		target->setPosition(Vector3d(xObj, yObj, zObj));
@@ -599,18 +599,18 @@ std::vector<Table> MyController::parseFileTables(std::string fileName){
 	fin.open(fileName.c_str());
 	std::string buf;
 
-	while(std::getline(fin, buf)){
+	while (std::getline(fin, buf)) {
 		std::cout << "BUFF Tables: ";// << std::endl;
 		std::cout << buf << std::endl;
 
-		std::size_t found_name = buf.find(",");
+		std::size_t found_name   = buf.find(",");
 		std::size_t found_height = buf.find(",", found_name + 1);
-		std::size_t found_width = buf.find(",", found_height + 1);
+		std::size_t found_width  = buf.find(",", found_height + 1);
 
-		obj.name = buf.substr(0, found_name);
-		obj.height = atof( buf.substr(found_name + 1, found_height - found_name - 1).c_str() );
-		obj.width = atof( buf.substr(found_height + 1, found_width - found_height - 1).c_str() );
-		obj.length = atof( buf.substr(found_width + 1, buf.size() - found_width - 1).c_str() );
+		obj.name   = buf.substr(0, found_name);
+		obj.height = atof( buf.substr(found_name   + 1, found_height - found_name   - 1).c_str() );
+		obj.width  = atof( buf.substr(found_height + 1, found_width  - found_height - 1).c_str() );
+		obj.length = atof( buf.substr(found_width  + 1, buf.size()   - found_width  - 1).c_str() );
 		//obj.length = atof( buf.substr(found_width + 1, buf.size() - found_width - 2).c_str() );
 
 		vecObj.push_back(obj);
@@ -629,15 +629,15 @@ std::vector<Target> MyController::parseFileTargets(std::string fileName){
 	fin.open(fileName.c_str());
 	std::string buf;
 
-	while(std::getline(fin, buf)){
+	while (std::getline(fin, buf)) {
 		std::size_t found_name = buf.find(",");
 		std::size_t found_height = buf.find(",", found_name + 1);
 		std::size_t found_width = buf.find(",", found_height + 1);
 
-		obj.name = buf.substr(0, found_name);
-		obj.height = atof( buf.substr(found_name + 1, found_height - found_name - 1).c_str() );
-		obj.width = atof( buf.substr(found_height + 1, found_width - found_height - 1).c_str() );
-		obj.length = atof( buf.substr(found_width + 1, buf.size() - found_width - 2).c_str() );
+		obj.name   = buf.substr(0, found_name);
+		obj.height = atof( buf.substr(found_name   + 1, found_height - found_name   - 1).c_str() );
+		obj.width  = atof( buf.substr(found_height + 1, found_width  - found_height - 1).c_str() );
+		obj.length = atof( buf.substr(found_width  + 1, buf.size()   - found_width  - 2).c_str() );
 
 		vecObj.push_back(obj);
 	}
@@ -656,7 +656,7 @@ std::map< int, std::vector<std::string> > MyController::parseFileTrials(std::str
 	fin.open(fileName.c_str());
 	std::string buf;
 
-	while(std::getline(fin, buf)){
+	while (std::getline(fin, buf)) {
 		vec.clear();
 
 		std::size_t found_name1 = buf.find(",");
@@ -676,7 +676,7 @@ std::map< int, std::vector<std::string> > MyController::parseFileTrials(std::str
 		vec.push_back(buf.substr(found_name1 + 1, found_name2 - found_name1 - 1));
 		vec.push_back(buf.substr(found_name2 + 1, found_name3 - found_name2 - 1));
 		vec.push_back(buf.substr(found_name3 + 1, found_name4 - found_name3 - 1));
-		vec.push_back(buf.substr(found_name4 + 1, buf.size() - found_name4 - 1));
+		vec.push_back(buf.substr(found_name4 + 1, buf.size()  - found_name4 - 1));
 		//vec.push_back(buf.substr(found_name4 + 1, buf.size() - found_name4 - 2));
 
 		trialsObj[i] = vec;
