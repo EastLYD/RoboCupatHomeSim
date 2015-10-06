@@ -7,10 +7,7 @@
 #include <math.h>
 #include <unistd.h>
 
-#define PI 3.1415926535
-
-//角度からラジアンに変換します
-#define DEG2RAD(DEG) ( (PI) * (DEG) / 180.0 )   
+#define DEG2RAD(DEG) ( (M_PI) * (DEG) / 180.0 )   
 
 struct coordinate{
 	double x[256];
@@ -349,7 +346,7 @@ double MyController::rotateTowardObj(Vector3d pos, double velocity, double now)
 	}
 	else {
 	// 回転すべき円周距離
-	double distance = m_distance*PI*fabs(targetAngle)/(2*PI);
+	double distance = m_distance * M_PI*fabs(targetAngle)/(2*M_PI);
 
 	// 車輪の半径から移動速度を得る
 	double vel = m_radius*velocity;
