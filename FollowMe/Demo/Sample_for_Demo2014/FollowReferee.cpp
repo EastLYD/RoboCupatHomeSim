@@ -7,10 +7,8 @@
 #include <math.h>
 #include <unistd.h>
 
-#define PI 3.1415926535
-
 //角度からラジアンに変換します
-#define DEG2RAD(DEG) ( (PI) * (DEG) / 180.0 )
+#define DEG2RAD(DEG) ( (M_PI) * (DEG) / 180.0 )
 
 struct coordinate{
 	double x[255];
@@ -74,17 +72,17 @@ private:
 	int sleeptime;
 	const static int SIZE = 30;
 	int motionNum;
-	float HEIGHT[SIZE];
-	float LARM_JOINT1[SIZE]; // left shoulder
-	float LARM_JOINT3[SIZE]; // left elbow
-	float RARM_JOINT1[SIZE]; // right shoulder
-	float RARM_JOINT3[SIZE]; // right elbow
-	float LLEG_JOINT2[SIZE]; // left groin(leg)
-	float LLEG_JOINT4[SIZE]; // left knee
-	float LLEG_JOINT6[SIZE]; // left ankle
-	float RLEG_JOINT2[SIZE]; // right groin
-	float RLEG_JOINT4[SIZE]; // right knee
-	float RLEG_JOINT6[SIZE]; // right ankle
+	double HEIGHT[SIZE];
+	double LARM_JOINT1[SIZE]; // left shoulder
+	double LARM_JOINT3[SIZE]; // left elbow
+	double RARM_JOINT1[SIZE]; // right shoulder
+	double RARM_JOINT3[SIZE]; // right elbow
+	double LLEG_JOINT2[SIZE]; // left groin(leg)
+	double LLEG_JOINT4[SIZE]; // left knee
+	double LLEG_JOINT6[SIZE]; // left ankle
+	double RLEG_JOINT2[SIZE]; // right groin
+	double RLEG_JOINT4[SIZE]; // right knee
+	double RLEG_JOINT6[SIZE]; // right ankle
 };
 
 void MyController::onInit(InitEvent &evt) 
@@ -147,7 +145,7 @@ void MyController::onInit(InitEvent &evt)
 		fscanf(fp, "%d", &motionNum);
 		fscanf(fp, "%d", &sleeptime);
 		for(int i=0; i<motionNum; i++){
-			fscanf(fp, "%f %f %f %f %f %f %f %f %f %f %f",
+			fscanf(fp, "%lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf",
 					   &HEIGHT[i],
 					   &LARM_JOINT1[i],
 					   &LARM_JOINT3[i],
