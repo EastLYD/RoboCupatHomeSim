@@ -4,10 +4,8 @@
 #include <unistd.h>
 #include <algorithm>
 
-#define PI 3.1415926535
-
-//角度からラジアンに変換します
-#define DEG2RAD(DEG) ( (PI) * (DEG) / 180.0 )   
+// Convert degree to radian
+#define DEG2RAD(DEG) ( (M_PI) * (DEG) / 180.0 )   
 
 bool start;
 bool sw;
