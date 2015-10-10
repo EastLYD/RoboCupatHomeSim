@@ -5,8 +5,7 @@
   <instanciate class="WheelRobot-nii-v1.xml" type="Robot">
     <set-attr-value name="name" value="robot_000"/>
     <set-attr-value name="language" value="c++"/>
-    <set-attr-value name="implementation"
-                    value="./CleanUpDemo2014Robo.so"/>
+    <set-attr-value name="implementation" value="./CleanUpDemo2014Robo.so"/>
     <set-attr-value name="dynamics" value="false"/>
     <set-attr-value name="x" value="100.0"/>
     <set-attr-value name="y" value="30.0"/>
@@ -44,8 +43,7 @@
     <set-attr-value name="y" value="200.0"/>
     <set-attr-value name="z" value="190.0"/>
     <set-attr-value name="language" value="c++"/>
-    <set-attr-value name="implementation"
-                    value="./Moderator.so"/>
+    <set-attr-value name="implementation" value="./Moderator.so"/>
     <set-attr-value name="collision" value="false"/>
     <set-attr-value name="graspable" value="false"/>
   </instanciate>
@@ -58,7 +56,7 @@
     <set-attr-value name="y" value="1000.0"/>
     <set-attr-value name="z" value="1000.0"/>
     <set-attr-value name="collision" value="true"/>
-		<set-attr-value name="graspable" value="true"/>
+	<set-attr-value name="graspable" value="true"/>
   </instanciate>  
   <instanciate class="seCannedjuice_350ml_c01.xml">  
     <set-attr-value name="name" value="can_1"/>  
@@ -66,8 +64,8 @@
     <set-attr-value name="x" value="1000.0"/>
     <set-attr-value name="y" value="1000.0"/>
     <set-attr-value name="z" value="1000.0"/>
-    <set-attr-value name="collision" value="true"/>
-		<set-attr-value name="graspable" value="true"/>
+	<set-attr-value name="collision" value="true"/>
+	<set-attr-value name="graspable" value="true"/>
   </instanciate>
 
 <!--
@@ -195,7 +193,7 @@
     <set-attr-value name="y" value="30.0"/>
     <set-attr-value name="z" value="29.017"/>
     <set-attr-value name="graspable" value="false"/>
-		<set-attr-value name="collision" value="true"/>
+	<set-attr-value name="collision" value="true"/>
   </instanciate>
   <instanciate class="A1_sofas.xml">
     <set-attr-value name="name" value="Sofas1"/>
@@ -204,7 +202,7 @@
     <set-attr-value name="y" value="39.630"/>
     <set-attr-value name="z" value="154.5"/>
     <set-attr-value name="graspable" value="false"/>
-		<set-attr-value name="collision" value="true"/>
+	<set-attr-value name="collision" value="true"/>
   </instanciate>
   <instanciate class="A1_low_cupboard.xml">
     <set-attr-value name="name" value="Low cupboard1"/>
@@ -222,7 +220,7 @@
     <set-attr-value name="y" value="94.294001"/>
     <set-attr-value name="z" value="-241.15"/>
     <set-attr-value name="graspable" value="false"/>
-		<set-attr-value name="collision" value="false"/>
+	<set-attr-value name="collision" value="false"/>
   </instanciate>
   <instanciate class="A1_tableaux.xml">
     <set-attr-value name="name" value="Tableaux1"/>
@@ -231,7 +229,7 @@
     <set-attr-value name="y" value="100.0"/>
     <set-attr-value name="z" value="205.05"/>
     <set-attr-value name="graspable" value="false"/>
-		<set-attr-value name="collision" value="false"/>
+	<set-attr-value name="collision" value="false"/>
   </instanciate>
   <instanciate class="A1_kitchen.xml">
     <set-attr-value name="name" value="Kitchen1"/>
@@ -294,8 +292,7 @@
     <set-attr-value name="z" value="-220.0"/>  
     <set-attr-value name="collision" value="true"/>
     <set-attr-value name="language" value="c++"/>
-    <set-attr-value name="implementation"
-                    value="./TrashBox.so"/>
+    <set-attr-value name="implementation" value="./TrashBox.so"/>
     <set-attr-value name="graspable" value="false"/>
   </instanciate>  
   <instanciate class="seTrashbox_c02.xml">  
@@ -306,8 +303,7 @@
     <set-attr-value name="z" value="-220.0"/>  
     <set-attr-value name="collision" value="true"/>
     <set-attr-value name="language" value="c++"/>
-    <set-attr-value name="implementation"
-                    value="./TrashBox.so"/>
+    <set-attr-value name="implementation" value="./TrashBox.so"/>
     <set-attr-value name="graspable" value="false"/>
   </instanciate>  
   <instanciate class="seTrashbox_c03.xml">  
@@ -318,8 +314,7 @@
     <set-attr-value name="z" value="-220.0"/>  
     <set-attr-value name="collision" value="true"/>
     <set-attr-value name="language" value="c++"/>
-    <set-attr-value name="implementation"
-                    value="./TrashBox.so"/>
+    <set-attr-value name="implementation" value="./TrashBox.so"/>
     <set-attr-value name="graspable" value="false"/>
   </instanciate>  
   <instanciate class="seWagon_c02.xml">  
@@ -331,8 +326,7 @@
     <set-attr-value name="z" value="-200.0"/>  
     <set-attr-value name="collision" value="true"/>
     <set-attr-value name="language" value="c++"/>
-    <set-attr-value name="implementation"
-                    value="./Wagon.so"/>
+    <set-attr-value name="implementation" value="./Wagon.so"/>
     <set-attr-value name="graspable" value="false"/>
   </instanciate>
 
@@ -374,15 +368,15 @@
     <set-attr-value name="graspable" value="false"/>
   </instanciate>
  <instanciate class="floor.xml">
-   <set-attr-value name="name" value="floor"/>
-   <set-attr-value name="x" value="0.0"/>
-   <set-attr-value name="y" value="0.1"/>
-   <set-attr-value name="z" value="0.0"/>
-    <set-attr-value name="scalex" value="2.5"/>  
-    <set-attr-value name="scaley" value="1.0"/>  
-    <set-attr-value name="scalez" value="1.25"/>  
-   <set-attr-value name="dynamics" value="false"/>
-   <set-attr-value name="collision" value="false"/>
-    <set-attr-value name="graspable" value="false"/>
+	<set-attr-value name="name" value="floor"/>
+	<set-attr-value name="x" value="0.0"/>
+	<set-attr-value name="y" value="0.1"/>
+	<set-attr-value name="z" value="0.0"/>
+	<set-attr-value name="scalex" value="2.5"/>  
+	<set-attr-value name="scaley" value="1.0"/>  
+	<set-attr-value name="scalez" value="1.25"/>  
+	<set-attr-value name="dynamics" value="false"/>
+	<set-attr-value name="collision" value="false"/>
+	<set-attr-value name="graspable" value="false"/>
  </instanciate>
 </world>
