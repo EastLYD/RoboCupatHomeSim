@@ -10,6 +10,7 @@
 
 #define DEG2RAD(DEG) ( (M_PI) * (DEG) / 180.0 )
 
+#define AVATAR_NAME	"man_000"
 
 // The robot must release the Object before to start a new task
 
@@ -855,7 +856,7 @@ void RobotController::onInit(InitEvent &evt)
 	m_onActionReturn = 1.0;
 	m_speedDelta = 2.0;
 
-	m_avatar = "man_000";
+	m_avatar = AVATAR_NAME;
 
 	m_my = getRobotObj(myname());
 
@@ -966,7 +967,7 @@ double RobotController::onAction(ActionEvent &evt)
 			take_action = true;
 			if (cycle > 0)
 				{
-					sendMsg("man_000","On_Take");
+					sendMsg(m_avatar, "On_Take");
 					sendMsg("VoiceReco_Service"," Please show me which object to take ");
 					m_state = 30;
 					break;
@@ -975,7 +976,7 @@ double RobotController::onAction(ActionEvent &evt)
 				{
 					sendMsg("VoiceReco_Service"," Task finished Please press  button Two to restart the cycle ");
                       
-					sendMsg("man_000","restart_on");
+					sendMsg(m_avatar, "restart_on");
 					m_state = 60;
 					break;
                 }
@@ -1088,7 +1089,7 @@ double RobotController::onAction(ActionEvent &evt)
 					sleep(2);
 					reset_op = true;
 					put_action = true;
-					sendMsg("man_000","On_put");
+					sendMsg(m_avatar, "On_put");
 					m_state = 99;
 				}
 			break;
@@ -1455,7 +1456,7 @@ void RobotController::onRecvMsg(RecvMsgEvent &evt)
 		{
 			reset_out = true;
 			m_state = 100;
-			sendMsg("man_000","reset_put");
+			sendMsg(m_avatar, "reset_put");
 			/*
 			  m_trashes.push_back(m_pointedObject);
 			  Vector3d  m_BottleReset = Vector3d(40.0, 59.15, 50.0);
@@ -1520,14 +1521,14 @@ void RobotController::onRecvMsg(RecvMsgEvent &evt)
 		{
 			reset_out = true;
 			m_state = 25;
-			sendMsg("man_000","reset_take");
+			sendMsg(m_avatar, "reset_take");
 
 		}
 	else if (msg == "reset" && m_grasp_left == true && reset_op == true && reset_out == false)
 		{
 			reset_out = true;
 			m_state = 200;
-			sendMsg("man_000","reset_put");
+			sendMsg(m_avatar, "reset_put");
 		}
 	else
 		{
