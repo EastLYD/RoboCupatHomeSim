@@ -51,7 +51,6 @@ private:
 	bool chk_orsDK2;
     bool restart_on;
 
-	// ロボットの名前
 	std::string robotName;
 
 	bool init_flag;
@@ -101,13 +100,11 @@ void UserController::onInit(InitEvent &evt)
 
 	restart_on = false;
 
-	// Add by inamura on 28th June 2013
 	my->setJointAngle ("RLEG_JOINT2", DEG2RAD(0));
 	my->setJointAngle ("LLEG_JOINT2", DEG2RAD(0));
 	my->setJointAngle ("RLEG_JOINT4", DEG2RAD(0));
 	my->setJointAngle ("LLEG_JOINT4", DEG2RAD(0));
 
-	// Add by inamura on 5th March 2014
 	for (int i=0; i<5; i++) {
 		for (int j=1; j<4; j++) {
 			// Initial quaternion
@@ -501,13 +498,9 @@ void UserController::moveBodyByKINECT(char* all_msg)
 				//エージェント座標からグローバル座標への変換
 				double gx = cos(m_yrot)*x - sin(m_yrot)*z;
 				double gz = sin(m_yrot)*x + cos(m_yrot)*z;
-				//	printf("x=%f, y=%f, z=%f\n",x,y,z);
-				///	printf("m_yrot=%f, cos(m_yrot)=%f, sin(m_yrot)=%f\n",m_yrot,cos(m_yrot),sin(m_yrot));
-				///	printf("gx=%f, gz=%f\n",gx,gz);
-				//	printf("m_posx=%f, m_posy=%f, m_posz=%f\n",m_posx,m_posy,m_posz);
-        		//printf("m_posx+gx=%f, m_posy+y=%f, m_posz+gz=%f\n",m_posx+gx,m_posy+y,m_posz+gz);
+
 				my->setPosition(m_posx+gx,m_posy,m_posz+gz);
-				//printf("the avatar postion is  X : %f  ----- Y: %f ------ Z :  %f ---- end \n",m_posx+gx,m_posy+y,m_posz+gz);
+
 				continue;
 			} 
 			else if(strcmp(type,"WAIST") == 0) {
@@ -521,20 +514,7 @@ void UserController::moveBodyByKINECT(char* all_msg)
 				m_qx = x;
 				m_qy = y;
 				m_qz = z; 
-				// Spherical linear interpolation on quaternion
-				/*
-				  bodyQ_pre[0] = m_qw; bodyQ_pre[1] = m_qx; bodyQ_pre[2] = m_qy; bodyQ_pre[3] = m_qz;
-				  bodyQ_now[0] =    w; bodyQ_now[1] =    x; bodyQ_now[2] =    y; bodyQ_now[3] =    z;
-				  //slerp(bodyQ_pre, bodyQ_now, 0.5, &bodyQ_middle);
-				  slerp(bodyQ_pre, bodyQ_now, 0.5, bodyQ_middle);
-				  printf("WAIST    =(%f,%f,%f,%f)\n",w,               x,               y,               z);
-				  printf("bodyQ_middle=(%f,%f,%f,%f)\n",bodyQ_middle[0], bodyQ_middle[1], bodyQ_middle[2], bodyQ_middle[3]);//wrong
-				  my->setJointQuaternion("ROOT_JOINT0", bodyQ_middle[0], bodyQ_middle[1], bodyQ_middle[2], bodyQ_middle[3]);
-				  m_qw = bodyQ_middle[0];
-				  m_qx = bodyQ_middle[1];
-				  m_qy = bodyQ_middle[2];
-				  m_qz = bodyQ_middle[3];
-				*/
+
 				my->setJointQuaternion("ROOT_JOINT0", w, x, y, z);
 				continue;
 			}
