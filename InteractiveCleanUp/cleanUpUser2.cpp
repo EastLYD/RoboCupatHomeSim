@@ -22,8 +22,6 @@ public:
 	void moveByORSDK2(std::string ss);
 private:
 
-	//移動速度
-	double vel;
 	ViewService *m_view;
 	BaseService *m_kinect;
 	BaseService *m_hmd;
@@ -32,18 +30,15 @@ private:
 	bool take;
 	bool put;
 
-	//初期位置
-	double m_posx, m_posy, m_posz;
+	double m_posx, m_posy, m_posz; //Initial position
 	double m_yrot;
 	double m_range;
 	
-	//データ数（関節数）最大値
-	int m_maxsize;
+	int m_maxsize;  // Maximum number of joints
 	
-	// 前回送信したyaw, pitch roll
-	double pyaw, ppitch, proll;
+	double pyaw, ppitch, proll; // Previous orientation in previous moment
 
-	// 体全体の角度
+	// Orientation of whole body
 	double m_qw, m_qy, m_qx, m_qz;
 	double o_qw, o_qx, o_qy, o_qz;
 	double po_qw, po_qx, po_qy, po_qz;
@@ -71,10 +66,9 @@ void UserController::onInit(InitEvent &evt)
 	m_wii    = NULL;
 	m_orsDK2 = NULL;
 	
-	vel      = 10.0;
 	srand(time(NULL));
 	
-	//初期位置の設定
+	// Set initial position
 	SimObj *my = this->getObj(this->myname());
 	m_posx = my->x();
 	m_posy = my->y();
@@ -87,7 +81,7 @@ void UserController::onInit(InitEvent &evt)
 	if(qw*qy > 0)
 		m_yrot = -1*m_yrot;
 	
-	// 体全体の向き
+	// Orientation of whole body
 	m_qw = 1.0;
 	m_qx = 0.0;
 	m_qy = 0.0;
@@ -119,22 +113,20 @@ void UserController::onInit(InitEvent &evt)
 	init_flag = true;
 }
 
-//定期的に呼び出される関数
+
 double UserController::onAction(ActionEvent &evt)
 {
 	// TODO: Is it required to check every time?
-	// サービスが使用可能か定期的にチェックする
+	// Check whether the services are available or not
 	bool av_kinect = checkService("SIG_KINECT_V2");
 	bool av_hmd    = checkService("SIGORS");
 	bool av_wii    = checkService("Wii_Service");
 	//bool chk_orsDK2 = checkService("SIGORSDK2");
 	SimObj *my = this->getObj(this->myname());
 
-	// 使用可能
+	// In case service is available
 	if (av_kinect && m_kinect == NULL) {
-		// サービスに接続
 		m_kinect = connectToService("SIG_KINECT_V2");
-
 	}
 	else if (!av_kinect && m_kinect != NULL){
 		m_kinect = NULL;
@@ -146,18 +138,16 @@ double UserController::onAction(ActionEvent &evt)
 	//		}
 	//}
 
-	// 使用可能
+	// In case service is available
 	if(av_hmd && m_hmd == NULL){
-		// サービスに接続
 		m_hmd = connectToService("SIGORS");
 	}
 	else if (!av_hmd && m_hmd != NULL){
 		m_hmd = NULL;
 	}
 
-	// 使用可能
+	// In case service is available
 	if(av_wii && m_wii == NULL){
-		// サービスに接続
 		m_wii = connectToService("Wii_Service");
 	}
 	else if (!av_wii && m_wii != NULL){
@@ -172,15 +162,13 @@ void UserController::onRecvMsg(RecvMsgEvent &evt)
 {
 	std::string sender = evt.getSender();
 
-	//自分自身の取得
 	SimObj *my = getObj(myname());
 
-	//メッセージ取得
 	char *all_msg = (char*)evt.getMsg();
-	// printf("all_msg=\n%s\n",all_msg);
 
 	std::string ss = all_msg;
-	//ヘッダーの取り出し
+
+	// Extract header information
 	int strPos1 = 0;
 	int strPos2;
 	std::string headss;
@@ -189,7 +177,6 @@ void UserController::onRecvMsg(RecvMsgEvent &evt)
 	headss.assign(ss, strPos1, strPos2-strPos1);
 
 	if (strcmp(all_msg,"go") == 0 ) {
-    	
     	//take == false;
     	//put == false;
         //printf("Man is taking \n");
@@ -199,7 +186,6 @@ void UserController::onRecvMsg(RecvMsgEvent &evt)
     }
 
 	else if (strcmp(all_msg,"restart") == 0 && restart_on == true) {
-    	
     	//take == false;
     	//put == false;
         //printf("Man is taking \n");
@@ -267,13 +253,11 @@ void UserController::onRecvMsg(RecvMsgEvent &evt)
 
 
 	else if (strcmp(all_msg,"do") == 0 && take == true) {
-    	
     	take = false;
 		// printf("Man is taking \n");
     	sendMsg("VoiceReco_Service","Take this Object");
     	//sleep(4);
     	sendMsg(robotName, all_msg);
-         
     }
 
 	else  if (strcmp(all_msg,"do") == 0 && put == true) {
@@ -285,7 +269,7 @@ void UserController::onRecvMsg(RecvMsgEvent &evt)
     }
 
 	if (headss == "ORS_DATA") {
-		//HMDデータによる頭部の動き反映
+		// Control of head orientation by HMD sensor
 		moveHeadByHMD(ss);
 	}
 	//	std::string bodyss;
@@ -296,7 +280,7 @@ void UserController::onRecvMsg(RecvMsgEvent &evt)
 	//	}
 
 	else if (headss == "KINECT_DATA") {
-		//KINECTデータによる頭部以外の体の動き反映
+		// Contol of body movement by KINECT
 		moveBodyByKINECT(all_msg);
 		// Add by inamura on 2014-03-02
 		// comment out by tome-ikeda 2014-11-06
@@ -333,10 +317,9 @@ void UserController::onRecvMsg(RecvMsgEvent &evt)
 
 void UserController::moveHeadByHMD(const std::string ss)
 {
-	//自分自身の取得
 	SimObj *my = this->getObj(this->myname());
 
-	//ヘッダーの取り出し
+	// Extraction of header information
 	int strPos1 = 0;
 	int strPos2;
 	std::string headss;
@@ -344,7 +327,7 @@ void UserController::moveHeadByHMD(const std::string ss)
 	strPos2 = ss.find(" ", strPos1);
 	headss.assign(ss, strPos1, strPos2-strPos1);
 
-	if (headss == "ORS_DATA"){
+	if (headss == "ORS_DATA") {
 		//    LOG_MSG((all_msg));
 		//  }
 		//  if(headss == "HMD_DATA"){
@@ -469,11 +452,8 @@ void UserController::moveByORSDK2(std::string ss)
 
 void UserController::moveBodyByKINECT(char* all_msg)
 {
-	//自分自身の取得
 	SimObj *my = this->getObj(this->myname());
 	char* msg = strtok(all_msg," ");
-
-
 
 	if (strcmp(msg,"KINECT_DATA") == 0) {
 		int i = 0;
@@ -483,11 +463,11 @@ void UserController::moveBodyByKINECT(char* all_msg)
 				break;
 			char *type = strtok(NULL,":");
 			if (strcmp(type,"POSITION") == 0) {
-				//体の位置
+				// Body position
 				double x = atof(strtok(NULL,","));
 				double y = atof(strtok(NULL,","));
 				double z = atof(strtok(NULL," "));
-				//エージェント座標からグローバル座標への変換
+				// Transfer from agent coordinate to global coordinate
 				double gx = cos(m_yrot)*x - sin(m_yrot)*z;
 				double gz = sin(m_yrot)*x + cos(m_yrot)*z;
 
@@ -495,9 +475,9 @@ void UserController::moveBodyByKINECT(char* all_msg)
 
 				continue;
 			} 
-			else if(strcmp(type,"WAIST") == 0) {
+			else if (strcmp(type,"WAIST") == 0) {
 				static dQuaternion bodyQ_pre, bodyQ_now, bodyQ_middle;
-				//体全体の回転 rotation of whole body
+				// Rotation of whole body
 				double w = atof(strtok(NULL,","));
 				double x = atof(strtok(NULL,","));
 				double y = atof(strtok(NULL,","));
@@ -522,8 +502,8 @@ void UserController::moveBodyByKINECT(char* all_msg)
 				else if (strcmp(type, "RARM_JOINT3" )==0) index = 2;
 				else if (strcmp(type, "LARM_JOINT2" )==0) index = 3;
 				else if (strcmp(type, "LARM_JOINT3" )==0) index = 4;
-				else    continue;   // HEAD_JOINT1はHMDにより回転させるのでここで処理する必要なし
-				//関節の回転
+				else    continue;   // HEAD_JOINT1 should be controlled by HMD; No need to control it here.
+				// Rotation of joings
 				double w = atof(strtok(NULL,","));				double x = atof(strtok(NULL,","));
 				double y = atof(strtok(NULL,","));				double z = atof(strtok(NULL," "));
 				double angle = acos(w)*2;
@@ -557,7 +537,7 @@ void UserController::moveBodyByKINECT(char* all_msg)
 				continue;
 			}
 #else
-			//関節の回転
+			// Rotation of joint
 			double w = atof(strtok(NULL,","));
 			double x = atof(strtok(NULL,","));
 			double y = atof(strtok(NULL,","));
@@ -569,7 +549,7 @@ void UserController::moveBodyByKINECT(char* all_msg)
 			double vz = z/tmp;
 			double len = sqrt(vx*vx+vy*vy+vz*vz);
 			if(len < (1 - m_range) || (1 + m_range) < len) continue;
-			// HEAD_JOINT1はHMDにより回転
+			// HEAD_JOINT1 is controlled by HMD
 			if(strcmp(type,"HEAD_JOINT1") != 0 ){
 				my->setJointQuaternion(type,w,x,y,z);
 			}
