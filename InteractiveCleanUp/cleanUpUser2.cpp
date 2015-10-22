@@ -19,7 +19,7 @@ public:
 	void onInit(InitEvent &evt);
 	double onAction(ActionEvent &evt);
 	bool slerp(dQuaternion qtn1, dQuaternion qtn2, double time, dQuaternion dest);
-    void moveByORSDK2(std::string ss);
+	void moveByORSDK2(std::string ss);
 private:
 
 	//移動速度
@@ -28,7 +28,7 @@ private:
 	BaseService *m_kinect;
 	BaseService *m_hmd;
 	BaseService *m_wii;
-    BaseService *m_orsDK2;
+	BaseService *m_orsDK2;
 	bool take;
 	bool put;
 
@@ -49,7 +49,7 @@ private:
 	double po_qw, po_qx, po_qy, po_qz;
 
 	bool chk_orsDK2;
-    bool restart_on;
+	bool restart_on;
 
 	std::string robotName;
 
@@ -61,14 +61,14 @@ private:
 void UserController::onInit(InitEvent &evt)
 {
 	robotName = ROBOT_NAME;
-    take = true;
-    put = false;
+	take = true;
+	put = false;
 
 	//m_kinect = connectToService("SIGKINECT");
 	//m_hmd = connectToService("SIGHMD");
 	m_kinect = NULL;
-	m_hmd = NULL;
-	m_wii = NULL;
+	m_hmd    = NULL;
+	m_wii    = NULL;
 	m_orsDK2 = NULL;
 	
 	vel      = 10.0;
@@ -113,23 +113,25 @@ void UserController::onInit(InitEvent &evt)
 		}
 	}
 
-	pyaw = ppitch = proll = 0.0;
+	pyaw   = 0.0;
+	ppitch = 0.0;
+	proll  = 0.0;
 	init_flag = true;
 }
 
 //定期的に呼び出される関数
 double UserController::onAction(ActionEvent &evt)
 {
-
+	// TODO: Is it required to check every time?
 	// サービスが使用可能か定期的にチェックする
 	bool av_kinect = checkService("SIG_KINECT_V2");
-	bool av_hmd = checkService("SIGORS");
-	bool av_wii = checkService("Wii_Service");
-
+	bool av_hmd    = checkService("SIGORS");
+	bool av_wii    = checkService("Wii_Service");
 	//bool chk_orsDK2 = checkService("SIGORSDK2");
 	SimObj *my = this->getObj(this->myname());
+
 	// 使用可能
-	if(av_kinect && m_kinect == NULL){
+	if (av_kinect && m_kinect == NULL) {
 		// サービスに接続
 		m_kinect = connectToService("SIG_KINECT_V2");
 
@@ -139,7 +141,6 @@ double UserController::onAction(ActionEvent &evt)
 	}
 
 	//if(chk_orsDK2  && m_orsDK2 == NULL) {
-
 	//		if(chk_orsDK2) {
 	//			m_orsDK2 = connectToService("SIGORSDK2");
 	//		}
@@ -162,9 +163,8 @@ double UserController::onAction(ActionEvent &evt)
 	else if (!av_wii && m_wii != NULL){
 		m_wii = NULL;
 	}
-	//printf("OnAction test \n");
-	//my->setJointQuaternion("RARM_JOINT2", 0.707, 0, 0, 0.707);
-	return 0.01;
+
+	return 0.01; //TODO: should be confirmed, why such a short time is written?
 }
 
 
@@ -206,19 +206,15 @@ void UserController::onRecvMsg(RecvMsgEvent &evt)
     	sendMsg("VoiceReco_Service","Restart the clean up task ..");
     	//sleep(4);
     	sendMsg(robotName, all_msg);
-         
     }
 
-
 	else if (strcmp(all_msg,"reset") == 0 ) {
-    	
     	//take == false;
     	//put == false;
         //printf("Man is taking \n");
     	sendMsg("VoiceReco_Service","Cancel the action ..");
     	//sleep(4);
     	sendMsg(robotName, all_msg);
-         
     }
 	/*
 	  else if (strcmp(all_msg,"reset_take") == 0 ) { 	
@@ -258,8 +254,6 @@ void UserController::onRecvMsg(RecvMsgEvent &evt)
     	//sleep(4);
     	//sendMsg(robotName, all_msg);    
     }
-
-
 	else if (strcmp(all_msg,"restart_on") == 0  ) {
     	
     	//take == false;
@@ -290,9 +284,7 @@ void UserController::onRecvMsg(RecvMsgEvent &evt)
     	sendMsg(robotName, all_msg);
     }
 
-	//std::cout<<ss<<std::endl;
-
-	if(headss == "ORS_DATA"){
+	if (headss == "ORS_DATA") {
 		//HMDデータによる頭部の動き反映
 		moveHeadByHMD(ss);
 	}
@@ -303,7 +295,7 @@ void UserController::onRecvMsg(RecvMsgEvent &evt)
 	//		moveByORSDK2(bodyss);
 	//	}
 
-	else if(headss == "KINECT_DATA") {
+	else if (headss == "KINECT_DATA") {
 		//KINECTデータによる頭部以外の体の動き反映
 		moveBodyByKINECT(all_msg);
 		// Add by inamura on 2014-03-02
@@ -375,11 +367,11 @@ void UserController::moveHeadByHMD(const std::string ss)
 		tmpss.assign(ss, strPos1, strPos2-strPos1);
 		roll = atof(tmpss.c_str());
 
-		if(yaw == pyaw && pitch == ppitch && roll == proll)  return;
+		if (yaw == pyaw && pitch == ppitch && roll == proll) return;
 		else {
-			pyaw = yaw;
+			pyaw   = yaw;
 			ppitch = pitch;
-			proll = roll;
+			proll  = roll;
 		}
 
 		dQuaternion qyaw;
@@ -447,7 +439,7 @@ void UserController::moveByORSDK2(std::string ss)
 	tmpss.assign(ss, strPos1, strPos2 - strPos1);
 	o_qz = atof(tmpss.c_str());
 
-	if (o_qw == po_qw && o_qx == po_qx && o_qy == po_qy && o_qz == po_qz)  return;
+	if (o_qw == po_qw && o_qx == po_qx && o_qy == po_qy && o_qz == po_qz) return;
 	else {
 		po_qw = o_qw;
 		po_qx = o_qx;
