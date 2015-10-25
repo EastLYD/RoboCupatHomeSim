@@ -12,11 +12,11 @@
 class RobotController : public Controller {
 public:
 
-	void onInit(InitEvent &evt);
+	void   onInit(InitEvent &evt);
 	double onAction(ActionEvent&);
-	void onRecvMsg(RecvMsgEvent &evt);
-	void onCollision(CollisionEvent &evt);
-	bool recognizeTrash(Vector3d &pos, std::string &name);
+	void   onRecvMsg(RecvMsgEvent &evt);
+	void   onCollision(CollisionEvent &evt);
+	bool   recognizeTrash(Vector3d &pos, std::string &name);
 	std::string getPointedTrashName(std::string entName);
 
 	// エージェントが指差している方向にあるオブジェクトの名前を取得します
@@ -118,8 +118,8 @@ private:
 
 	std::string msg_ob;
 	std::string msg_trash;
-
 };
+
 
 void RobotController::onInit(InitEvent &evt)
 {
@@ -137,8 +137,8 @@ void RobotController::onInit(InitEvent &evt)
 	//m_my->getPosition(m_inipos);
 	m_my->getPartsPosition(m_inipos,"RARM_LINK2");
 
-	pos_a = Vector3d(0, 30, -80);//
-	pos_b = Vector3d(0, 30, -10);  ///
+	pos_a = Vector3d(0, 30, -80);
+	pos_b = Vector3d(0, 30, -10);
 
 	// 車輪間距離
 	m_distance = 10.0;
@@ -207,10 +207,10 @@ double RobotController::onAction(ActionEvent &evt)
 		double angL4 =m_my->getJointAngle("LARM_JOINT4")*180.0/(M_PI);
 		double angR1 =m_my->getJointAngle("RARM_JOINT1")*180.0/(M_PI);
 		double angR4 =m_my->getJointAngle("RARM_JOINT4")*180.0/(M_PI);
-		double thetaL1 = -20-angL1;
-		double thetaL4 = -160-angL4;
-		double thetaR1 = -20-angR1;
-		double thetaR4 = -160-angR4;
+		double thetaL1 = -20  - angL1;
+		double thetaL4 = -160 - angL4;
+		double thetaR1 = -20  - angR1;
+		double thetaR4 = -160 - angR4;
 		if(thetaL1<0) m_my->setJointVelocity("LARM_JOINT1", -m_jvel, 0.0);
 		else m_my->setJointVelocity("LARM_JOINT1", m_jvel, 0.0);
 		if(thetaL4<0) m_my->setJointVelocity("LARM_JOINT4", -m_jvel, 0.0);
@@ -303,7 +303,7 @@ double RobotController::onAction(ActionEvent &evt)
 			// ゴミが見つかった trash detected
 			else{
 				//broadcastMsgToSrv("Please show which trash to take\n");
-				sendMsg("man_000","oktake");
+				sendMsg(m_avatar, "oktake");
 				sendMsg("VoiceReco_Service"," Please show me which object to take ");
 
 				m_state = 7;
@@ -433,7 +433,7 @@ double RobotController::onAction(ActionEvent &evt)
 			//broadcastMsgToSrv("Please tell me which trash box \n");
 			sendMsg("VoiceReco_Service"," Please show me which trashbox to use ");
 			//  std::string ms = "okput";
-			sendMsg("man_000","okput");
+			sendMsg(m_avatar, "okput");
 			m_state = 16;
 		}
 		break;
