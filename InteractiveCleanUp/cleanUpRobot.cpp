@@ -1,12 +1,13 @@
-#include "ControllerEvent.h"
-#include "Controller.h"
-#include "Logger.h"
+#include "sigverse/commonlib/ControllerEvent.h"
+#include "sigverse/commonlib/Controller.h"
+#include "sigverse/commonlib/Logger.h"
 #include <algorithm>
 #include <unistd.h>
 #include <math.h>
 
 #define DEG2RAD(DEG) ( (M_PI) * (DEG) / 180.0 )
 
+#define AVATAR_NAME	"man_000"
 
 //ControllerのサブクラスMoveControllerの宣言します
 class RobotController : public Controller {
@@ -129,7 +130,7 @@ void RobotController::onInit(InitEvent &evt)
 	m_onActionReturn = 1.0;
 	m_speedDelta = 2.0;
 
-	m_avatar = "man_000";
+	m_avatar = AVATAR_NAME;
 
 	m_my = getRobotObj(myname());
 

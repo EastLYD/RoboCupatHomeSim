@@ -1,6 +1,6 @@
-#include "ControllerEvent.h"
-#include "Controller.h"
-#include "Logger.h"
+#include "sigverse/commonlib/ControllerEvent.h"
+#include "sigverse/commonlib/Controller.h"
+#include "sigverse/commonlib/Logger.h"
 #include <algorithm>
 #include <unistd.h>
 #include <math.h>
@@ -27,16 +27,16 @@ double tab_joint_right[6][7] = {{0,0,0,0,0,0,0},{-0.5,-0.5,0.2,-1.5,0,0,0},{0,-1
 class RobotController : public Controller {
 public:
 
-	void onInit(InitEvent &evt);
+	void   onInit(InitEvent &evt);
 	double onAction(ActionEvent&);
-	void onRecvMsg(RecvMsgEvent &evt);
-	void onCollision(CollisionEvent &evt);
-	bool recognizeTrash(Vector3d &pos, std::string &name);
+	void   onRecvMsg(RecvMsgEvent &evt);
+	void   onCollision(CollisionEvent &evt);
+	bool   recognizeTrash(Vector3d &pos, std::string &name);
 	std::string getPointedTrashName(std::string entName);
-	void stopRobotMove(void);
+	void   stopRobotMove(void);
 
     //function use by other function
-    void recognizeObjectPosition(Vector3d &pos, std::string &name);
+    void   recognizeObjectPosition(Vector3d &pos, std::string &name);
     double getAngularXonVect(Vector3d pos, Vector3d mypos);
     double getDistoObj(Vector3d pos, Vector3d pos2);
     double getDist2D(Vector3d pos, Vector3d pos2);
@@ -810,14 +810,9 @@ bool RobotController::goTo(Vector3d pos, double rangeToPoint)
 
 void RobotController::onInit(InitEvent &evt)
 {
-
-
-
 	m_robotState = 0;
 	m_frontState = 0;
 	joint_veloc = 0.8;
-
-
 
 	m_my = getRobotObj(myname());
 	m_my->setWheel(10.0, 10.0);
@@ -834,20 +829,17 @@ void RobotController::onInit(InitEvent &evt)
 	m_MuccupFront = Vector3d(0.0, 30, -10.0);
 	m_CanFront = Vector3d(-40.0, 30, -10.0);
 
-
 	// trash
 	m_WagonFront = Vector3d(-120.0, 30, -120);
 	m_BurnableFront = Vector3d(140.0, 30, -120);
 	m_UnburnableFront = Vector3d(20.0, 30, -120);
 	m_RecycleFront = Vector3d(260.0, 30, -120);
 
-
 	m_relayPoint1 = Vector3d(100, 30, -70);
 	m_relayPoint2 = Vector3d(0, 30, -70);
 	m_relayFrontTable = Vector3d(0, 30,-20);
 	m_relayFrontTable_reset = Vector3d(0, 30,-50);
 	m_relayFrontTrash = Vector3d(0, 30, -100);
-
 
 	cycle = 3;
 	m_robotState = 0;
@@ -931,8 +923,8 @@ void RobotController::onInit(InitEvent &evt)
 
 	take_action = true;
 	put_action = true;
-
 }
+
 
 double RobotController::onAction(ActionEvent &evt)
 {
@@ -1196,20 +1188,15 @@ double RobotController::onAction(ActionEvent &evt)
 			// object is grasped //// 
 			/// 1. Grasped but don't leave  the front table point ///
 
-
-
-
 		case 100:   { 
 			stopRobotMove();
 			Robot_speed  = Change_Robot_speed;
 			if (m_pointedObject=="petbottle")
-          
 				{
 					// if (goTo(m_BottleFront, 0) == true) m_state = 6;
 					Object_reset.x(m_BottleReset.x());
 					Object_reset.y(m_BottleReset.y());
 					Object_reset.z(m_BottleReset.z());
-
 				}
 
 			else if (m_pointedObject=="mugcup")
@@ -1278,7 +1265,6 @@ double RobotController::onAction(ActionEvent &evt)
 			break;
         }        
 		case 107:   { 
- 
 			Robot_speed  = Change_Robot_speed;
 			if (goTo( m_relayFrontTable, 0) == true)
 				{
@@ -1290,11 +1276,6 @@ double RobotController::onAction(ActionEvent &evt)
 		}
 
 			/// 2. Grasped and left the front table point ///
-
-
-
-
-
 			// Object is not grapsed yet //
 		case 25:   { //preparation of the arm for grasp
 			stopRobotMove();
@@ -1317,8 +1298,6 @@ double RobotController::onAction(ActionEvent &evt)
 			m_pointedObject="";
 			break;
         }
-
-              
 		case 28:  { 
 			Robot_speed  = Change_Robot_speed;
 			if (goTo( m_relayFrontTable, 0) == true)
@@ -1330,8 +1309,6 @@ double RobotController::onAction(ActionEvent &evt)
         
 			break;
 		}
-
-
 			/// Cancelation step for trash  /////
 		case 200:   { //preparation of the arm for grasp
 			Robot_speed  = Change_Robot_speed;
@@ -1348,9 +1325,7 @@ double RobotController::onAction(ActionEvent &evt)
 			break;
         }
 
-              
 		case 202:   { 
- 
 			Robot_speed  = Change_Robot_speed;
 			if (goTo(m_relayFrontTable_reset, 0) == true) 
 				{
@@ -1363,10 +1338,6 @@ double RobotController::onAction(ActionEvent &evt)
 		}
 
 		}
-
-
-
-
 	return 0.001;
 }
 
@@ -1589,6 +1560,7 @@ std::string RobotController::getPointedObjectName(std::string entName)
 	return objName;
 }
 
+
 std::string RobotController::getPointedTrashName(std::string entName)
 {
 	// 発話者の名前からSimObjを取得します
@@ -1641,6 +1613,7 @@ std::string RobotController::getPointedTrashName(std::string entName)
 	return objName;
 }
 
+
 bool RobotController::recognizeTrash(Vector3d &pos, std::string &name)
 {
 	// 候補のゴミが無い場合
@@ -1659,6 +1632,7 @@ bool RobotController::recognizeTrash(Vector3d &pos, std::string &name)
 	trash->getPosition(pos);
 	return true;
 }
+
 
 void RobotController::onCollision(CollisionEvent &evt)
 {
@@ -1683,6 +1657,7 @@ void RobotController::onCollision(CollisionEvent &evt)
 		}
 	}
 }
+
 
 double RobotController::rotateTowardObj(Vector3d pos, double velocity, double now)
 {
@@ -1746,6 +1721,7 @@ double RobotController::rotateTowardObj(Vector3d pos, double velocity, double no
 	}
 }
 
+
 // object まで移動
 double RobotController::goToObj(Vector3d pos, double velocity, double range, double now)
 {
@@ -1773,6 +1749,7 @@ double RobotController::goToObj(Vector3d pos, double velocity, double range, dou
 
 	return now + time;
 }
+
 
 //自身のインスタンスをSIGVerseに返します
 extern "C" Controller * createController() {

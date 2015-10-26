@@ -2,11 +2,9 @@
 #include "Logger.h"
 #include <unistd.h>
 
-#define PI 3.141592
-
 //角度からラジアンに変換します。
-#define DEG2RAD(DEG) ( (PI) * (DEG) / 180.0 ) 
-#define RAD2DEG(RAD) ( (RAD) * 180.0 / (PI) )
+#define DEG2RAD(DEG) ( (M_PI) * (DEG) / 180.0 ) 
+#define RAD2DEG(RAD) ( (RAD) * 180.0 / (M_PI) )
 
 class CameraController : public Controller
 {
