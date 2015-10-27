@@ -1,8 +1,8 @@
 #sigverse header
-SIG_SRC  = $(SIGVERSE_PATH)/include/sigverse
+SIG_SRC  = $(SIGVERSE_PATH)/include
 
 #オブジェクトファイルの指定
-OBJS     = cleanUpRobot.so cleanUpRobot2.so cleanUpUser.so cleanUpUser2.so TrashBox.so Wagon.so Table.so
+OBJS     = cleanUpRobot.so cleanUpRobot2.so cleanUpUser.so Avatar.so TrashBox.so Wagon.so Table.so
 
 all: $(OBJS)
 
