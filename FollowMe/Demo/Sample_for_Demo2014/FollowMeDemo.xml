@@ -5,8 +5,7 @@
   <instanciate class="Man-nii.xml">  
     <set-attr-value name="name" value="man_000"/>  
     <set-attr-value name="language" value="c++"/>
-    <set-attr-value name="implementation"
-                    value="./FollowReferee.so"/>
+    <set-attr-value name="implementation" value="./FollowReferee.so"/>
     <set-attr-value name="dynamics" value="false"/>  
     <set-attr-value name="x" value="-50.0"/>  
     <set-attr-value name="y" value="60.0"/>  
@@ -16,8 +15,7 @@
   <instanciate class="Man_02.xml">  
     <set-attr-value name="name" value="man_001"/>  
     <set-attr-value name="language" value="c++"/>
-    <set-attr-value name="implementation"
-                    value="./FollowMeHuman.so"/>
+    <set-attr-value name="implementation" value="./FollowMeHuman.so"/>
     <set-attr-value name="dynamics" value="false"/>  
     <set-attr-value name="x" value="-525.0"/>  
     <set-attr-value name="y" value="60.0"/>  
@@ -30,8 +28,7 @@
 	<instanciate class="CheckPoint.xml">  
     <set-attr-value name="name" value="checkpoint_001"/> 
     <set-attr-value name="language" value="c++"/>
-    <set-attr-value name="implementation"
-                    value="./CheckPoint.so"/> 
+    <set-attr-value name="implementation" value="./CheckPoint.so"/> 
     <set-attr-value name="dynamics" value="false"/>  
     <set-attr-value name="x" value="-525.0"/>  
     <set-attr-value name="y" value="60.0"/>  
@@ -41,8 +38,7 @@
 	<instanciate class="CheckPoint.xml">  
     <set-attr-value name="name" value="checkpoint_002"/> 
     <set-attr-value name="language" value="c++"/>
-    <set-attr-value name="implementation"
-                    value="./CheckPoint2.so"/> 
+    <set-attr-value name="implementation" value="./CheckPoint2.so"/> 
     <set-attr-value name="dynamics" value="false"/>  
     <set-attr-value name="x" value="-1100.0"/>  
     <set-attr-value name="y" value="60.0"/>  
@@ -52,8 +48,7 @@
 	<instanciate class="seModerator.xml">  
     <set-attr-value name="name" value="score"/> 
     <set-attr-value name="language" value="c++"/>
-    <set-attr-value name="implementation"
-                    value="./score.so"/> 
+    <set-attr-value name="implementation" value="./score.so"/> 
     <set-attr-value name="dynamics" value="false"/>  
     <set-attr-value name="x" value="0.0"/>  
     <set-attr-value name="y" value="250.0"/>  
@@ -96,8 +91,7 @@
   <instanciate class="WheelRobot-nii-v1.xml" type="Robot">
     <set-attr-value name="name" value="robot_004"/>
     <set-attr-value name="language" value="c++"/>
-    <set-attr-value name="implementation"
-                    value="./FollowMeTestRobot.so"/>
+    <set-attr-value name="implementation" value="./FollowMeTestRobot.so"/>
     <set-attr-value name="dynamics" value="false"/>
     <set-attr-value name="x" value="-50.0"/>
     <set-attr-value name="y" value="30.0"/>
@@ -465,8 +459,7 @@
   <instanciate class="Wall_EV.xml"> 
     <set-attr-value name="name" value="wall_008"/>
     <set-attr-value name="language" value="c++"/>  
-    <set-attr-value name="implementation"
-                    value="./Wall.so"/>
+    <set-attr-value name="implementation" value="./Wall.so"/>
     <set-attr-value name="x" value="-925.0"/>  
     <set-attr-value name="y" value="50.0"/>  
     <set-attr-value name="z" value="125.0"/>   
@@ -484,8 +477,7 @@
     <set-attr-value name="y" value="200.0"/>
     <set-attr-value name="z" value="190.0"/>
     <set-attr-value name="language" value="c++"/>
-    <set-attr-value name="implementation"
-                    value="./Moderator.so"/>
+    <set-attr-value name="implementation" value="./Moderator.so"/>
     <set-attr-value name="collision" value="false"/>
     <set-attr-value name="graspable" value="false"/>
   </instanciate>
