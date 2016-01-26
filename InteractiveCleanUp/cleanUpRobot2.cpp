@@ -44,7 +44,7 @@ public:
     double getRoll(Rotation rot);
     double getPitch(Rotation rot);
     double getYaw(Rotation rot);
-
+    void   Kinect_Sensor(char* all_msg);
 
     //function for the left arm
     bool moveLeftArm();
@@ -801,7 +801,152 @@ bool RobotController::goTo(Vector3d pos, double rangeToPoint)
 
 
 
+/************************************************************************************/
 
+/////////////////////////////////     Kinect Sensor     //////////////////////////////
+void   Kinect_Sensor(char* all_msg)
+{
+
+				double x_Elbow ;
+				double y_Elbow ;
+				double z_Elbow ;
+				double x_Wrist ;
+				double y_Wrist ;
+				double z_Wrist ;
+//RobotObj *my = this->getObj(this->myname());
+	char* msg = strtok(all_msg,"  ");
+
+	if (strcmp(msg,"KINECT_DATA_Sensor") == 0) {
+		int i = 0;
+		while (true) {
+			i++;
+
+			char *type = strtok(NULL,":");
+			/*
+			if (strcmp(type,"POSITION") == 0) {
+				// Body position
+				double x = atof(strtok(NULL,","));
+				double y = atof(strtok(NULL,","));
+				double z = atof(strtok(NULL," "));
+				// Transfer from agent coordinate to global coordinate
+
+				//my->setPosition(m_posx+gx,m_posy,m_posz+gz);
+
+				continue;
+			} 
+			else if (strcmp(type,"WAIST") == 0) {
+				static dQuaternion bodyQ_pre, bodyQ_now, bodyQ_middle;
+				// Rotation of whole body
+				double w = atof(strtok(NULL,","));
+				double x = atof(strtok(NULL,","));
+				double y = atof(strtok(NULL,","));
+				double z = atof(strtok(NULL," "));
+
+				//my->setJointQuaternion("ROOT_JOINT0", w, x, y, z);
+				continue;
+			}
+			else */if (strcmp(type,"ElbowRight") == 0) {
+				// Rotation of whole body
+				 x_Elbow = atof(strtok(NULL,","));
+				 y_Elbow = atof(strtok(NULL,","));
+				 z_Elbow = atof(strtok(NULL,","));
+				double qw_Elbow = atof(strtok(NULL,","));
+				double qx_Elbow = atof(strtok(NULL,","));
+				double qy_Elbow = atof(strtok(NULL,","));
+				double qz_Elbow = atof(strtok(NULL," "));
+
+				//my->setJointQuaternion("ROOT_JOINT0", w, x, y, z);
+				continue;
+			}
+			else if (strcmp(type,"WristRight") == 0) {
+				// Rotation of whole body
+				 x_Wrist = atof(strtok(NULL,","));
+				 y_Wrist = atof(strtok(NULL,","));
+				 z_Wrist = atof(strtok(NULL,","));
+				double qw_Wrist = atof(strtok(NULL,","));
+				double qx_Wrist = atof(strtok(NULL,","));
+				double qy_Wrist = atof(strtok(NULL,","));
+				double qz_Wrist = atof(strtok(NULL," "));
+
+				//my->setJointQuaternion("ROOT_JOINT0", w, x, y, z);
+				continue;
+			}
+
+			else if (strcmp(type,"END") == 0) {
+				break;
+			}
+			/*
+#if 0
+			else {
+				int    index;
+				LOG_MSG(("smooth change"));
+				if      (strcmp(type, "WAIST_JOINT1")==0) index = 0;
+				else if (strcmp(type, "RARM_JOINT2" )==0) index = 1;
+				else if (strcmp(type, "RARM_JOINT3" )==0) index = 2;
+				else if (strcmp(type, "LARM_JOINT2" )==0) index = 3;
+				else if (strcmp(type, "LARM_JOINT3" )==0) index = 4;
+				else    continue;   // HEAD_JOINT1 should be controlled by HMD; No need to control it here.
+				// Rotation of joings
+				double w = atof(strtok(NULL,","));				double x = atof(strtok(NULL,","));
+				double y = atof(strtok(NULL,","));				double z = atof(strtok(NULL," "));
+				double angle = acos(w)*2;
+				double tmp = sin(angle/2);
+				double vx = x/tmp;				double vy = y/tmp;				double vz = z/tmp;
+				double len = sqrt(vx*vx + vy*vy + vz*vz);
+				if(len < (1 - m_range) || (1 + m_range) < len) continue;
+
+				bodypartsQ_now[index][0] = w;   bodypartsQ_now[index][1] = x;   bodypartsQ_now[index][2] = y;  bodypartsQ_now[index][3] = z;
+				slerp(bodypartsQ_pre[index], bodypartsQ_now[index], 0.5, &bodypartsQ_middle[index]);
+
+				if (init_flag==false) {
+					// Use interpolation from the 2nd time
+					my->setJointQuaternion(type, bodypartsQ_middle[index][0], bodypartsQ_middle[index][1], bodypartsQ_middle[index][2], bodypartsQ_middle[index][3]);
+					bodypartsQ_pre[index][0] = bodypartsQ_middle[index][0];
+					bodypartsQ_pre[index][1] = bodypartsQ_middle[index][1];
+					bodypartsQ_pre[index][2] = bodypartsQ_middle[index][2];
+					bodypartsQ_pre[index][3] = bodypartsQ_middle[index][3];
+					LOG_MSG(("%s, init", type));
+				}
+				else {
+					// Use direct quaternion at the first time
+					my->setJointQuaternion(type, w, x, y, z);
+					bodypartsQ_pre[index][0] = w;
+					bodypartsQ_pre[index][1] = x;
+					bodypartsQ_pre[index][2] = y;
+					bodypartsQ_pre[index][3] = z;
+					init_flag = false;
+					LOG_MSG(("%s, from 2nd", type));
+				}
+				continue;
+			}
+#else
+			// Rotation of joint
+			double w = atof(strtok(NULL,","));
+			double x = atof(strtok(NULL,","));
+			double y = atof(strtok(NULL,","));
+			double z = atof(strtok(NULL," "));
+			double angle = acos(w)*2;
+			double tmp = sin(angle/2);
+			double vx = x/tmp;
+			double vy = y/tmp;
+			double vz = z/tmp;
+			double len = sqrt(vx*vx+vy*vy+vz*vz);
+			// HEAD_JOINT1 is controlled by HMD
+			if(strcmp(type,"HEAD_JOINT1") != 0 ){
+			//	my->setJointQuaternion(type,w,x,y,z);
+			}
+
+
+			
+#endif
+*/		}
+	}
+
+}
+
+
+
+/************************************************************************************/
 
 
 

@@ -64,6 +64,20 @@
     <set-attr-value name="graspable" value="false"/>
   </instanciate>
 
+  <instanciate class="seModerator.xml">
+    <set-attr-value name="name" value="moderator_0"/>
+    <set-attr-value name="dynamics" value="false"/>
+    <set-attr-value name="x" value="190.0"/>
+    <set-attr-value name="y" value="200.0"/>
+    <set-attr-value name="z" value="190.0"/>
+    <set-attr-value name="language" value="c++"/>
+    <set-attr-value name="implementation"
+                    value="./Moderator.so"/>
+    <set-attr-value name="collision" value="false"/>
+    <set-attr-value name="graspable" value="false"/>
+  </instanciate>
+
+
 <!--
   <instanciate class="seSidetable_B.xml">
     <set-attr-value name="name" value="table_1"/>
@@ -261,54 +275,46 @@
   <instanciate class="seTrashbox_c01.xml">
     <set-attr-value name="name" value="recycle"/>
     <set-attr-value name="dynamics" value="false"/>
-    <set-attr-value name="x" value="260.0"/>
+    <set-attr-value name="x" value="-150.0"/>
     <set-attr-value name="y" value="36.35"/>  
-    <set-attr-value name="z" value="-180.0"/>
+    <set-attr-value name="z" value="-190.0"/>
     <set-attr-value name="collision" value="true"/>
     <set-attr-value name="language" value="c++"/>
     <set-attr-value name="implementation"
                     value="./TrashBox.so"/>
+    <set-attr-value name="qw" value="0.707"/>
+    <set-attr-value name="qy" value="0.707"/>               
     <set-attr-value name="graspable" value="false"/>
   </instanciate>
   <instanciate class="seTrashbox_c02.xml">
     <set-attr-value name="name" value="burnable"/>
     <set-attr-value name="dynamics" value="false"/>
-    <set-attr-value name="x" value="140.0"/>
+    <set-attr-value name="x" value="-150.0"/>
     <set-attr-value name="y" value="36.35"/>  
-    <set-attr-value name="z" value="-180.0"/>
+    <set-attr-value name="z" value="-60.0"/>
     <set-attr-value name="collision" value="true"/>
     <set-attr-value name="language" value="c++"/>
     <set-attr-value name="implementation"
                     value="./TrashBox.so"/>
+    <set-attr-value name="qw" value="0.707"/>
+    <set-attr-value name="qy" value="0.707"/>
     <set-attr-value name="graspable" value="false"/>
   </instanciate>
   <instanciate class="seTrashbox_c03.xml">
     <set-attr-value name="name" value="unburnable"/>
     <set-attr-value name="dynamics" value="false"/>
-    <set-attr-value name="x" value="20.0"/>
+    <set-attr-value name="x" value="-150.0"/>
     <set-attr-value name="y" value="36.35"/>  
-    <set-attr-value name="z" value="-180.0"/>
+    <set-attr-value name="z" value="70.0"/>
     <set-attr-value name="collision" value="true"/>
     <set-attr-value name="language" value="c++"/>
     <set-attr-value name="implementation"
                     value="./TrashBox.so"/>
+    <set-attr-value name="qw" value="0.707"/>
+    <set-attr-value name="qy" value="0.707"/>
     <set-attr-value name="graspable" value="false"/>
   </instanciate>
-  <instanciate class="seWagon_c02.xml">
-    <set-attr-value name="name" value="wagon"/>
-    <set-attr-value name="dynamics" value="false"/>
-    <set-attr-value name="x" value="-120.0"/>
-    <set-attr-value name="y" value="25.4"/>
-    <set-attr-value name="z" value="-180.0"/>
-    <set-attr-value name="collision" value="true"/>
-    <set-attr-value name="language" value="c++"/>
-    <set-attr-value name="implementation"
-                    value="./Wagon.so"/>
-    <set-attr-value name="scalex" value="0.7"/>
-    <set-attr-value name="scaley" value="0.7"/>
-    <set-attr-value name="scalez" value="0.7"/>
-    <set-attr-value name="graspable" value="false"/>
-  </instanciate>
+
 <!--
   <instanciate class="seTrashbox_c01.xml">
     <set-attr-value name="name" value="recycle"/>
