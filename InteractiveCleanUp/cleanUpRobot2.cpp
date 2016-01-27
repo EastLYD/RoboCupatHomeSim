@@ -120,6 +120,18 @@ private:
 	Vector3d m_relayFrontTable_reset;
 
 
+
+
+	Vector3d mO_RightFront;
+	Vector3d mO_CenterFront;
+	Vector3d mO_LeftFront;
+
+	Vector3d mT_RightFront;
+	Vector3d mT_CenterFront;
+	Vector3d mT_LeftFront;
+
+
+
 	// Takeitの対称から除外するオブジェクトの名前
 	std::vector<std::string> exobj;
 	std::vector<std::string> extrash;
@@ -974,17 +986,42 @@ void RobotController::onInit(InitEvent &evt)
 	m_MuccupFront = Vector3d(0.0, 30, -10.0);
 	m_CanFront = Vector3d(-40.0, 30, -10.0);
 
-	// trash
-	m_WagonFront = Vector3d(-120.0, 30, -120);
-	m_BurnableFront = Vector3d(140.0, 30, -120);
-	m_UnburnableFront = Vector3d(20.0, 30, -120);
-	m_RecycleFront = Vector3d(260.0, 30, -120);
+	mO_RightFront = Vector3d(40.0, 30, -10.0);
+	mO_CenterFront = Vector3d(0.0, 30, -10.0);
+	mO_LeftFront = Vector3d(-40.0, 30, -10.0);
 
+
+	// trash
+	//m_WagonFront = Vector3d(-120.0, 30, -120);
+	m_BurnableFront = Vector3d(-120.0, 30, -60);
+	m_UnburnableFront = Vector3d(-120.0, 30, 70);
+	m_RecycleFront = Vector3d(-120.0, 30, -190);
+
+	mT_RightFront = Vector3d(-120.0, 30, -190);
+	mT_CenterFront = Vector3d(-120.0, 30, -60);
+	mT_LeftFront = Vector3d(-120.0, 30, 70);
+
+
+/*
 	m_relayPoint1 = Vector3d(100, 30, -70);
 	m_relayPoint2 = Vector3d(0, 30, -70);
 	m_relayFrontTable = Vector3d(0, 30,-20);
 	m_relayFrontTable_reset = Vector3d(0, 30,-50);
 	m_relayFrontTrash = Vector3d(0, 30, -100);
+*/
+
+
+	m_relayPoint1 = Vector3d(100, 30, -70);
+	m_relayPoint2 = Vector3d(0, 30, -70);
+	m_relayFrontTable = Vector3d(0, 30,-20);
+
+	m_relayFrontTable_reset = Vector3d(-100, 30,-50);
+	m_relayFrontTrash = Vector3d(-100, 30, -80);
+
+
+
+
+
 
 	cycle = 3;
 	m_robotState = 0;
@@ -1227,7 +1264,7 @@ double RobotController::onAction(ActionEvent &evt)
 					reset_op = true;
 					put_action = true;
 					sendMsg(m_avatar, "On_put");
-					m_state = 99;
+					m_state = 15;
 				}
 			break;
         }
@@ -1499,7 +1536,7 @@ void RobotController::onRecvMsg(RecvMsgEvent &evt)
 	if (msg == "go" && m_state == 0)
 		{
 			m_state = 1 ;      
-			sendMsg("VoiceReco_Service","Let's start the clean up task\n");
+		//	sendMsg("VoiceReco_Service","Let's start the clean up task\n");
 			printf("got it in go \n");
 		}
   
@@ -1509,11 +1546,14 @@ void RobotController::onRecvMsg(RecvMsgEvent &evt)
 			//  printf("Kinect is started on object\n");
 			take_action = false;
 			m_pointedObject = getPointedObjectName(m_avatar);
-			std::string msg_ob = " I will take " + m_pointedObject ;
-			sendMsg("VoiceReco_Service",msg_ob);
+			m_pointedObject = "petbottle";
+			m_pointedtrash = "recycle";
+			std::string msg_ob = " I will take " + m_pointedObject + "and put it in " + m_pointedtrash;
+			//sendMsg("VoiceReco_Service",msg_ob);
 			sleep(2);
 			m_state = 5;
 		}
+		/*
 	else if (msg == "do" && m_state == 99 && put_action == true )
 		{
 			//  printf("Kinect is started on trash\n");
@@ -1525,6 +1565,8 @@ void RobotController::onRecvMsg(RecvMsgEvent &evt)
 			// sleep(2);
 			m_state = 15;
 		}
+	*/
+/*	
 	else if (msg == "restart" && m_state == 60)
 		{
 			m_trashes.push_back("petbottle");
@@ -1568,6 +1610,8 @@ void RobotController::onRecvMsg(RecvMsgEvent &evt)
 			my->setJointAngle("LARM_JOINT7", 0.0);
 
 		}
+*/
+
 	else if (msg == "reset" && m_grasp_left == true && reset_op == false && reset_out == false)
 		{
 			reset_out = true;

@@ -6,6 +6,7 @@
 #include <fstream>
 #include <iomanip>
 #include <map>
+#include <time.h> 
 //#include  <random>
 //#include  <iterator>
 
@@ -626,9 +627,6 @@ if (headss == "File") {
 
 	}
 
-
-
-
 	//std::ifstream fin;
 	// fin.open(fileNam_my.c_str());
 	bool dest = false;
@@ -639,8 +637,10 @@ if (headss == "File") {
 
 	if(msg == "Start_motion")
 		{
+			clock_t t;
+			t = clock();
 			init = true;
-
+                        srand(t);
 						std::map < std::string, Location >::iterator it = File_List.begin();
 						std::advance(it, rand() % File_List.size());
 
@@ -897,9 +897,6 @@ void MyController::onCheckObject()
 }
 */
 
-
-
-
 /*
 void MyController::onCheckRoom()
 {
@@ -969,12 +966,6 @@ void MyController::onCheckRoom()
 }
 
 */
-
-
-
-
-
-
 
 void MyController::breakTask()
 {

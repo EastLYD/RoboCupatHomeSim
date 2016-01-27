@@ -152,6 +152,7 @@ double MyController::onAction(ActionEvent &evt)
 void MyController::onRecvMsg(RecvMsgEvent &evt) {  
 }  
 
+/*
 void MyController::onCollision(CollisionEvent &evt) { 
 	// 衝突していない状態のときのみ衝突をチェック
 	if (!colState) {
@@ -172,7 +173,7 @@ void MyController::onCollision(CollisionEvent &evt) {
 		}
 	}
 }
-  
+  */
 extern "C" Controller * createController() {  
 	return new MyController;  
 }  

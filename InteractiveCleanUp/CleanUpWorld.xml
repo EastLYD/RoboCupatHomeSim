@@ -266,9 +266,11 @@
     <set-attr-value name="scaley" value="1.5"/>
     <set-attr-value name="scalez" value="1.5"/>
     <set-attr-value name="collision" value="false"/>
+    <!--
     <set-attr-value name="language" value="c++"/>
     <set-attr-value name="implementation"
                     value="./Table.so"/>
+                -->
     <set-attr-value name="graspable" value="false"/>
   </instanciate>
 
