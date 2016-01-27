@@ -92,6 +92,7 @@ private:
 
 	std::string Object_Position;
 	std::string Trash_Position;
+	int Location_Status[2];
 
 double Y_PetteBotle ,Y_Mug ,Y_Can  ,Y_General_trash ;
 
@@ -126,21 +127,7 @@ std::vector<std::string> m_trashes;
 	// ゴミ箱オブジェクト
 std::vector<std::string> m_trashboxs;
 
-enum _Location_Object
-    {
-        Right	= 0,
-        Center	= 1,
-        Left	= 2,
 
-    } ;
-
-enum _Location_Trash
-    {
-        Right	= 0,
-        Center	= 1,
-        Left	= 2,
-
-    } ;
 
 
 
@@ -461,8 +448,6 @@ Cm_trashes.push_back(m_Trash_Left_c);
 
 
 
-
-
 double MyController::onAction(ActionEvent &evt)
 {
 	// check whether Referee service is available or not
@@ -656,23 +641,48 @@ if (headss == "File") {
 		{
 			init = true;
 
+						std::map < std::string, Location >::iterator it = File_List.begin();
+						std::advance(it, rand() % File_List.size());
+
+						 std::string File_name = "Send_";
+						  File_name+= it->first;
+						  Location Curent_Locations = it->second;
+						 // Object_Position = Curent_Locations[0];
+						 // Trash_Position =  Curent_Locations[1];
+										for(int i =0;i<Curent_Locations.size();i++)
+										{
+										  if( Curent_Locations[i] == "Right")
+										  {
+										Location_Status[i] = 0;
+										  }
+										  if(Curent_Locations[i] == "Center")
+										  {
+										Location_Status[i] = 1;
+										  }
+										    if(Curent_Locations[i] == "Left")
+										  {
+										Location_Status[i] = 2;
+										  }
+										}
 
 
-std::map < std::string, Location >::iterator it = File_List.begin();
-std::advance(it, rand() % File_List.size());
-
- std::string File_name = "Send_";
-  File_name+= it->first;
-  Location Curent_Locations = it->second;
-  Object_Position = Curent_Locations[0];
-  Trash_Position =  Curent_Locations[1];
-  sendMsg("SIGKINECT", File_name);
+       sendMsg("SIGKINECT", File_name);
 
 		}
-
 }
 
 
+if(msg == "Object_Grasped")
+		{
+ CheckObjects();
+
+		}
+
+
+if(msg == "Object_Trashed")
+		{
+ CheckTrashes();
+		}
 
 
 	if(msg == "Start grasping process")
@@ -732,22 +742,33 @@ std::advance(it, rand() % File_List.size());
 void  MyController::CheckObjects()
 {
 
-
+//Cm_Objects[Location_Status[0]].Coord
 //Object_Position
+//Location_Status[0]
 
 std:: string name;
-	name = m_pointedObject;
-	SimObj *trash = getObj(name.c_str());
+	name = Cm_Objects[Location_Status[0]].Object;
+	SimObj *Obj = getObj(name.c_str());
 	// get trash's position
-	trash->getPosition(Obj_pos);
+	Vector3d Obj_pos;
+	Obj->getPosition(Obj_pos);
 
-	if(Obj_pos.x()== PrObj_pos.x() && Obj_pos.y()== PrObj_pos.y() && Obj_pos.z()== PrObj_pos.z())
+	if(Obj_pos.x()== Cm_Objects[Location_Status[0]].Coord.x() && Obj_pos.y()== Cm_Objects[Location_Status[0]].Coord.y() && Obj_pos.z()== Cm_Objects[Location_Status[0]].Coord.z())
 		{
+			std::string msg = "RoboCupReferee/Robot is in ["  "]" "/-400";
+
+			if(m_ref != NULL){
+				m_ref->sendMsgToSrv(msg.c_str());
+			}
+			else{
+				LOG_MSG((msg.c_str()));
+			}
+
 
 		}
 	else
 		{
-			std::string msg = "RoboCupReferee/Robot is in [" + m_pointedObject + "]" "/+400";
+			std::string msg = "RoboCupReferee/Robot is in [" + Cm_Objects[Location_Status[0]].Object + "]" "/+400";
 
 			if(m_ref != NULL){
 				m_ref->sendMsgToSrv(msg.c_str());
@@ -766,11 +787,17 @@ std:: string name;
 void  MyController::CheckTrashes()
 {
 
-Trash_Position
 
-if( )
+    std:: string name;
+	name = Cm_trashes[Location_Status[1]].Trash;
+	SimObj *Trash = getObj(name.c_str());
+	// get trash's position
+	Vector3d Tr_pos;
+	Trash->getPosition(Tr_pos);
+
+	if(Tr_pos.x()== Cm_trashes[Location_Status[1]].Coord.x() &&  Tr_pos.z()== Cm_trashes[Location_Status[1]].Coord.z())
 		{
-			std::string msg = "RoboCupReferee/Robot is in [" + final + "]" "/+400";
+			std::string msg = "RoboCupReferee/Robot is in ["  "]" "/-400";
 
 			if(m_ref != NULL){
 				m_ref->sendMsgToSrv(msg.c_str());
@@ -778,10 +805,18 @@ if( )
 			else{
 				LOG_MSG((msg.c_str()));
 			}
-
 		}
+	else
+		{
+			std::string msg = "RoboCupReferee/Robot is in [" + Cm_trashes[Location_Status[1]].Trash + "]" "/+400";
 
-
+			if(m_ref != NULL){
+				m_ref->sendMsgToSrv(msg.c_str());
+			}
+			else{
+				LOG_MSG((msg.c_str()));
+			}
+		}
 
 }
 
