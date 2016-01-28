@@ -28,6 +28,7 @@ public:
     void   PlaceThings();
     void   CheckObjects();
     void   CheckTrashes();
+    void   InitRobot();
 	// void takeAwayObjects();
 
 private:
@@ -128,8 +129,7 @@ std::vector<std::string> m_trashes;
 	// ゴミ箱オブジェクト
 std::vector<std::string> m_trashboxs;
 
-
-
+Rotation rot;
 
 
 };
@@ -190,6 +190,45 @@ std::ifstream fin;
 
 
 }
+
+ void   MyController::InitRobot()
+ {
+ 	RobotObj *r_my = getRobotObj(roboName.c_str());
+			  r_my->setWheelVelocity(0.0,0.0);
+			  r_my->setPosition(m_RobotPos);
+
+			  r_my->setRotation(rot);
+			  r_my->setJointVelocity("LARM_JOINT0", 0.0,0.0);
+			  r_my->setJointAngle("LARM_JOINT0", 0.0);
+			  r_my->setJointVelocity("LARM_JOINT1", 0.0,0.0);
+			  r_my->setJointAngle("LARM_JOINT1", 0.0);
+			  r_my->setJointVelocity("LARM_JOINT3", 0.0,0.0);
+			  r_my->setJointAngle("LARM_JOINT3", 0.0);
+			  r_my->setJointVelocity("LARM_JOINT4", 0.0,0.0);
+			  r_my->setJointAngle("LARM_JOINT4", -1.57);
+			  r_my->setJointVelocity("LARM_JOINT5", 0.0,0.0);
+			  r_my->setJointAngle("LARM_JOINT5", 0.0);
+			  r_my->setJointVelocity("LARM_JOINT6", 0.0,0.0);
+			  r_my->setJointAngle("LARM_JOINT6", 0.0);
+			  r_my->setJointVelocity("LARM_JOINT7", 0.0,0.0);
+			  r_my->setJointAngle("LARM_JOINT7", 0.0);
+
+			  r_my->setJointVelocity("RARM_JOINT0", 0.0,0.0);
+			  r_my->setJointAngle("RARM_JOINT0", 0.0);
+			  r_my->setJointVelocity("RARM_JOINT1", 0.0,0.0);
+			  r_my->setJointAngle("RARM_JOINT1", 0.0);
+			  r_my->setJointVelocity("RARM_JOINT3", 0.0,0.0);
+			  r_my->setJointAngle("RARM_JOINT3", 0.0);
+			  r_my->setJointVelocity("RARM_JOINT4", 0.0,0.0);
+			  r_my->setJointAngle("RARM_JOINT4", -1.57);
+			  r_my->setJointVelocity("RARM_JOINT5", 0.0,0.0);
+			  r_my->setJointAngle("RARM_JOINT5", 0.0);
+			  r_my->setJointVelocity("RARM_JOINT6", 0.0,0.0);
+			  r_my->setJointAngle("RARM_JOINT6", 0.0);
+			  r_my->setJointVelocity("RARM_JOINT7", 0.0,0.0);
+			  r_my->setJointAngle("RARM_JOINT7", 0.0);
+
+ }
 
 
 
@@ -300,9 +339,6 @@ trialCount++;
 
 
 
-
-
-
 void MyController::onInit(InitEvent &evt)
 {
    parseFile("File_Position.dat");
@@ -323,6 +359,7 @@ Y_Can = 54.25;
 Y_General_trash = 36.35 ;
 
 
+m_RobotPos = Vector3d(100.0, 30.0,-100.0);
 
 Objects_Coordinates m_Object_Right_c;
 Objects_Coordinates m_Object_Center_c;
@@ -368,7 +405,7 @@ Cm_trashes.push_back(m_Trash_Left_c);
   m_RobotPos = Vector3d(100.0, 30.0,-100.0);
   m_Table = Vector3d(0.0, 24.0,70.0);
 
-
+rot.setQuaternion(1, 0, 0, 0);
 
 
 
