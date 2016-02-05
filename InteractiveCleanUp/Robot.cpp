@@ -57,6 +57,7 @@ public:
     void chooze_task_arm_right(int task);
     void get_Kinect_Data();
     void Kinect_Data_Off();
+    void Record_Kinect_Data(char* all_msg);
 
 
 	/* @brief  位置を指定しその方向に回転を開始し、回転終了時間を返します
@@ -235,7 +236,7 @@ struct Joint_Coorditate {
 struct Posture_Coordinates {
   double  time;
   std::vector <Joint_Coorditate> posture;
-  bool On;
+
 } ;
 
 
@@ -863,9 +864,9 @@ void RobotController::onInit(InitEvent &evt)
 	Robot_speed  = Change_Robot_speed;
 	m_state = 0;
 	// bjects
-	m_BottleFront = Vector3d(40.0, 30, -10.0);
-	m_MuccupFront = Vector3d(0.0, 30, -10.0);
-	m_CanFront = Vector3d(-40.0, 30, -10.0);
+	m_BottleFront = Vector3d(40.0, 30, -40.0);
+	m_MuccupFront = Vector3d(0.0, 30, -40.0);
+	m_CanFront = Vector3d(-40.0, 30, -40.0);
 
 	mO_RightFront = Vector3d(40.0, 30, -10.0);
 	mO_CenterFront = Vector3d(0.0, 30, -10.0);
@@ -1054,7 +1055,7 @@ double RobotController::onAction(ActionEvent &evt)
 		case 6:   { //preparation of the arm for grasp
 			Robot_speed  = Change_Robot_speed;
 			recognizeObjectPosition(m_Object_togo, m_pointedObject);
-			if (goTo(m_Object_togo, 55) == true)
+			if (goTo(m_Object_togo, 70) == true)
 				{
 					m_state = 7;
          
@@ -1070,7 +1071,7 @@ double RobotController::onAction(ActionEvent &evt)
         }
 		case 8:   { //move to the object
 			Robot_speed  = 1;
-			if (goTo(m_Object_togo, 37) == true) m_state = 9;
+			if (goTo(m_Object_togo, 38) == true) m_state = 9;
 			break;
         }
 		case 9:   { //move arm to grasp the object
@@ -1173,7 +1174,7 @@ double RobotController::onAction(ActionEvent &evt)
         }
 		case 18:   {
 			Robot_speed  = 1;
-			if (goTo(m_Trash_togo, 50) == true) m_state = 19;
+			if (goTo(m_Trash_togo, 60) == true) m_state = 19;
 			break;
         }
 		case 19:   { //move arm to grasp the object
@@ -1288,8 +1289,24 @@ void RobotController::onRecvMsg(RecvMsgEvent &evt)
 
 
 
-////////////////////////////////////    On Message /////////////////////////////////////////////////
+////////////////////////////////////    On Message  /////////////////////////////////////////////////
 
+
+   char* m_msg = strtok(all_msg,"  ");
+
+if (strcmp(m_msg,"KINECT_DATA_Sensor") == 0 && Kinect_data_flag == true) {
+
+Record_Kinect_Data(all_msg);
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+}
+
+
+
+void RobotController::Record_Kinect_Data(char* all_msg)  //   
+{
 float qw ;
 float qx ;
 float qy ;
@@ -1300,7 +1317,7 @@ float m_time;
    char* m_msg = strtok(all_msg,"  ");
    Posture_Coordinates m_posture;
 
-if (strcmp(m_msg,"KINECT_DATA_Sensor") == 0 && Kinect_data_flag == true) {
+if (strcmp(m_msg,"KINECT_DATA_Sensor") == 0 ) {
 		int i = 0;
 		while (true) {
 
@@ -1312,7 +1329,7 @@ Joint_Coorditate m_joint;
 
             if (strcmp(type,"END") == 0) {
          	m_time = atof(strtok(NULL,"."));
- 
+            m_posture.time = m_time;
 				break;
 			}
 			else
@@ -1333,12 +1350,9 @@ Record_Postures.push_back(m_posture);
 
 }
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 }
-
-
-
 
 
 bool RobotController::recognizeTrash(Vector3d &pos, std::string &name)

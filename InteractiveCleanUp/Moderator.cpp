@@ -392,8 +392,6 @@ Cm_Objects.push_back(m_Object_Left_c);
 
 
 
-
-
 Trashes_Coordinates m_Trash_Right_c;
 Trashes_Coordinates m_Trash_Center_c;
 Trashes_Coordinates m_Trash_Left_c;
@@ -762,7 +760,12 @@ if(msg == "Object_Trashed")
 
 }
 
+// Right Object + 400
+// Wrong Object - 400
 
+
+// Right Trash Box + 400
+// Wrong Trash Box - 400
 
 void  MyController::CheckObjects()
 {
@@ -770,11 +773,9 @@ void  MyController::CheckObjects()
 //Cm_Objects[Location_Status[0]].Coord
 //Object_Position
 //Location_Status[0]
-std::cout << "check Object  1 "  << std::endl;
+
 std:: string name;
 	name = Cm_Objects[Location_Status[0]].Object;
-	std::cout << "Object name   " << name << std::endl;
-
 	SimObj *Obj = getObj(name.c_str());
 	// get trash's position
 	Vector3d Obj_pos;
@@ -791,7 +792,6 @@ std:: string name;
 				LOG_MSG((msg.c_str()));
 			}
 
-std::cout << "check Object  2 "  << std::endl;
 		}
 	else
 		{
@@ -803,7 +803,6 @@ std::cout << "check Object  2 "  << std::endl;
 			else{
 				LOG_MSG((msg.c_str()));
 			}
-			std::cout << "check Object  3 "  << std::endl;
 		}
 
 
