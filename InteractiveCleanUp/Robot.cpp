@@ -32,7 +32,6 @@ public:
 	void   onRecvMsg(RecvMsgEvent &evt);
 	void   onCollision(CollisionEvent &evt);
 	bool   recognizeTrash(Vector3d &pos, std::string &name);
-	std::string getPointedTrashName(std::string entName);
 	void   stopRobotMove(void);
 
     //function use by other function
@@ -44,7 +43,7 @@ public:
     double getRoll(Rotation rot);
     double getPitch(Rotation rot);
     double getYaw(Rotation rot);
-    void   Kinect_Sensor(char* all_msg);
+
 
     //function for the left arm
     bool moveLeftArm();
@@ -56,9 +55,9 @@ public:
     void chooze_task_arm_left(int task);
     bool moveRightArm();
     void chooze_task_arm_right(int task);
+    void get_Kinect_Data();
+    void Kinect_Data_Off();
 
-	// エージェントが指差している方向にあるオブジェクトの名前を取得します
-	std::string getPointedObjectName(std::string entName);
 
 	/* @brief  位置を指定しその方向に回転を開始し、回転終了時間を返します
 	 * @param  pos 回転したい方向の位置
@@ -221,6 +220,41 @@ private:
 	bool reset_out;
 	bool take_action;
 	bool put_action;
+
+
+//////////////  Kinect Data  //////////////////
+
+struct Joint_Coorditate {
+   std::string Name;
+   double qw;
+   double qx;
+   double qy;
+   double qz;
+} ;
+
+struct Posture_Coordinates {
+  double  time;
+  std::vector <Joint_Coorditate> posture;
+  bool On;
+} ;
+
+
+/////////
+
+ std::vector <Posture_Coordinates> Record_Postures;
+
+////////////////////////////////////////////
+
+
+
+
+
+///////////Flag On_message ////////////////
+
+
+bool Kinect_data_flag;
+
+//////////////////////////////////////////
 
 };
 void RobotController::stopRobotMove(void)
@@ -673,7 +707,7 @@ void RobotController::grasp_left_hand()
 
 	double distance = getDist3D(hand,object);
 
-	if (distance < 13 &&  m_grasp_left == false)
+	if (distance < 22 &&  m_grasp_left == false)
 		{
 			CParts * parts = my->getParts("LARM_LINK7");
 			if (parts->graspObj(m_pointedObject))
@@ -808,159 +842,6 @@ bool RobotController::goTo(Vector3d pos, double rangeToPoint)
 	return false;
 }
 
-/************************************************************************************/
-
-
-
-
-/************************************************************************************/
-
-/////////////////////////////////     Kinect Sensor     //////////////////////////////
-void   Kinect_Sensor(char* all_msg)
-{
-
-				double x_Elbow ;
-				double y_Elbow ;
-				double z_Elbow ;
-				double x_Wrist ;
-				double y_Wrist ;
-				double z_Wrist ;
-//RobotObj *my = this->getObj(this->myname());
-	char* msg = strtok(all_msg,"  ");
-
-	if (strcmp(msg,"KINECT_DATA_Sensor") == 0) {
-		int i = 0;
-		while (true) {
-			i++;
-
-			char *type = strtok(NULL,":");
-			/*
-			if (strcmp(type,"POSITION") == 0) {
-				// Body position
-				double x = atof(strtok(NULL,","));
-				double y = atof(strtok(NULL,","));
-				double z = atof(strtok(NULL," "));
-				// Transfer from agent coordinate to global coordinate
-
-				//my->setPosition(m_posx+gx,m_posy,m_posz+gz);
-
-				continue;
-			} 
-			else if (strcmp(type,"WAIST") == 0) {
-				static dQuaternion bodyQ_pre, bodyQ_now, bodyQ_middle;
-				// Rotation of whole body
-				double w = atof(strtok(NULL,","));
-				double x = atof(strtok(NULL,","));
-				double y = atof(strtok(NULL,","));
-				double z = atof(strtok(NULL," "));
-
-				//my->setJointQuaternion("ROOT_JOINT0", w, x, y, z);
-				continue;
-			}
-			else */if (strcmp(type,"ElbowRight") == 0) {
-				// Rotation of whole body
-				 x_Elbow = atof(strtok(NULL,","));
-				 y_Elbow = atof(strtok(NULL,","));
-				 z_Elbow = atof(strtok(NULL,","));
-				double qw_Elbow = atof(strtok(NULL,","));
-				double qx_Elbow = atof(strtok(NULL,","));
-				double qy_Elbow = atof(strtok(NULL,","));
-				double qz_Elbow = atof(strtok(NULL," "));
-
-				//my->setJointQuaternion("ROOT_JOINT0", w, x, y, z);
-				continue;
-			}
-			else if (strcmp(type,"WristRight") == 0) {
-				// Rotation of whole body
-				 x_Wrist = atof(strtok(NULL,","));
-				 y_Wrist = atof(strtok(NULL,","));
-				 z_Wrist = atof(strtok(NULL,","));
-				double qw_Wrist = atof(strtok(NULL,","));
-				double qx_Wrist = atof(strtok(NULL,","));
-				double qy_Wrist = atof(strtok(NULL,","));
-				double qz_Wrist = atof(strtok(NULL," "));
-
-				//my->setJointQuaternion("ROOT_JOINT0", w, x, y, z);
-				continue;
-			}
-
-			else if (strcmp(type,"END") == 0) {
-				break;
-			}
-			/*
-#if 0
-			else {
-				int    index;
-				LOG_MSG(("smooth change"));
-				if      (strcmp(type, "WAIST_JOINT1")==0) index = 0;
-				else if (strcmp(type, "RARM_JOINT2" )==0) index = 1;
-				else if (strcmp(type, "RARM_JOINT3" )==0) index = 2;
-				else if (strcmp(type, "LARM_JOINT2" )==0) index = 3;
-				else if (strcmp(type, "LARM_JOINT3" )==0) index = 4;
-				else    continue;   // HEAD_JOINT1 should be controlled by HMD; No need to control it here.
-				// Rotation of joings
-				double w = atof(strtok(NULL,","));				double x = atof(strtok(NULL,","));
-				double y = atof(strtok(NULL,","));				double z = atof(strtok(NULL," "));
-				double angle = acos(w)*2;
-				double tmp = sin(angle/2);
-				double vx = x/tmp;				double vy = y/tmp;				double vz = z/tmp;
-				double len = sqrt(vx*vx + vy*vy + vz*vz);
-				if(len < (1 - m_range) || (1 + m_range) < len) continue;
-
-				bodypartsQ_now[index][0] = w;   bodypartsQ_now[index][1] = x;   bodypartsQ_now[index][2] = y;  bodypartsQ_now[index][3] = z;
-				slerp(bodypartsQ_pre[index], bodypartsQ_now[index], 0.5, &bodypartsQ_middle[index]);
-
-				if (init_flag==false) {
-					// Use interpolation from the 2nd time
-					my->setJointQuaternion(type, bodypartsQ_middle[index][0], bodypartsQ_middle[index][1], bodypartsQ_middle[index][2], bodypartsQ_middle[index][3]);
-					bodypartsQ_pre[index][0] = bodypartsQ_middle[index][0];
-					bodypartsQ_pre[index][1] = bodypartsQ_middle[index][1];
-					bodypartsQ_pre[index][2] = bodypartsQ_middle[index][2];
-					bodypartsQ_pre[index][3] = bodypartsQ_middle[index][3];
-					LOG_MSG(("%s, init", type));
-				}
-				else {
-					// Use direct quaternion at the first time
-					my->setJointQuaternion(type, w, x, y, z);
-					bodypartsQ_pre[index][0] = w;
-					bodypartsQ_pre[index][1] = x;
-					bodypartsQ_pre[index][2] = y;
-					bodypartsQ_pre[index][3] = z;
-					init_flag = false;
-					LOG_MSG(("%s, from 2nd", type));
-				}
-				continue;
-			}
-#else
-			// Rotation of joint
-			double w = atof(strtok(NULL,","));
-			double x = atof(strtok(NULL,","));
-			double y = atof(strtok(NULL,","));
-			double z = atof(strtok(NULL," "));
-			double angle = acos(w)*2;
-			double tmp = sin(angle/2);
-			double vx = x/tmp;
-			double vy = y/tmp;
-			double vz = z/tmp;
-			double len = sqrt(vx*vx+vy*vy+vz*vz);
-			// HEAD_JOINT1 is controlled by HMD
-			if(strcmp(type,"HEAD_JOINT1") != 0 ){
-			//	my->setJointQuaternion(type,w,x,y,z);
-			}
-
-
-			
-#endif
-*/		}
-	}
-
-}
-
-
-
-/************************************************************************************/
-
-
 
 
 
@@ -995,28 +876,21 @@ void RobotController::onInit(InitEvent &evt)
 	//m_WagonFront = Vector3d(-120.0, 30, -120);
 	m_BurnableFront = Vector3d(-120.0, 30, -60);
 	m_UnburnableFront = Vector3d(-120.0, 30, 70);
-	m_RecycleFront = Vector3d(-120.0, 30, -190);
+	m_RecycleFront = Vector3d(-60.0, 30, -100);
 
 	mT_RightFront = Vector3d(-120.0, 30, -190);
 	mT_CenterFront = Vector3d(-120.0, 30, -60);
 	mT_LeftFront = Vector3d(-120.0, 30, 70);
 
 
-/*
-	m_relayPoint1 = Vector3d(100, 30, -70);
-	m_relayPoint2 = Vector3d(0, 30, -70);
-	m_relayFrontTable = Vector3d(0, 30,-20);
-	m_relayFrontTable_reset = Vector3d(0, 30,-50);
-	m_relayFrontTrash = Vector3d(0, 30, -100);
-*/
 
 
 	m_relayPoint1 = Vector3d(100, 30, -70);
 	m_relayPoint2 = Vector3d(0, 30, -70);
 	m_relayFrontTable = Vector3d(0, 30,-20);
 
-	m_relayFrontTable_reset = Vector3d(-100, 30,-50);
-	m_relayFrontTrash = Vector3d(-100, 30, -80);
+	m_relayFrontTable_reset = Vector3d(-80, 30,-50);
+	m_relayFrontTrash = Vector3d(-80, 30, -80);
 
 
 
@@ -1071,22 +945,13 @@ void RobotController::onInit(InitEvent &evt)
 	m_recogSrv = NULL;
 	m_sended = false;
 
-	// ここではゴミの名前が分かっているとします
-	//m_trashes.push_back("petbottle_0");
-	//m_trashes.push_back("petbottle_1");
-	//m_trashes.push_back("petbottle_2");
-	//m_trashes.push_back("petbottle_3");
+
 	m_trashes.push_back("petbottle");
-	//m_trashes.push_back("banana");
-	//m_trashes.push_back("chigarette");
-	//m_trashes.push_back("chocolate");
-	//m_trashes.push_back("mayonaise_0");
-	//m_trashes.push_back("mayonaise_1");
+
 	m_trashes.push_back("mugcup");
-	//m_trashes.push_back("can_0");
-	//m_trashes.push_back("can_1");
+
 	m_trashes.push_back("can");
-	//m_trashes.push_back("can_3");
+
 
 	// ゴミ箱登録
 	m_trashboxs.push_back("recycle");
@@ -1110,7 +975,7 @@ void RobotController::onInit(InitEvent &evt)
 
 double RobotController::onAction(ActionEvent &evt)
 {
-	//printf("Current State  %d \n ",m_state );
+	//std::cout << "m_state " <<  m_state << std::endl;
 	switch(m_state)
 		{
 		case 1: {
@@ -1141,16 +1006,14 @@ double RobotController::onAction(ActionEvent &evt)
 			take_action = true;
 			if (cycle > 0)
 				{
-					sendMsg(m_avatar, "On_Take");
-					sendMsg("VoiceReco_Service"," Please show me which object to take ");
 					m_state = 30;
+					sendMsg("man_000","Show_me");
+					get_Kinect_Data();
 					break;
 				}
 			else
 				{
-					sendMsg("VoiceReco_Service"," Task finished Please press  button Two to restart the cycle ");
-                      
-					sendMsg(m_avatar, "restart_on");
+
 					m_state = 60;
 					break;
                 }
@@ -1170,6 +1033,7 @@ double RobotController::onAction(ActionEvent &evt)
 			}
 
 		case 5:   {  //Optional case  !!!
+			
 			Robot_speed  = Change_Robot_speed;
 			if (m_pointedObject=="petbottle")
 				{
@@ -1190,7 +1054,7 @@ double RobotController::onAction(ActionEvent &evt)
 		case 6:   { //preparation of the arm for grasp
 			Robot_speed  = Change_Robot_speed;
 			recognizeObjectPosition(m_Object_togo, m_pointedObject);
-			if (goTo(m_Object_togo, 45) == true)
+			if (goTo(m_Object_togo, 55) == true)
 				{
 					m_state = 7;
          
@@ -1206,7 +1070,7 @@ double RobotController::onAction(ActionEvent &evt)
         }
 		case 8:   { //move to the object
 			Robot_speed  = 1;
-			if (goTo(m_Object_togo, 25) == true) m_state = 9;
+			if (goTo(m_Object_togo, 37) == true) m_state = 9;
 			break;
         }
 		case 9:   { //move arm to grasp the object
@@ -1234,7 +1098,9 @@ double RobotController::onAction(ActionEvent &evt)
 			if (moveLeftArm() == true)
 				{
 					Robot_speed  = Change_Robot_speed;
-					sendMsg("VoiceReco_Service"," Now I will go to the trashboxes ");
+				//	sendMsg("VoiceReco_Service"," Now I will go to the trashboxes ");
+					
+					//sendMsg("moderator_0","Object_Grasped");
 					m_state = 13;
 					sleep(1);
 				}
@@ -1245,9 +1111,6 @@ double RobotController::onAction(ActionEvent &evt)
 			if (goTo(m_relayFrontTrash, 0) == true)
 				{
 
-					//    sendMsg("VoiceReco_Service"," Please show me which trashbox to use ");
-					//     sendMsg("man_000","okput");
-					//    sleep(2);
 					m_state = 14;
 				}
 			break;
@@ -1259,11 +1122,8 @@ double RobotController::onAction(ActionEvent &evt)
 			if (goTo(m_relayFrontTable_reset, 0) == true)
 				{
 
-					sendMsg("VoiceReco_Service"," Please show me which trashbox to use ");
+
 					sleep(2);
-					reset_op = true;
-					put_action = true;
-					sendMsg(m_avatar, "On_put");
 					m_state = 15;
 				}
 			break;
@@ -1313,7 +1173,7 @@ double RobotController::onAction(ActionEvent &evt)
         }
 		case 18:   {
 			Robot_speed  = 1;
-			if (goTo(m_Trash_togo, 40) == true) m_state = 19;
+			if (goTo(m_Trash_togo, 50) == true) m_state = 19;
 			break;
         }
 		case 19:   { //move arm to grasp the object
@@ -1327,7 +1187,7 @@ double RobotController::onAction(ActionEvent &evt)
 			break;
         }
 		case 20:  {
-			m_my->setWheelVelocity(-1.5,-1.5);
+			m_my->setWheelVelocity(-2.5,-2.5);
 			chooze_task_arm_left(2);
 			if (moveLeftArm() == true)
 				{
@@ -1355,172 +1215,17 @@ double RobotController::onAction(ActionEvent &evt)
 				{
 					cycle = cycle-1;
 					m_state = 4;
-
-					std::vector<std::string>::iterator it;
-					it = std::find(m_trashes.begin(), m_trashes.end(), m_pointedObject);
-					m_trashes.erase(it);
+					sendMsg("moderator_0","Task_finished");
 					m_pointedtrash = "";
 					m_pointedObject = "";
-					take_action = true;
-					put_action = true;
+					m_state = 0;
 				}
 			break;
         }
-			/// Cancelation step for object  /////
-			// object is grasped //// 
-			/// 1. Grasped but don't leave  the front table point ///
-
-		case 100:   { 
-			stopRobotMove();
-			Robot_speed  = Change_Robot_speed;
-			if (m_pointedObject=="petbottle")
-				{
-					// if (goTo(m_BottleFront, 0) == true) m_state = 6;
-					Object_reset.x(m_BottleReset.x());
-					Object_reset.y(m_BottleReset.y());
-					Object_reset.z(m_BottleReset.z());
-				}
-
-			else if (m_pointedObject=="mugcup")
-				{
-					// Object_reset = m_MuccupReset;
-					Object_reset.x(m_MuccupReset.x());
-					Object_reset.y(m_MuccupReset.y());
-					Object_reset.z(m_MuccupReset.z());
-					// if (goTo(m_MuccupFront, 0) == true) m_state = 6;
-				}
-			else if (m_pointedObject=="can")
-				{
-					//Object_reset = m_CanReset;
-					Object_reset.x(m_CanReset.x());
-					Object_reset.y(m_CanReset.y());
-					Object_reset.z(m_CanReset.z());
-					//  if (goTo(m_CanFront, 0) == true)  m_state = 6;
-				}
-			m_state = 101;
-			break;
-        }
-
-		case 101:   { //preparation of the arm for grasp
-			Robot_speed  = Change_Robot_speed;
-			chooze_task_arm_left(1);
-			if (moveLeftArm() == true) m_state = 102;
-			break;
-        }
-		case 102:   {
-			Robot_speed  = 1;
-			if (goTo(Object_reset, 30) == true) m_state = 103;
-			break;
-        }
-		case 103:   { //move arm to grasp the object
-			chooze_task_arm_left(2);
-         
-			if (moveLeftArm() == true) m_state = 104;
-			break;
-        }
-		case 104:  {
-			m_my->setWheelVelocity(-1.5,-1.5);
-			chooze_task_arm_left(3);
-			release_left_hand();
-			if (moveLeftArm() == true)
-				{
-					Robot_speed  = Change_Robot_speed;
-					m_state = 105;
-				}
-			break;
-        }
-
-		case 105:   { //move to the object
-			// Robot_speed  = 1;
-			// m_trashes.push_back(m_pointedObject);
-			Robot_speed  = Change_Robot_speed;
-			//cycle++;
-			m_pointedObject = "";
-			// m_pointedtrash = "";
-			Robot_speed  = Change_Robot_speed;
-			if (goTo(m_relayFrontTable_reset, 0) == true) m_state = 106;
-			break;
-        }
-		case 106:   { //preparation of the arm for grasp
-			chooze_task_arm_left(5);
-			if (moveLeftArm() == true) m_state = 107;
-			break;
-        }        
-		case 107:   { 
-			Robot_speed  = Change_Robot_speed;
-			if (goTo( m_relayFrontTable, 0) == true)
-				{
-					m_state = 4;
-					reset_out = false;
-				}
-			// m_pointedObject="";
-			break;
-		}
-
-			/// 2. Grasped and left the front table point ///
-			// Object is not grapsed yet //
-		case 25:   { //preparation of the arm for grasp
-			stopRobotMove();
-			Robot_speed  = Change_Robot_speed;
-			chooze_task_arm_left(3);
-			if (moveLeftArm() == true) m_state = 26;
-			break;
-        } 
-		case 26:   { //preparation of the arm for grasp
-			Robot_speed  = Change_Robot_speed;
-			chooze_task_arm_left(5);
-			if (moveLeftArm() == true) m_state = 27;
-			break;
-        } 
-		case 27: { //move to the object
-			// Robot_speed  = 1;
-
-			Robot_speed  = Change_Robot_speed;
-			if (goTo( m_relayFrontTable_reset, 0) == true) m_state = 28;
-			m_pointedObject="";
-			break;
-        }
-		case 28:  { 
-			Robot_speed  = Change_Robot_speed;
-			if (goTo( m_relayFrontTable, 0) == true)
-				{
-					m_state = 4;
-					reset_out = false;
-				}
-			// m_pointedObject="";
-        
-			break;
-		}
-			/// Cancelation step for trash  /////
-		case 200:   { //preparation of the arm for grasp
-			Robot_speed  = Change_Robot_speed;
-			chooze_task_arm_left(5);
-			if (moveLeftArm() == true) m_state = 201;
-			break;
-        } 
-		case 201:   { //move to the object
-			// Robot_speed  = 1;
-
-			Robot_speed  = Change_Robot_speed;
-			if (goTo( m_relayFrontTrash, 0) == true) m_state = 202;
-			// m_pointedObject="";
-			break;
-        }
-
-		case 202:   { 
-			Robot_speed  = Change_Robot_speed;
-			if (goTo(m_relayFrontTable_reset, 0) == true) 
-				{
-					m_state = 14;
-					reset_out = false;
-				}
-			// m_pointedObject="";
-			m_pointedtrash = "";
-			break;
-		}
+			
 
 		}
-	return 0.001;
+	return 0.01;
 }
 
 
@@ -1533,274 +1238,107 @@ void RobotController::onRecvMsg(RecvMsgEvent &evt)
 	std::string msg;
 	msg= evt.getMsg();
 
-	if (msg == "go" && m_state == 0)
+
+
+
+/////////////////////////////////// On_Message //////////////////////////////
+  std::string ss = all_msg;
+  int strPos1 = 0;
+  int strPos2;
+  std::string headss;
+  std::string tmpss;
+  strPos2 = ss.find("  ", strPos1);
+  headss.assign(ss, strPos1, strPos2-strPos1);
+
+
+//////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+
+	if (msg == "Start_Cycle" && m_state == 0)
 		{
 			m_state = 1 ;      
+			Kinect_data_flag = false;
+			Record_Postures.clear();
 		//	sendMsg("VoiceReco_Service","Let's start the clean up task\n");
-			printf("got it in go \n");
+		//	printf("got it in go \n");
 		}
   
 
-	else if (msg == "do" && m_state == 30 && take_action == true) 
+
+
+
+
+	else if (msg == "Start_Task" && m_state == 30 ) 
 		{
-			//  printf("Kinect is started on object\n");
-			take_action = false;
-			m_pointedObject = getPointedObjectName(m_avatar);
+            sleep(5);
+            Kinect_Data_Off(); // finished analysing data
 			m_pointedObject = "petbottle";
 			m_pointedtrash = "recycle";
-			std::string msg_ob = " I will take " + m_pointedObject + "and put it in " + m_pointedtrash;
-			//sendMsg("VoiceReco_Service",msg_ob);
-			sleep(2);
+			std::cout << "Task started Robot ........ "  << std::endl;
+			
 			m_state = 5;
 		}
-		/*
-	else if (msg == "do" && m_state == 99 && put_action == true )
-		{
-			//  printf("Kinect is started on trash\n");
-			put_action = false;
-			m_pointedtrash = getPointedTrashName(m_avatar);
-			std::string  msg_trash = " Ok I will put "+ m_pointedObject+" in "+ m_pointedtrash +" trashbox ";
-			sendMsg("VoiceReco_Service",msg_trash);
-			sleep(2);
-			// sleep(2);
-			m_state = 15;
-		}
-	*/
-/*	
-	else if (msg == "restart" && m_state == 60)
-		{
-			m_trashes.push_back("petbottle");
-			m_trashes.push_back("mugcup");
-			m_trashes.push_back("can");
-			Vector3d  m_BottleReset = Vector3d(40.0, 59.15, 50.0);
-			Vector3d  m_MuccupReset = Vector3d(0.0, 59.15, 50.0);
-			Vector3d  m_CanReset = Vector3d(-40.0, 55.250, 50.0);
-			Vector3d  m_RobotPos = Vector3d(100.0, 30.0,-100.0);
-			Rotation rot;
-			rot.setQuaternion(1, 0, 0, 0);
-			SimObj *target = this->getObj("petbottle");
 
-			target->setPosition(m_BottleReset);
-			target->setRotation(rot);
-			target = this->getObj("mugcup");
-			target->setRotation(rot);
-			target->setPosition(m_MuccupReset);
-			target = this->getObj("can");
-			target->setRotation(rot);
-			target->setPosition(m_CanReset);
-			cycle = 3;
-			m_state = 4;
-			my->setPosition(m_RobotPos);
 
-			my->setWheelVelocity(0.0,0.0);
-			my->setRotation(rot);
-			my->setJointVelocity("LARM_JOINT0", 0.0,0.0);
-			my->setJointAngle("LARM_JOINT0", 0.0);
-			my->setJointVelocity("LARM_JOINT1", 0.0,0.0);
-			my->setJointAngle("LARM_JOINT1", 0.0);
-			my->setJointVelocity("LARM_JOINT3", 0.0,0.0);
-			my->setJointAngle("LARM_JOINT3", 0.0);
-			my->setJointVelocity("LARM_JOINT4", 0.0,0.0);
-			my->setJointAngle("LARM_JOINT4", -1.57);
-			my->setJointVelocity("LARM_JOINT5", 0.0,0.0);
-			my->setJointAngle("LARM_JOINT5", 0.0);
-			my->setJointVelocity("LARM_JOINT6", 0.0,0.0);
-			my->setJointAngle("LARM_JOINT6", 0.0);
-			my->setJointVelocity("LARM_JOINT7", 0.0,0.0);
-			my->setJointAngle("LARM_JOINT7", 0.0);
 
-		}
-*/
 
-	else if (msg == "reset" && m_grasp_left == true && reset_op == false && reset_out == false)
-		{
-			reset_out = true;
-			m_state = 100;
-			sendMsg(m_avatar, "reset_put");
-			/*
-			  m_trashes.push_back(m_pointedObject);
-			  Vector3d  m_BottleReset = Vector3d(40.0, 59.15, 50.0);
-			  Vector3d  m_MuccupReset = Vector3d(0.0, 52.15, 50.0);
-			  Vector3d  m_CanReset = Vector3d(-40.0, 59.15, 50.0);
-			  Vector3d  m_RobotPos = Vector3d(100.0, 30.0,-100.0);
-			  Rotation rot;
-			  rot.setQuaternion(1, 0, 0, 0);
+////////////////////////////////////    On Message /////////////////////////////////////////////////
 
-			  SimObj *target = this->getObj(m_pointedObject.c_str());
-			  target->setRotation(rot);
-			  if ( m_grasp_left == true)
-			  {
-			  CParts * parts = my->getParts("LARM_LINK7");
-			  parts->releaseObj();
-			  m_grasp_left = false;
+float qw ;
+float qx ;
+float qy ;
+float qz ;
+std::string name;
+float m_time;				
+//RobotObj *my = this->getObj(this->myname());
+   char* m_msg = strtok(all_msg,"  ");
+   Posture_Coordinates m_posture;
 
-			  }
-			  if (m_pointedObject == "petbottle" )
-			  {
-			  target->setPosition(m_BottleReset);
-			  m_trashes.push_back("petbottle");
-            
-			  }
-			  else if (m_pointedObject == "mugcup")
-			  {
-			  target->setPosition(m_MuccupReset);
-			  m_trashes.push_back("mugcup");
-			  }
-			  else if (m_pointedObject == "can")
-			  {
-			  target->setPosition(m_CanReset);
-			  m_trashes.push_back("can");
-			  }
+if (strcmp(m_msg,"KINECT_DATA_Sensor") == 0 && Kinect_data_flag == true) {
+		int i = 0;
+		while (true) {
 
-			  cycle++;
-			  m_state = 30;
 
-			  my->setWheelVelocity(0.0,0.0);
-			  my->setPosition(m_RobotPos);
+Joint_Coorditate m_joint;
 
-			  my->setRotation(rot);
-			  my->setJointVelocity("LARM_JOINT0", 0.0,0.0);
-			  my->setJointAngle("LARM_JOINT0", 0.0);
-			  my->setJointVelocity("LARM_JOINT1", 0.0,0.0);
-			  my->setJointAngle("LARM_JOINT1", 0.0);
-			  my->setJointVelocity("LARM_JOINT3", 0.0,0.0);
-			  my->setJointAngle("LARM_JOINT3", 0.0);
-			  my->setJointVelocity("LARM_JOINT4", 0.0,0.0);
-			  my->setJointAngle("LARM_JOINT4", -1.57);
-			  my->setJointVelocity("LARM_JOINT5", 0.0,0.0);
-			  my->setJointAngle("LARM_JOINT5", 0.0);
-			  my->setJointVelocity("LARM_JOINT6", 0.0,0.0);
-			  my->setJointAngle("LARM_JOINT6", 0.0);
-			  my->setJointVelocity("LARM_JOINT7", 0.0,0.0);
-			  my->setJointAngle("LARM_JOINT7", 0.0);
-			  m_pointedObject = "";
-			  m_pointedtrash = "";
-			*/
-		}
-	else if (msg == "reset" && m_grasp_left == false && reset_op == false && reset_out == false)
-		{
-			reset_out = true;
-			m_state = 25;
-			sendMsg(m_avatar, "reset_take");
+			
+			  char *type = strtok(NULL,":");
 
-		}
-	else if (msg == "reset" && m_grasp_left == true && reset_op == true && reset_out == false)
-		{
-			reset_out = true;
-			m_state = 200;
-			sendMsg(m_avatar, "reset_put");
-		}
-	else
-		{
-			printf("Message is not accepted\n");
-		}
+            if (strcmp(type,"END") == 0) {
+         	m_time = atof(strtok(NULL,"."));
+ 
+				break;
+			}
+			else
+			{
+
+                 m_joint.Name = type;
+				 m_joint.qw = atof(strtok(NULL,","));
+				 m_joint.qx = atof(strtok(NULL,","));
+				 m_joint.qy = atof(strtok(NULL,","));
+				 m_joint.qz = atof(strtok(NULL," "));
+
+
+			}
+ m_posture.posture.push_back(m_joint);
+
+	}
+Record_Postures.push_back(m_posture);
+
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
 }
 
 
-std::string RobotController::getPointedObjectName(std::string entName)
-{
-	// 発話者の名前からSimObjを取得します
-	SimObj *tobj = getObj(entName.c_str());
 
-	// メッセージ送信者の左肘関節の位置を取得します
-	Vector3d jpos;
-	if (!tobj->getJointPosition(jpos, "REYE_JOINT1")) {
-		LOG_ERR(("failed to get joint position"));
-		return "";
-	}
-	// メッセージ送信者の左肘から左手首をつなぐベクトルを取得します
-	Vector3d jvec;
-	if (!tobj->getPointingVector(jvec,"REYE_JOINT1","RARM_JOINT7")) {
-		LOG_ERR(("failed to get pointing vector"));
-		return "";
-	}
-
-	double distance = 0.0;
-	std::string objName = "";
-
-	// 全ゴミオブジェクトでループします
-	int trashSize = m_trashes.size();
-	for(int i = 0; i < trashSize; i++) {
-
-		// エンティティの位置を取得します
-		SimObj *obj = getObj(m_trashes[i].c_str());
-		Vector3d objVec;
-		obj->getPosition(objVec);
-
-		// エンティティと左肘関節を結ぶベクトルを作成します
-		objVec -= jpos;
-
-		// cos角度が不の場合（指差した方向と反対側にある場合)は対象から外します
-		double cos = jvec.angle(objVec);
-		//if (cos < 0)
-		//  continue;
-
-		// 指差した方向ベクトルまでの最短距離の計算
-		double theta = acos(cos);
-		double tmp_distance = sin(theta) * objVec.length();
-
-		// 最小距離の場合は名前、距離を保存しておく
-		if (tmp_distance < distance || distance == 0.0){
-			distance = tmp_distance;
-			objName = obj->name();
-		}
-	}
-	// エンティティでループして最も近いオブジェクトの名前を取得する
-	return objName;
-}
-
-
-std::string RobotController::getPointedTrashName(std::string entName)
-{
-	// 発話者の名前からSimObjを取得します
-	SimObj *tobj = getObj(entName.c_str());
-
-	// メッセージ送信者の左肘関節の位置を取得します
-	Vector3d jpos;
-	if (!tobj->getJointPosition(jpos, "RARM_JOINT4")) {
-		LOG_ERR(("failed to get joint position"));
-		return "";
-	}
-	// メッセージ送信者の左肘から左手首をつなぐベクトルを取得します
-	Vector3d jvec;
-	if (!tobj->getPointingVector(jvec, "RARM_JOINT4", "RARM_JOINT7")) {
-		LOG_ERR(("failed to get pointing vector"));
-		return "";
-	}
-
-	double distance = 0.0;
-	std::string objName = "";
-
-	// 全ゴミオブジェクトでループします
-	int trashboxSize = m_trashboxs.size();
-	for(int i = 0; i < trashboxSize; i++) {
-
-		// エンティティの位置を取得します
-		SimObj *obj = getObj(m_trashboxs[i].c_str());
-		Vector3d objVec;
-		obj->getPosition(objVec);
-
-		// エンティティと左肘関節を結ぶベクトルを作成します
-		objVec -= jpos;
-
-		// cos角度が不の場合（指差した方向と反対側にある場合)は対象から外します
-		double cos = jvec.angle(objVec);
-		//if (cos < 0)
-		//  continue;
-
-		// 指差した方向ベクトルまでの最短距離の計算
-		double theta = acos(cos);
-		double tmp_distance = sin(theta) * objVec.length();
-
-		// 最小距離の場合は名前、距離を保存しておく
-		if (tmp_distance < distance || distance == 0.0){
-			distance = tmp_distance;
-			objName = obj->name();
-		}
-	}
-	// エンティティでループして最も近いオブジェクトの名前を取得する
-	return objName;
-}
 
 
 bool RobotController::recognizeTrash(Vector3d &pos, std::string &name)
@@ -1908,6 +1446,25 @@ double RobotController::rotateTowardObj(Vector3d pos, double velocity, double no
 		}
 		return now + time;
 	}
+}
+
+
+void RobotController::get_Kinect_Data()
+{
+
+sendMsg("Kinect_000","Get_Data");
+Kinect_data_flag = true;
+std::cout << "Start recording " <<  std::endl;
+
+}
+
+void RobotController::Kinect_Data_Off()
+{
+
+sendMsg("Kinect_000","Data_Off");
+Kinect_data_flag = false;
+std::cout << "Stop recording " <<  std::endl;
+
 }
 
 

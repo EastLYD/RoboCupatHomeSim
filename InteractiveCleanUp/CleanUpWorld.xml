@@ -15,14 +15,14 @@
             direction="0 0 1"
             position="0.0 0.0 5.0"/>
     <set-attr-value name="language" value="c++"/>
-    <set-attr-value name="implementation" value="./cleanUpUser2.so"/>
+    <set-attr-value name="implementation" value="./Human_avatar.so"/>
   </instanciate>
 
   <instanciate class="WheelRobot-nii-v1.xml" type="Robot">
     <set-attr-value name="name" value="robot_000"/>
     <set-attr-value name="language" value="c++"/>
     <set-attr-value name="implementation"
-                    value="./cleanUpRobot2.so"/>
+                    value="./Robot.so"/>
     <set-attr-value name="dynamics" value="false"/>
     <set-attr-value name="x" value="100.0"/>
     <set-attr-value name="y" value="30.0"/>
@@ -53,16 +53,29 @@
 
   <instanciate class="A1_room.xml">
     <set-attr-value name="name" value="room"/>
-    <set-attr-value name="dynamics" value="false"/>
     <set-attr-value name="x" value="-200.0"/>
     <set-attr-value name="y" value="212.0"/>
     <set-attr-value name="z" value="-40.0"/>
     <set-attr-value name="scalex" value="1.0"/>
     <set-attr-value name="scaley" value="1.0"/>
     <set-attr-value name="scalez" value="1.2"/>
+    <set-attr-value name="dynamics" value="false"/>
     <set-attr-value name="collision" value="false"/>
     <set-attr-value name="graspable" value="false"/>
   </instanciate>
+
+  <instanciate class="seService_Kinect.xml">
+    <set-attr-value name="name" value="Kinect_000"/>
+    <set-attr-value name="dynamics" value="false"/>
+    <set-attr-value name="x" value="190.0"/>
+    <set-attr-value name="y" value="300.0"/>
+    <set-attr-value name="z" value="190.0"/>
+    <set-attr-value name="language" value="c++"/>
+    <set-attr-value name="implementation"
+                    value="./KinectService.so"/> 
+    <set-attr-value name="collision" value="false"/>
+    <set-attr-value name="graspable" value="false"/>
+  </instanciate> 
 
   <instanciate class="seModerator.xml">
     <set-attr-value name="name" value="moderator_0"/>
@@ -70,28 +83,16 @@
     <set-attr-value name="x" value="190.0"/>
     <set-attr-value name="y" value="200.0"/>
     <set-attr-value name="z" value="190.0"/>
-    <set-attr-value name="language" value="c++"/>
-    <set-attr-value name="implementation"
-                    value="./Moderator.so"/>
+       <set-attr-value name="language" value="c++"/>
+      <set-attr-value name="implementation"
+                    value="./Moderator.so"/> 
     <set-attr-value name="collision" value="false"/>
     <set-attr-value name="graspable" value="false"/>
   </instanciate>
 
 
-<!--
-  <instanciate class="seService_Kinect.xml">
-    <set-attr-value name="name" value="moderator_0"/>
-    <set-attr-value name="dynamics" value="false"/>
-    <set-attr-value name="x" value="290.0"/>
-    <set-attr-value name="y" value="200.0"/>
-    <set-attr-value name="z" value="190.0"/>
-    <set-attr-value name="language" value="c++"/>
-    <set-attr-value name="implementation"
-                    value="./Kinect_Service.so"/>
-    <set-attr-value name="collision" value="false"/>
-    <set-attr-value name="graspable" value="false"/>
-  </instanciate>
--->
+
+
 
 <!--
   <instanciate class="seSidetable_B.xml">
@@ -111,16 +112,16 @@
     <set-attr-value name="name" value="petbottle"/>
     <set-attr-value name="dynamics" value="false"/>
     <set-attr-value name="x" value="40.0"/>
-    <set-attr-value name="y" value="59.15"/>
+    <set-attr-value name="y" value="59.55"/>
     <set-attr-value name="z" value="50.0"/>
-    <set-attr-value name="collision" value=""/>
+    <set-attr-value name="collision" value="true"/>
   </instanciate>
 
   <instanciate class="seMugcup_c01.xml">
     <set-attr-value name="name" value="mugcup"/>
     <set-attr-value name="dynamics" value="false"/>
     <set-attr-value name="x" value="0.0"/>
-    <set-attr-value name="y" value="51.99"/>
+    <set-attr-value name="y" value="53.99"/>
     <set-attr-value name="z" value="50.0"/>
     <set-attr-value name="collision" value="true"/>
   </instanciate>
@@ -129,7 +130,7 @@
     <set-attr-value name="name" value="can"/>
     <set-attr-value name="dynamics" value="false"/>
     <set-attr-value name="x" value="-40.0"/>
-    <set-attr-value name="y" value="54.250"/>
+    <set-attr-value name="y" value="56.70"/>
     <set-attr-value name="z" value="50.0"/>
     <set-attr-value name="collision" value="true"/>
   </instanciate>
@@ -280,12 +281,7 @@
     <set-attr-value name="scalex" value="1.5"/>
     <set-attr-value name="scaley" value="1.5"/>
     <set-attr-value name="scalez" value="1.5"/>
-    <set-attr-value name="collision" value="false"/>
-    <!--
-    <set-attr-value name="language" value="c++"/>
-    <set-attr-value name="implementation"
-                    value="./Table.so"/>
-                -->
+    <set-attr-value name="collision" value="true"/>
     <set-attr-value name="graspable" value="false"/>
   </instanciate>
 

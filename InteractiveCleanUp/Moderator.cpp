@@ -39,6 +39,7 @@ private:
 	std::string roboName; // Robot's name
 	std::string mdName;   // Moderator's name
 	std::string humanName;   // Human's name
+    std::string ktName;   // kinect's name
 	const static unsigned int jtnum=7;
 	std::vector<std::string> jointName;
 	double prv1JAng_r[jtnum];
@@ -235,7 +236,7 @@ std::ifstream fin;
  void   MyController::PlaceThings()
 {
 Rotation rot;
-rot.setQuaternion(1, 0, 0, 0);
+rot.setQuaternion(0.707, 0, 0.707, 0);
 	SimObj *target_Obj1 = this->getObj("petbottle");
 	SimObj *target_Obj2 = this->getObj("mugcup");
 	SimObj *target_Obj3 = this->getObj("can");
@@ -277,9 +278,9 @@ rot.setQuaternion(1, 0, 0, 0);
 				{
 							if(Cm_Objects[i].On == false)
 							{
-							Cm_Objects[pos_OBJ].Coord.y(Y_Can);
+							Cm_Objects[i].Coord.y(Y_Can);
 						    target_Obj3->setPosition(Cm_Objects[i].Coord);
-						    Cm_Objects[i].Object = "mugcup";
+						    Cm_Objects[i].Object = "can";
 						    target_Obj3->setRotation(rot);
 						    Cm_Objects[i].On = true;
 							}
@@ -331,10 +332,19 @@ rot.setQuaternion(1, 0, 0, 0);
 							}
 				}
 //////////////////////////////////////////////////////////////////////////////
+for (int i= 0 ; i < Cm_Objects.size(); i++ )
 
+				{
+                         Cm_Objects[i].On = false;
 
+				}
 
-trialCount++;
+for (int i= 0 ; i < Cm_trashes.size(); i++ )
+
+				{
+                          Cm_trashes[i].On = false;
+				}
+
 }
 
 
@@ -343,19 +353,19 @@ void MyController::onInit(InitEvent &evt)
 {
    parseFile("File_Position.dat");
 
-  m_Object_Right = Vector3d(-150, 59.15, -190.0);
-  m_Object_Center = Vector3d(-150.0, 52.15, -60.0);
-  m_Object_Left = Vector3d(-150.0, 54.25, 70.0);
+  m_Object_Right = Vector3d(40, 59.15, 50.0);
+  m_Object_Center = Vector3d(0.0, 52.15, 50.0);
+  m_Object_Left = Vector3d(-40.0, 54.25, 50.0);
 
 
-m_Trash_Right = Vector3d(260.0, 36.35, -180.0);
-m_Trash_Center = Vector3d(140.0, 36.35, -180.0);
-m_Trash_Left = Vector3d(-120.0, 36.35, -180.0);
+m_Trash_Right = Vector3d(-150.0, 36.35, -190.0);
+m_Trash_Center = Vector3d(-150.0, 36.35, -60.0);
+m_Trash_Left = Vector3d(-150.0, 36.35, 70.0);
 
 
-Y_PetteBotle = 59.15;
-Y_Mug = 52.15;
-Y_Can = 54.25;
+Y_PetteBotle = 59.55;
+Y_Mug = 53.95;
+Y_Can = 56.5;
 Y_General_trash = 36.35 ;
 
 
@@ -405,7 +415,7 @@ Cm_trashes.push_back(m_Trash_Left_c);
   m_RobotPos = Vector3d(100.0, 30.0,-100.0);
   m_Table = Vector3d(0.0, 24.0,70.0);
 
-rot.setQuaternion(1, 0, 0, 0);
+rot.setQuaternion(1, 0, 0 , 0);
 
 
 
@@ -420,9 +430,6 @@ rot.setQuaternion(1, 0, 0, 0);
 
 
 
-
-
-
 	m_roomState = 6;
 
 	m_pointedObject = "";
@@ -430,12 +437,13 @@ rot.setQuaternion(1, 0, 0, 0);
 	int i, cnt;
 	Task_st = true;
 	time_display = true;
-	retValue = 0.01;
+	retValue = 0.1;
 	colState = false;
 	pcolState = false;
 	roboName = "robot_000";
 	mdName   = "moderator_0";
 	humanName = "man_000";
+    ktName = "Kinect_000";
 
 	crrPos  = Vector3d(0,0,0);
 	prv1Pos = Vector3d(0,0,0);
@@ -456,23 +464,10 @@ rot.setQuaternion(1, 0, 0, 0);
 
 	getAllEntities(m_entities);
 
-
-
-
-	entNum = m_entNames.size();
+	
 	srand (2);
 
 	trialCount = 0;
-	//srand(time(NULL));
-
-	/*for(int i=0; i<10; i++){
-	  reposObjects();
-	  //usleep(5000000);
-	  }*/
-
-	// std::cout << "robot is in the circle? " << checkRobotFinished() << std::endl;
-
-
 
 	isCleaningUp = false;
 
@@ -481,6 +476,28 @@ rot.setQuaternion(1, 0, 0, 0);
 
 	take_time = 0.0;
 	init = false;
+
+cnt = m_entities.size();
+
+	for(i=0;i<cnt;i++) {
+		int found;
+		SimObj* entity = getObj(m_entities[i].c_str());
+		Vector3d pos;
+		entity->getPosition(pos);
+
+
+		if((m_entities[i] != mdName) &&
+		   (m_entities[i] != ktName) &&
+		   (m_entities[i] != roboName) &&
+		   (m_entities[i] != "petbottle") &&
+		   (m_entities[i] != "mugcup") &&
+		   (m_entities[i] != "can")  ){
+			m_entNames.push_back(m_entities[i]);
+			//std::cout << "entitie: " << m_entities[i] << " pushed!" << std::endl;
+		}
+
+	}
+	entNum = m_entNames.size();
 }
 
 
@@ -510,6 +527,7 @@ double MyController::onAction(ActionEvent &evt)
 		{
 			broadcastMsg("Task_start");
 			// printf("tast_start moderator \n");
+			PlaceThings();
 			Task_st = false;
 			std::stringstream trial_ss;
 			trial_ss << "RoboCupReferee/trial/";
@@ -536,13 +554,14 @@ if( Task_st == true && trialCount >= NUMBER_OF_REPETITION)
 
 
 	onCheckCollision();
-
+   //     std::cout << "entNum : " << entNum << std::endl;
 	// onCheckObject();
 	for(int k=0;k<entNum;k++){
 		SimObj* locObj = getObj(m_entNames[k].c_str());
 		CParts *parts = locObj->getMainParts();
 		bool state = parts->getCollisionState();
-
+      //  std::cout << "the entity : " << m_entNames[k] << std::endl;
+      //  std::cout << "the entity stat : " << state << std::endl;
 		if ( unable_collision == false)
 			{
 				if(state){
@@ -612,7 +631,7 @@ if( Task_st == true && trialCount >= NUMBER_OF_REPETITION)
 				time_ss <<  "RoboCupReferee/time/";
 				time_ss << std::setw(2) << std::setfill('0') << min << ":";
 				time_ss << std::setw(2) << std::setfill('0') << sec;// << ":";
-               //  time_ss << "youuu";
+
 				//time_ss << std::setw(2) << std::setfill('0') << msec;
 			}
 			if(m_ref != NULL){
@@ -622,7 +641,7 @@ if( Task_st == true && trialCount >= NUMBER_OF_REPETITION)
 				 //std::cout << "Message to referee : " << time_ss.str() << std::endl;
 			}
 			else{
-				LOG_MSG((time_ss.str().c_str()));
+				//LOG_MSG((time_ss.str().c_str()));
 			}
 		}
 
@@ -655,35 +674,29 @@ void MyController::onRecvMsg(RecvMsgEvent &evt)
 
 	strPos2 = ss.find(":", strPos1);
 	headss.assign(ss, strPos1, strPos2-strPos1);
-if (headss == "File") {
-		// Contol of body movement by KINECT
-		//moveBodyByKINECT(all_msg);
 
-    strPos3 = ss.find(".", strPos2+1);
-	File_ID.assign(ss, strPos2+1, strPos3);
-
-	}
-
-	//std::ifstream fin;
-	// fin.open(fileNam_my.c_str());
 	bool dest = false;
 
-	if(sender == "man_000")
-		{
+
 
 
 	if(msg == "Start_motion")
 		{
 			clock_t t;
 			t = clock();
-			init = true;
+			//init = true;
                         srand(t);
+                        std::cout << "List size " << File_List.size() <<std::endl;
 						std::map < std::string, Location >::iterator it = File_List.begin();
 						std::advance(it, rand() % File_List.size());
-
+                        LOG_MSG(("Show Task"));
 						 std::string File_name = "Send_";
 						  File_name+= it->first;
+						  File_name+= ".";
+						   std::cout << "File Name moderator " << File_name<<std::endl;
+						  sendMsg("Kinect_000", File_name.c_str());
 						  Location Curent_Locations = it->second;
+
 						 // Object_Position = Curent_Locations[0];
 						 // Trash_Position =  Curent_Locations[1];
 										for(int i =0;i<Curent_Locations.size();i++)
@@ -701,11 +714,8 @@ if (headss == "File") {
 										Location_Status[i] = 2;
 										  }
 										}
-
-
-       sendMsg("SIGKINECT", File_name);
-
-		}
+                          sendMsg("Kinect_000","Start_motion");
+		
 }
 
 
@@ -722,46 +732,24 @@ if(msg == "Object_Trashed")
 		}
 
 
-	if(msg == "Start grasping process")
-		{
-			std:: string name;
-			//name = m_pointedObject;
-			SimObj *trash = getObj(m_pointedObject.c_str());
-			// get trash's position
-			trash->getPosition(Obj_pos);
-			PrObj_pos = Obj_pos;
-			unable_collision = true;
-		}
-
-    if(msg == "End grasping process")
-		{
-			unable_collision = false;
-		}
-
-
-
 		if (sender == "robot_000" && msg == "Task_finished") {
 		LOG_MSG(("Task_end"));
-		broadcastMsg("Task_end");
-		LOG_MSG(("before onCheckPositionfronHuman"));
-
-		LOG_MSG(("after onCheckPositionfronHuman"));
+		
 		sleep(1);
-		LOG_MSG(("before reposObjects"));
-		//reposObjects();
-		LOG_MSG(("after reposObjects"));
+
 		startTime = 0.0;
         Task_st = true;
+
+        CheckObjects();
+        CheckTrashes();  
 		breakTask();
+		broadcastMsg("Task_end");
 	}
 
 	if( (sender == "robot_000" || sender == "RoboCupReferee")  && msg == "Give_up")
 	{
 		LOG_MSG(("Task_end"));
 		broadcastMsg("Task_end");
-		LOG_MSG(("before reposObjects"));
-		//reposObjects();
-		LOG_MSG(("after reposObjects"));
 		startTime = 0.0;
 		breakTask();
 	}
@@ -782,9 +770,11 @@ void  MyController::CheckObjects()
 //Cm_Objects[Location_Status[0]].Coord
 //Object_Position
 //Location_Status[0]
-
+std::cout << "check Object  1 "  << std::endl;
 std:: string name;
 	name = Cm_Objects[Location_Status[0]].Object;
+	std::cout << "Object name   " << name << std::endl;
+
 	SimObj *Obj = getObj(name.c_str());
 	// get trash's position
 	Vector3d Obj_pos;
@@ -792,7 +782,7 @@ std:: string name;
 
 	if(Obj_pos.x()== Cm_Objects[Location_Status[0]].Coord.x() && Obj_pos.y()== Cm_Objects[Location_Status[0]].Coord.y() && Obj_pos.z()== Cm_Objects[Location_Status[0]].Coord.z())
 		{
-			std::string msg = "RoboCupReferee/Robot is in ["  "]" "/-400";
+			std::string msg = "RoboCupReferee/Robot  the wrong Object "  "" "/-400";
 
 			if(m_ref != NULL){
 				m_ref->sendMsgToSrv(msg.c_str());
@@ -801,11 +791,11 @@ std:: string name;
 				LOG_MSG((msg.c_str()));
 			}
 
-
+std::cout << "check Object  2 "  << std::endl;
 		}
 	else
 		{
-			std::string msg = "RoboCupReferee/Robot is in [" + Cm_Objects[Location_Status[0]].Object + "]" "/+400";
+			std::string msg = "RoboCupReferee/Robot took the right Object [" + Cm_Objects[Location_Status[0]].Object + "]" "/+400";
 
 			if(m_ref != NULL){
 				m_ref->sendMsgToSrv(msg.c_str());
@@ -813,6 +803,7 @@ std:: string name;
 			else{
 				LOG_MSG((msg.c_str()));
 			}
+			std::cout << "check Object  3 "  << std::endl;
 		}
 
 
@@ -834,7 +825,7 @@ void  MyController::CheckTrashes()
 
 	if(Tr_pos.x()== Cm_trashes[Location_Status[1]].Coord.x() &&  Tr_pos.z()== Cm_trashes[Location_Status[1]].Coord.z())
 		{
-			std::string msg = "RoboCupReferee/Robot is in ["  "]" "/-400";
+			std::string msg = "RoboCupReferee/Robot chose the wrong Trash box"  "" "/-400";
 
 			if(m_ref != NULL){
 				m_ref->sendMsgToSrv(msg.c_str());
@@ -845,7 +836,7 @@ void  MyController::CheckTrashes()
 		}
 	else
 		{
-			std::string msg = "RoboCupReferee/Robot is in [" + Cm_trashes[Location_Status[1]].Trash + "]" "/+400";
+			std::string msg = "RoboCupReferee/Robot chose th right Trash box [" + Cm_trashes[Location_Status[1]].Trash + "]" "/+400";
 
 			if(m_ref != NULL){
 				m_ref->sendMsgToSrv(msg.c_str());
@@ -862,154 +853,13 @@ void MyController::onCheckCollision(){
 
 
 
-/*
-void MyController::onCheckPositionfrontHuman()
-{
-	Vector3d rob_pos;
-	Vector3d hum_pos;
-	Vector3d dist;
-	double distance;
-	distance = 0;
-	std::string avat;
-	std::string rob;
-	std::string final;
-	final = "Front Human";
-	avat = "man_000";
-	rob = "robot_000";
-	rob_pos =  Vector3d(0, 0, 0);
-	hum_pos =  Vector3d(0, 0, 0);
-	dist =  Vector3d(0, 0, 0);
-	SimObj *avatar = getObj(avat.c_str());
-	SimObj *robot = getObj(rob.c_str());
-
-	// get trash's position
-	robot->getPosition(rob_pos);
-	avatar ->getPosition(hum_pos);
-	dist = rob_pos;
-	dist -= hum_pos;
-	distance = dist.length();
-	printf("The distance to human is %f\n", distance);
-	if(distance <  radius )
-		{
-			std::string msg = "RoboCupReferee/Robot is in [" + final + "]" "/+400";
-
-			if(m_ref != NULL){
-				m_ref->sendMsgToSrv(msg.c_str());
-			}
-			else{
-				LOG_MSG((msg.c_str()));
-			}
-
-		}
-}
-
-*/
-
-
-/*
-void MyController::onCheckObject()
-{
-	std:: string name;
-	name = m_pointedObject;
-	SimObj *trash = getObj(name.c_str());
-	// get trash's position
-	trash->getPosition(Obj_pos);
-
-	if(Obj_pos.x()== PrObj_pos.x() && Obj_pos.y()== PrObj_pos.y() && Obj_pos.z()== PrObj_pos.z())
-		{
-
-		}
-	else
-		{
-			std::string msg = "RoboCupReferee/Robot is in [" + m_pointedObject + "]" "/+400";
-
-			if(m_ref != NULL){
-				m_ref->sendMsgToSrv(msg.c_str());
-			}
-			else{
-				LOG_MSG((msg.c_str()));
-			}
-		}
-
-}
-*/
-
-/*
-void MyController::onCheckRoom()
-{
-	int x, z;
-	int num = 4;
-	x =crrPos.x();
-	z =crrPos.z();
-
-	LOG_MSG(("Check robot position, select from 4 rooms"));
-	if(x>-100&&x<500&&z>-425&&z<75)	// living room
-		{ // bed room
-			num=0;
-			if(m_roomState==3){
-				std::string msg = "RoboCupReferee/Robot is in [" + m_rooms[num] + "]" "/+400";
-				m_roomState=0;
-				if(m_ref != NULL){
-					m_ref->sendMsgToSrv(msg.c_str());
-				}
-				else{
-					LOG_MSG((msg.c_str()));
-				}
-			}
-		}
-	else if(x>100&&x<500&&z>75&&z<425){ // kitchen
-		num=1;
-		if(m_roomState==0){
-			std::string msg = "RoboCupReferee/Robot is in [" + m_rooms[num] + "]" "/+400";
-			m_roomState=1;
-			if(m_ref != NULL){
-				m_ref->sendMsgToSrv(msg.c_str());
-			}
-			else{
-				LOG_MSG((msg.c_str()));
-			}
-		}
-	}
-	else if(x>-500&&x<-100&&z>-425&&z<-75){ // lobby
-		num=2;
-		if(m_roomState==1){
-			std::string msg = "RoboCupReferee/Robot is in [" + m_rooms[num] + "]" "/+400";
-			m_roomState=2;
-			if(m_ref != NULL){
-				m_ref->sendMsgToSrv(msg.c_str());
-			}
-			else{
-				LOG_MSG((msg.c_str()));
-			}
-		}
-	}
-	else if(x>-500&&x<-100&&z>75&&z<425){ // bed room
-		num=3;
-		if(m_roomState==2){
-			std::string msg = "RoboCupReferee/Robot is in [" + m_rooms[num] + "]" "/+400";
-			m_roomState=3;
-			if(m_ref != NULL){
-				m_ref->sendMsgToSrv(msg.c_str());
-			}
-			else{
-				LOG_MSG((msg.c_str()));
-			}
-		}
-	}
-	else {
-		LOG_MSG(("Robot is not staying at any room"));
-	}
-
-}
-
-*/
 
 void MyController::breakTask()
 {
 	LOG_MSG(("start of breakTask"));
 	isCleaningUp = false;
 	//takeAwayObjects();
-	//trialCount++;
+	trialCount++;
 	std::string msg = "RoboCupReferee/reset/";
 	if(m_ref != NULL){
 		// m_ref->sendMsgToSrv(msg.c_str());
@@ -1022,6 +872,8 @@ if(trialCount < NUMBER_OF_REPETITION)
 {
 		 broadcastMsg("Task_end");
 		// reposObjects();
+		 InitRobot();
+		// PlaceThings();
 }
 	if(trialCount >= NUMBER_OF_REPETITION) {
 		// resetRobotCondition();
@@ -1042,15 +894,6 @@ if(trialCount < NUMBER_OF_REPETITION)
 
 
 
-
-/*
-  void MyController::takeAwayObjects(){
-  for(std::vector<Target>::iterator it = m_entities[trialCount].begin(); it != m_entities[trialCount].end(); ++it){
-  SimObj* target = getObj(it->name.c_str());
-  target->setPosition(Vector3d(100000, 100000, 100000));
-  }
-  }
-*/
 
 extern "C" Controller * createController() {
 	return new MyController;

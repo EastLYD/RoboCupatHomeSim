@@ -78,6 +78,9 @@ double MyController::onAction(ActionEvent &evt)
     if(m_entities[i] == "robot_000"  ||
        m_entities[i] == "recycle" ||
        m_entities[i] == "burnable" ||
+       m_entities[i] == "room" ||
+       m_entities[i] == "moderator_0" ||
+       m_entities[i] == "Kinect_000" ||
        m_entities[i] == "unburnable"){
       continue;
     }
@@ -101,7 +104,7 @@ double MyController::onAction(ActionEvent &evt)
       if(!ent->getIsGrasped()){
 
 	// ゴミを捨てる
-	tpos.y(tpos.y() /2);
+	tpos.y(-100);
 	tpos.x(myPos.x());
 	tpos.z(myPos.z());
 	ent->setAxisAndAngle(1.0, 0.0, 0.0, 0.0);
@@ -110,7 +113,7 @@ double MyController::onAction(ActionEvent &evt)
 	ent->setPosition(tpos);
 	ent->setPosition(tpos);
 	usleep(500000);
-	tpos.y(0.0);
+	tpos.y(-50.0);
 	ent->setPosition(tpos);
 	ent->setPosition(tpos);
 	ent->setPosition(tpos);
