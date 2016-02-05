@@ -194,17 +194,17 @@ void UserController::onRecvMsg(RecvMsgEvent &evt)
 
 
 
-	 if( msg == "Task_start" && sender == "moderator_0" && Mission_complete == false ) {
+//	 if( msg == "Task_start" && sender == "moderator_0" && Mission_complete == false ) {
 
     //std::cout << all_msg  << std::endl;
 
-		sendMsg("robot_000","Start_Cycle");
-		sendMsg("Kinect_000","Start_Cycle");
-	}
+//		sendMsg("robot_000","Start_Cycle");
+//		sendMsg("Kinect_000","Start_Cycle");
+//	}
 	 if(msg == "Show_me" && sender == "robot_000"  ) {
 		std::cout << "Show_me"  << std::endl;
 		sendMsg("moderator_0","Start_motion");
-        sendMsg("robot_000","Start_Task");
+//        sendMsg("robot_000","Start_Task");
 	}
 
 	 if(msg == "Task_end" && sender == "moderator_0" && Mission_complete == false ) {

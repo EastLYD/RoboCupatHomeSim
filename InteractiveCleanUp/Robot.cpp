@@ -1008,7 +1008,7 @@ double RobotController::onAction(ActionEvent &evt)
 			if (cycle > 0)
 				{
 					m_state = 30;
-					sendMsg("man_000","Show_me");
+					broadcastMsg("Show_me");
 					get_Kinect_Data();
 					break;
 				}
@@ -1024,6 +1024,13 @@ double RobotController::onAction(ActionEvent &evt)
 		case 30:
 			{
 				// printf("Start New task \n");
+				sleep(5);
+				Kinect_Data_Off(); // finished analysing data
+				m_pointedObject = "petbottle";
+				m_pointedtrash = "recycle";
+				std::cout << "Task started Robot ........ "  << std::endl;
+			
+				m_state = 5;
 
 			}
 
@@ -1216,7 +1223,7 @@ double RobotController::onAction(ActionEvent &evt)
 				{
 					cycle = cycle-1;
 					m_state = 4;
-					sendMsg("moderator_0","Task_finished");
+					broadcastMsg("Task_finished");
 					m_pointedtrash = "";
 					m_pointedObject = "";
 					m_state = 0;
@@ -1261,7 +1268,7 @@ void RobotController::onRecvMsg(RecvMsgEvent &evt)
 
 
 
-	if (msg == "Start_Cycle" && m_state == 0)
+	if (msg == "Task_start" && m_state == 0)
 		{
 			m_state = 1 ;      
 			Kinect_data_flag = false;
@@ -1275,16 +1282,16 @@ void RobotController::onRecvMsg(RecvMsgEvent &evt)
 
 
 
-	else if (msg == "Start_Task" && m_state == 30 ) 
-		{
-            sleep(5);
-            Kinect_Data_Off(); // finished analysing data
-			m_pointedObject = "petbottle";
-			m_pointedtrash = "recycle";
-			std::cout << "Task started Robot ........ "  << std::endl;
-			
-			m_state = 5;
-		}
+//	else if (msg == "Start_Task" && m_state == 30 ) 
+//		{
+//            sleep(5);
+//           Kinect_Data_Off(); // finished analysing data
+//			m_pointedObject = "petbottle";
+//			m_pointedtrash = "recycle";
+//			std::cout << "Task started Robot ........ "  << std::endl;
+//			
+//			m_state = 5;
+//		}
 
 
 

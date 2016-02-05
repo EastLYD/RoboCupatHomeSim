@@ -207,7 +207,7 @@ if (headss == "Send") {
 		}
 
 
-	if (msg == "Start_Cycle"  && sender == "man_000")
+	if (msg == "Task_start"  && sender == "moderator_0")
 		{
 			Data_Size = 0;
 			Start_t = clock();
