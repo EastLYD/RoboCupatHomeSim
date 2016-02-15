@@ -816,7 +816,7 @@ void  MyController::CheckTrashes()
 
 
     std:: string name;
-	name = Cm_trashes[Location_Status[1]].Trash;
+	name = Cm_trashes[Location_Status[0]].Trash;
 	SimObj *Trash = getObj(name.c_str());
 	// get trash's position
 	Vector3d Tr_pos;
@@ -824,7 +824,8 @@ void  MyController::CheckTrashes()
 
 	if(Tr_pos.x()== Cm_trashes[Location_Status[1]].Coord.x() &&  Tr_pos.z()== Cm_trashes[Location_Status[1]].Coord.z())
 		{
-			std::string msg = "RoboCupReferee/Robot chose the wrong Trash box"  "" "/-400";
+			std::string msg = "RoboCupReferee/Robot chose th right Trash box [" + Cm_trashes[Location_Status[1]].Trash + "]" "/+400";
+			//std::string msg = "RoboCupReferee/Robot chose the wrong Trash box"  "" "/-400";
 
 			if(m_ref != NULL){
 				m_ref->sendMsgToSrv(msg.c_str());
@@ -835,7 +836,8 @@ void  MyController::CheckTrashes()
 		}
 	else
 		{
-			std::string msg = "RoboCupReferee/Robot chose th right Trash box [" + Cm_trashes[Location_Status[1]].Trash + "]" "/+400";
+			std::string msg = "RoboCupReferee/Robot chose the wrong Trash box"  "" "/-400";
+			//std::string msg = "RoboCupReferee/Robot chose th right Trash box [" + Cm_trashes[Location_Status[1]].Trash + "]" "/+400";
 
 			if(m_ref != NULL){
 				m_ref->sendMsgToSrv(msg.c_str());
