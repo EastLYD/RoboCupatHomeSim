@@ -67,8 +67,9 @@ private:
 	bool m_grasp_left;
 	double joint_veloc;
 	
-	int m_state;
 
+	double m_time;
+	int m_state;
 
 	int cycle;
 	//   Vector3d go_to;
@@ -114,8 +115,8 @@ private:
 
 	// grasp中かどうか
 	bool m_grasp;
-
 	bool take_action;
+
 
 
 //////////////  Kinect Data  //////////////////
@@ -134,17 +135,12 @@ private:
 
 	};
 
-
-/////////
-
 	std::vector <Posture_Coordinates> Record_Postures;
 
 ////////////////////////////////////////////
 
 
-
 ///////////Flag On_message ////////////////
-
 
 	bool Kinect_data_flag;
 
@@ -770,35 +766,32 @@ double RobotController::onAction(ActionEvent &evt)
 		case 4: {  // Test if the cycle is finished or not
 			if (cycle > 0)
 				{
-					m_state = 30;
+					m_state = 41;
 					broadcastMsg("Show_me");
 					get_Kinect_Data();
+					m_time = evt.time() + 5;
 					break;
 				}
 			else {
-					m_state = 60;
+					m_state = 49;
 					break;
 			}
 		}
-
-
-		case 30:
-			{
-				// printf("Start New task \n");
-				sleep(5);
+		case 41: {
+			if(evt.time() > m_time) m_state = 42;
+			break;
+		}
+		case 42:{
 				Kinect_Data_Off(); // finished analysing data
 				m_pointedObject = "petbottle";
 				m_pointedtrash = "recycle";
 				std::cout << "Task started Robot ........ "  << std::endl;
 			
 				m_state = 5;
-
 			}
-
-		case 60:
+		case 49:
 			{
-				// printf("Restart the cycle");
-
+				break;
 			}
 
 		case 5:   {  //Optional case  !!!
@@ -848,8 +841,6 @@ double RobotController::onAction(ActionEvent &evt)
 			break;
 		}
 		case 10:   {
-			// broadcastMsg("Object_grasped");
-			//LOG_MSG(("Object_grasped"));
 			m_state = 11;
 			break;
 		}
@@ -866,9 +857,6 @@ double RobotController::onAction(ActionEvent &evt)
 			if (moveLeftArm() == true)
 				{
 					Robot_speed  = Change_Robot_speed;
-				//	sendMsg("VoiceReco_Service"," Now I will go to the trashboxes ");
-					
-					//sendMsg("moderator_0","Object_Grasped");
 					m_state = 13;
 					sleep(1);
 				}
@@ -960,7 +948,6 @@ double RobotController::onAction(ActionEvent &evt)
 			break;
 		}
 		case 21:   { //move to the object
-			// Robot_speed  = 1;
 			Robot_speed  = Change_Robot_speed;
 			if (goTo(m_relayFrontTrash, 0) == true) m_state = 22;
 			break;
@@ -971,7 +958,6 @@ double RobotController::onAction(ActionEvent &evt)
 			break;
 		}
 		case 23:   { //move to the object
-			// Robot_speed  = 1;
 			Robot_speed  = Change_Robot_speed;
 			if (goTo(m_relayFrontTable, 0) == true)
 				{
@@ -995,13 +981,9 @@ void RobotController::onRecvMsg(RecvMsgEvent &evt)
 {
 	std::string sender = evt.getSender();
 
-	// 送信者がゴミ認識サービスの場合
 	char *all_msg = (char*)evt.getMsg();
 	std::string msg;
 	msg= evt.getMsg();
-
-
-
 
 /////////////////////////////////// On_Message //////////////////////////////
 	std::string ss = all_msg;
@@ -1012,54 +994,21 @@ void RobotController::onRecvMsg(RecvMsgEvent &evt)
 	strPos2 = ss.find("  ", strPos1);
 	headss.assign(ss, strPos1, strPos2-strPos1);
 
-
-//////////////////////////////////////////////////////////////////////////////
-
-
-
-
-
-
-
-
 	if (msg == "Task_start" && m_state == 0)
 		{
 			m_state = 1 ;      
 			Kinect_data_flag = false;
 			Record_Postures.clear();
-		//	sendMsg("VoiceReco_Service","Let's start the clean up task\n");
-		//	printf("got it in go \n");
 		}
-
-
-
-
-
-//	else if (msg == "Start_Task" && m_state == 30 ) 
-//		{
-//			sleep(5);
-//			Kinect_Data_Off(); // finished analysing data
-//			m_pointedObject = "petbottle";
-//			m_pointedtrash = "recycle";
-//			std::cout << "Task started Robot ........ "  << std::endl;
-//			
-//			m_state = 5;
-//		}
-
-
-
-
-////////////////////////////////////    On Message  /////////////////////////////////////////////////
-
 
 	char* m_msg = strtok(all_msg,"  ");
 
 	if (strcmp(m_msg,"KINECT_DATA_Sensor") == 0 && Kinect_data_flag == true) {
+		char* kinect_msg = (char*)msg.c_str();
+		Record_Kinect_Data(kinect_msg);
+	}
 
-	Record_Kinect_Data(all_msg);
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
 
 }
 
@@ -1073,7 +1022,6 @@ void RobotController::Record_Kinect_Data(char* all_msg)  //
 	float qz ;
 	std::string name;
 	float m_time;				
-	//RobotObj *my = this->getObj(this->myname());
 	char* m_msg = strtok(all_msg,"  ");
 	Posture_Coordinates m_posture;
 
@@ -1081,7 +1029,6 @@ void RobotController::Record_Kinect_Data(char* all_msg)  //
 		int i = 0;
 		while (true) {
 			Joint_Coorditate m_joint;
-
 			char *type = strtok(NULL,":");
 
 			if (strcmp(type,"END") == 0) {
