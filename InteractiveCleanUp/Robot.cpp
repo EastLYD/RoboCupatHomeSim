@@ -51,7 +51,7 @@ public:
 	void get_Kinect_Data();
 	void Kinect_Data_Off();
 	void Record_Kinect_Data(char* all_msg);
-
+    void PrintPosture();
 
 
 private:
@@ -668,6 +668,29 @@ bool RobotController::goTo(Vector3d pos, double rangeToPoint)
 
 
 
+
+
+void RobotController::PrintPosture()
+{
+
+	for(int i = 0; i < Record_Postures.size(); i++){
+
+	std::cout << "The Time .....  " <<  Record_Postures[i].time << std::endl;
+		   std::cout << "///////////////////////////////////////////////////////////////////" << std::endl;
+		   	   std::cout << "Time :    " << Record_Postures[i].time << std::endl;
+					for(int j = 0; j < Record_Postures[i].posture.size(); j++){
+	   std::cout << "///////////////////////////////////////////////////////////////////" << std::endl;
+	   std::cout << "the name" <<  Record_Postures[i].posture[j].Name << " qw "  << Record_Postures[i].posture[j].qw << " qx "  << Record_Postures[i].posture[j].qx << " qy "  << Record_Postures[i].posture[j].qy <<  " qz "  << Record_Postures[i].posture[j].qz << std::endl;
+
+								}
+
+		}
+
+}
+
+
+
+
 void RobotController::onInit(InitEvent &evt)
 {
 	joint_veloc = 0.8;
@@ -738,6 +761,7 @@ void RobotController::onInit(InitEvent &evt)
 double RobotController::onAction(ActionEvent &evt)
 {
 	//std::cout << "m_state " <<  m_state << std::endl;
+	//std::cout << "the size of Vector " <<  Record_Postures.size() << std::endl;
 	switch(m_state)
 		{
 		case 1: {
@@ -1032,7 +1056,7 @@ void RobotController::Record_Kinect_Data(char* all_msg)  //
 			char *type = strtok(NULL,":");
 
 			if (strcmp(type,"END") == 0) {
-				m_time = atof(strtok(NULL,"."));
+				m_time = atof(strtok(NULL,".."));
 				m_posture.time = m_time;
 				break;
 			}

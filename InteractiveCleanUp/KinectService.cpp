@@ -44,7 +44,7 @@ void KinectService::onInit(InitEvent &evt){
 				std::string previousLine = "";
 				while(getline(in_stream_current,line)) // To get you all the lines for current motion.
         {
-						list_current.push_back(line);
+						list_current.push_back(line.erase(line.length()-1));
         }	
 				in_stream_current.close();
 	    Data_Size = 0;
@@ -81,7 +81,10 @@ double KinectService::onAction(ActionEvent &evt){
 
 	    std::string Message;
 
-	    Message = list_motion[Data_Size] + str + ".";
+	    Message = list_motion[Data_Size] + str + "..";
+
+	   // std::cout << "line  : " << list_motion[Data_Size] << std::endl; 
+       // std::cout << "Message : " << Message << std::endl;
 
 		sendMsg("robot_000", Message.c_str());
 
@@ -198,7 +201,7 @@ if (headss == "Send") {
 				std::string previousLine = "";
 				while(getline(in_stream_motion,line)) // To get you all the lines.
         {
-						list_motion.push_back(line);
+						list_motion.push_back(line.erase(line.length()-1));
         }	
 				in_stream_motion.close();
 				  Data_Size = 0;
