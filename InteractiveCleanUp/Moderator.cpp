@@ -13,7 +13,10 @@
 #define NUMBER_OF_REPETITION   10 /// 10
 #define MAX_CHARS_PER_LINE 512
 
-
+#define SCORE_CORRECT_OBJECT	+400
+#define SCORE_WRONG_OBJECT   	-400
+#define SCORE_CORRECT_TRASH_BOX	+400
+#define SCORE_WRONG_TRASH_BOX	-400
 
 class MyController : public Controller {
 public:
@@ -767,86 +770,134 @@ if(msg == "Object_Trashed")
 // Right Trash Box + 400
 // Wrong Trash Box - 400
 
+//enum checkedResult{
+//	NO_ACTION = 0,
+//	CORRECT_ACTION,
+//	INCOREECT_ACTION,
+//};
+enum placedDirection{
+	RIGHT = 0,
+	CENTER,
+	LEFT,
+};
+
 void  MyController::CheckObjects()
 {
 
-//Cm_Objects[Location_Status[0]].Coord
-//Object_Position
-//Location_Status[0]
+	//Cm_Objects[Location_Status[0]].Coord
+	//Object_Position
+	//Location_Status[0]
+	for( int i = 0; i < 3 ; i++){
+		std:: string name;
+		name = Cm_Objects[i].Object;
+		SimObj *Obj = getObj(name.c_str());
+		// get trash's position
+		Vector3d objectPosition;
+		Obj->getPosition(objectPosition);
 
-std:: string name;
-	name = Cm_Objects[Location_Status[0]].Object;
-	SimObj *Obj = getObj(name.c_str());
-	// get trash's position
-	Vector3d Obj_pos;
-	Obj->getPosition(Obj_pos);
-
-	if(Obj_pos.x()== Cm_Objects[Location_Status[0]].Coord.x() && Obj_pos.y()== Cm_Objects[Location_Status[0]].Coord.y() && Obj_pos.z()== Cm_Objects[Location_Status[0]].Coord.z())
+		//Checking how the object was gone
+		if(objectPosition.x()== Cm_Objects[i].Coord.x() && objectPosition.y()== Cm_Objects[i].Coord.y() && objectPosition.z()== Cm_Objects[i].Coord.z())
 		{
-			std::string msg = "RoboCupReferee/Robot  the wrong Object "  "" "/-400";
-
-			if(m_ref != NULL){
-				m_ref->sendMsgToSrv(msg.c_str());
-			}
-			else{
-				LOG_MSG((msg.c_str()));
-			}
-
+			LOG_MSG(("<For debug> \"%s\" is placed on the table.", name.c_str()));			
 		}
-	else
+		else
 		{
-			std::string msg = "RoboCupReferee/Robot took the right Object [" + Cm_Objects[Location_Status[0]].Object + "]" "/+400";
+			LOG_MSG(("<For debug> \"%s\" was gone.", name.c_str()));
 
-			if(m_ref != NULL){
-				m_ref->sendMsgToSrv(msg.c_str());
+			//Is it correct object?
+			if(i == Location_Status[0])
+			{
+				std::stringstream ss;
+				ss << SCORE_CORRECT_OBJECT;
+				std::string msg = "RoboCupReferee/Robot took the right Object [" + Cm_Objects[Location_Status[0]].Object + "]" "/+" + ss.str();
+
+				if(m_ref != NULL){
+					m_ref->sendMsgToSrv(msg.c_str());
+				}
+				else{
+					LOG_MSG((msg.c_str()));
+				}				
 			}
-			else{
-				LOG_MSG((msg.c_str()));
+			else{				
+				std::stringstream ss;
+				ss << SCORE_WRONG_OBJECT;
+				std::string msg = "RoboCupReferee/Robot  the wrong Object "  "" "/" + ss.str();
+
+				if(m_ref != NULL){
+					m_ref->sendMsgToSrv(msg.c_str());
+				}
+				else{
+					LOG_MSG((msg.c_str()));
+				}
 			}
 		}
-
-
-
-
+	}
 }
 
 
 void  MyController::CheckTrashes()
 {
+	bool objectInTrashBox = false;
+	for( int trashBoxIndex = 0; trashBoxIndex < 3; trashBoxIndex++){
+		std:: string trashBoxName;
+		trashBoxName = Cm_trashes[trashBoxIndex].Trash;
+		SimObj *TrashBox = getObj(trashBoxName.c_str());
+		// get trash box position
+		Vector3d trashBoxPosition;
+		TrashBox->getPosition(trashBoxPosition);
 
-
-    std:: string name;
-	name = Cm_trashes[Location_Status[0]].Trash;
-	SimObj *Trash = getObj(name.c_str());
-	// get trash's position
-	Vector3d Tr_pos;
-	Trash->getPosition(Tr_pos);
-
-	if(Tr_pos.x()== Cm_trashes[Location_Status[1]].Coord.x() &&  Tr_pos.z()== Cm_trashes[Location_Status[1]].Coord.z())
-		{
-			std::string msg = "RoboCupReferee/Robot chose th right Trash box [" + Cm_trashes[Location_Status[1]].Trash + "]" "/+400";
-			//std::string msg = "RoboCupReferee/Robot chose the wrong Trash box"  "" "/-400";
-
-			if(m_ref != NULL){
-				m_ref->sendMsgToSrv(msg.c_str());
+		for( int objectIndex = 0; objectIndex < 3; objectIndex++){ 
+			std:: string objectName;
+			objectName = Cm_Objects[objectIndex].Object;
+			SimObj *Obj = getObj(objectName.c_str());
+			// get object position
+			Vector3d objectPosition;
+			Obj->getPosition(objectPosition);
+			
+			// Are objects in trash boxes?
+			if(objectPosition.x()== Cm_trashes[trashBoxIndex].Coord.x() &&  objectPosition.z()== Cm_trashes[trashBoxIndex].Coord.z())
+			{
+				LOG_MSG(("<For debug> \"%s\" is in \"%s\".", objectName.c_str(), trashBoxName.c_str()));
+				objectInTrashBox = true;
+				if( trashBoxIndex == Location_Status[1] && objectIndex == Location_Status[0] ){
+					LOG_MSG(("<For debug> \"Correct\" object was trashed to \"Correct\" trash box."));
+					std::stringstream ss;
+					ss << SCORE_CORRECT_TRASH_BOX;
+					std::string msg = "RoboCupReferee/Robot chose th right Trash box [" + Cm_trashes[trashBoxIndex].Trash + "]" "/+" + ss.str();
+					if(m_ref != NULL){
+						m_ref->sendMsgToSrv(msg.c_str());
+					}
+					else{
+						LOG_MSG((msg.c_str()));
+					}
+				}
+				else if( trashBoxIndex == Location_Status[1] ){
+					LOG_MSG(("<For debug> \"Wrong\" object was trashed to \"Correct\" trash box."));	
+				}
+				else if( objectIndex == Location_Status[0] ){
+					LOG_MSG(("<For debug> \"Correct\" object was trashed to \"Wrong\" trash box."));	
+					std::stringstream ss;
+					ss << SCORE_WRONG_TRASH_BOX;
+					std::string msg = "RoboCupReferee/Robot chose the wrong Trash box"  "" "/" + ss.str();
+					if(m_ref != NULL){
+						m_ref->sendMsgToSrv(msg.c_str());
+					}
+					else{
+						LOG_MSG((msg.c_str()));
+					}				
+				}
+				else{
+					LOG_MSG(("<For debug> \"Wrong\" object was trashed to \"Wrong\" trash box."));	
+				}
 			}
-			else{
-				LOG_MSG((msg.c_str()));
+			else
+			{
 			}
 		}
-	else
-		{
-			std::string msg = "RoboCupReferee/Robot chose the wrong Trash box"  "" "/-400";
-			//std::string msg = "RoboCupReferee/Robot chose th right Trash box [" + Cm_trashes[Location_Status[1]].Trash + "]" "/+400";
-
-			if(m_ref != NULL){
-				m_ref->sendMsgToSrv(msg.c_str());
-			}
-			else{
-				LOG_MSG((msg.c_str()));
-			}
-		}
-
+	}
+	if(!objectInTrashBox){
+		LOG_MSG(("<For debug> No object was trashed to any trash box."));			
+	}
 }
 
 void MyController::onCheckCollision(){
