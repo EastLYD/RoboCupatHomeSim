@@ -44,7 +44,7 @@ void KinectService::onInit(InitEvent &evt){
 				std::string previousLine = "";
 				while(getline(in_stream_current,line)) // To get you all the lines for current motion.
         {
-						list_current.push_back(line.erase(line);
+						list_current.push_back(line);
         }	
 				in_stream_current.close();
 	    Data_Size = 0;
@@ -164,7 +164,7 @@ void KinectService::onRecvMsg(RecvMsgEvent &evt){
 		std::string previousLine = "";
 		while(getline(in_stream_motion,line)) // To get you all the lines.
 		{
-			list_motion.push_back(line.erase(line);
+			list_motion.push_back(line);
 		}	
 		in_stream_motion.close();
 		Data_Size = 0;

@@ -798,11 +798,11 @@ void  MyController::CheckObjects()
 		//Checking how the object was gone
 		if(objectPosition.x()== Cm_Objects[i].Coord.x() && objectPosition.y()== Cm_Objects[i].Coord.y() && objectPosition.z()== Cm_Objects[i].Coord.z())
 		{
-			LOG_MSG(("<For debug> \"%s\" is placed on the table.", name.c_str()));			
+			//LOG_MSG(("<For debug> \"%s\" is placed on the table.", name.c_str()));			
 		}
 		else
 		{
-			LOG_MSG(("<For debug> \"%s\" was gone.", name.c_str()));
+			//LOG_MSG(("<For debug> \"%s\" was gone.", name.c_str()));
 
 			//Is it correct object?
 			if(i == Location_Status[0])
@@ -857,10 +857,10 @@ void  MyController::CheckTrashes()
 			// Are objects in trash boxes?
 			if(objectPosition.x()== Cm_trashes[trashBoxIndex].Coord.x() &&  objectPosition.z()== Cm_trashes[trashBoxIndex].Coord.z())
 			{
-				LOG_MSG(("<For debug> \"%s\" is in \"%s\".", objectName.c_str(), trashBoxName.c_str()));
+				//LOG_MSG(("<For debug> \"%s\" is in \"%s\".", objectName.c_str(), trashBoxName.c_str()));
 				objectInTrashBox = true;
 				if( trashBoxIndex == Location_Status[1] && objectIndex == Location_Status[0] ){
-					LOG_MSG(("<For debug> \"Correct\" object was trashed to \"Correct\" trash box."));
+					//LOG_MSG(("<For debug> \"Correct\" object was trashed to \"Correct\" trash box."));
 					std::stringstream ss;
 					ss << SCORE_CORRECT_TRASH_BOX;
 					std::string msg = "RoboCupReferee/Robot chose th right Trash box [" + Cm_trashes[trashBoxIndex].Trash + "]" "/+" + ss.str();
@@ -872,10 +872,10 @@ void  MyController::CheckTrashes()
 					}
 				}
 				else if( trashBoxIndex == Location_Status[1] ){
-					LOG_MSG(("<For debug> \"Wrong\" object was trashed to \"Correct\" trash box."));	
+					//LOG_MSG(("<For debug> \"Wrong\" object was trashed to \"Correct\" trash box."));	
 				}
 				else if( objectIndex == Location_Status[0] ){
-					LOG_MSG(("<For debug> \"Correct\" object was trashed to \"Wrong\" trash box."));	
+					//LOG_MSG(("<For debug> \"Correct\" object was trashed to \"Wrong\" trash box."));	
 					std::stringstream ss;
 					ss << SCORE_WRONG_TRASH_BOX;
 					std::string msg = "RoboCupReferee/Robot chose the wrong Trash box"  "" "/" + ss.str();
@@ -887,7 +887,7 @@ void  MyController::CheckTrashes()
 					}				
 				}
 				else{
-					LOG_MSG(("<For debug> \"Wrong\" object was trashed to \"Wrong\" trash box."));	
+					//LOG_MSG(("<For debug> \"Wrong\" object was trashed to \"Wrong\" trash box."));	
 				}
 			}
 			else
@@ -896,7 +896,7 @@ void  MyController::CheckTrashes()
 		}
 	}
 	if(!objectInTrashBox){
-		LOG_MSG(("<For debug> No object was trashed to any trash box."));			
+		//LOG_MSG(("<For debug> No object was trashed to any trash box."));			
 	}
 }
 
