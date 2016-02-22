@@ -10,7 +10,7 @@
 //#include  <random>
 //#include  <iterator>
 
-#define NUMBER_OF_REPETITION   10 /// 10
+#define NUMBER_OF_REPETITION   27
 #define MAX_CHARS_PER_LINE 512
 
 #define SCORE_CORRECT_OBJECT	+400
