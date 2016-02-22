@@ -710,14 +710,15 @@ void RobotController::onInit(InitEvent &evt)
 	Change_Robot_speed = 5; // to change the robot's velocity
 	Robot_speed  = Change_Robot_speed;
 	m_state = 0;
-	// bjects
+
+	// objects position
 	m_BottleFront = Vector3d(40.0, 30, -40.0);
 	m_MuccupFront = Vector3d(0.0, 30, -40.0);
 	m_CanFront = Vector3d(-40.0, 30, -40.0);
 
 
 
-	// trash
+	// trashBoxs position
 	m_BurnableFront = Vector3d(-120.0, 30, -60);
 	m_UnburnableFront = Vector3d(-120.0, 30, 70);
 	m_RecycleFront = Vector3d(-60.0, 30, -100);
@@ -732,7 +733,6 @@ void RobotController::onInit(InitEvent &evt)
 	m_relayFrontTrash = Vector3d(-80, 30, -80);
 
 	cycle = 3;
-	//エージェントの正面の定義はz軸の正の向きを向いていると仮定する
 
 	m_onActionReturn = 0.01;
 
@@ -764,30 +764,30 @@ double RobotController::onAction(ActionEvent &evt)
 	//std::cout << "the size of Vector " <<  Record_Postures.size() << std::endl;
 	switch(m_state)
 		{
-		case 1: {
+		case 10: {
 			Robot_speed  = Change_Robot_speed;
 			chooze_task_arm_left(5);
 			chooze_task_arm_right(5);
 			//   printf("got it in case!1 flag1 \n");
 			if (goTo(m_relayPoint1, 0) == true && moveLeftArm() == true && moveRightArm() == true)
 				{
-					m_state = 2;
+					m_state = 20;
 					//  printf("got it in case!1 \n");
 
 				}
 			break;
 		}
-		case 2:   { 
+		case 20:   { 
 			Robot_speed  = Change_Robot_speed;
-			if (goTo(m_relayPoint2, 0) == true) m_state = 3;
+			if (goTo(m_relayPoint2, 0) == true) m_state = 30;
 			break;
 		}
-		case 3: {
+		case 30: {
 			Robot_speed  = Change_Robot_speed;
-			if (goTo(m_relayFrontTable, 0) == true) m_state = 4;
+			if (goTo(m_relayFrontTable, 0) == true) m_state = 40;
 			break;
 		}
-		case 4: {  // Test if the cycle is finished or not
+		case 40: {  // Test if the cycle is finished or not
 			if (cycle > 0)
 				{
 					m_state = 41;
@@ -811,182 +811,182 @@ double RobotController::onAction(ActionEvent &evt)
 				m_pointedtrash = "recycle";
 				std::cout << "Task started Robot ........ "  << std::endl;
 			
-				m_state = 5;
+				m_state = 50;
 			}
 		case 49:
 			{
 				break;
 			}
 
-		case 5:   {  //Optional case  !!!
+		case 50:   {  //Optional case  !!!
 			
 			Robot_speed  = Change_Robot_speed;
 			if (m_pointedObject=="petbottle")
 				{
-					if (goTo(m_BottleFront, 0) == true) m_state = 6;
+					if (goTo(m_BottleFront, 0) == true) m_state = 60;
 				}
 
 			else if (m_pointedObject=="mugcup")
 				{
-					if (goTo(m_MuccupFront, 0) == true) m_state = 6;
+					if (goTo(m_MuccupFront, 0) == true) m_state = 60;
 				}
 			else if (m_pointedObject=="can")
 				{
-					if (goTo(m_CanFront, 0) == true)  m_state = 6;
+					if (goTo(m_CanFront, 0) == true)  m_state = 60;
 				}
 			break;
 
 		}
-		case 6:   { //preparation of the arm for grasp
+		case 60:   { //preparation of the arm for grasp
 			Robot_speed  = Change_Robot_speed;
 			recognizeObjectPosition(m_Object_togo, m_pointedObject);
 			if (goTo(m_Object_togo, 70) == true)
 				{
-					m_state = 7;
+					m_state = 70;
 
 				}
 			break;
 		}
 
-		case 7:   { //preparation of the arm for grasp
+		case 70:   { //preparation of the arm for grasp
 			chooze_task_arm_left(1);
-			if (moveLeftArm() == true) m_state = 8;
+			if (moveLeftArm() == true) m_state = 80;
 			break;
 		}
-		case 8:   { //move to the object
+		case 80:   { //move to the object
 			Robot_speed  = 1;
-			if (goTo(m_Object_togo, 38) == true) m_state = 9;
+			if (goTo(m_Object_togo, 38) == true) m_state = 90;
 			break;
 		}
-		case 9:   { //move arm to grasp the object
+		case 90:   { //move arm to grasp the object
 			chooze_task_arm_left(2);
 			grasp_left_hand();
-			if (moveLeftArm() == true) m_state = 10;
+			if (moveLeftArm() == true) m_state = 100;
 			break;
 		}
-		case 10:   {
-			m_state = 11;
+		case 100:   {
+			m_state = 110;
 			break;
 		}
-		case 11:   { //move arm to place in good position for moving
+		case 110:   { //move arm to place in good position for moving
 			grasp_left_hand();
 			chooze_task_arm_left(3);
 			if (moveLeftArm() == true)
-				m_state = 12;
+				m_state = 120;
 			break;
 		}
-		case 12:  {
+		case 120:  {
 			my->setWheelVelocity(-1.4,-1.4);
 			chooze_task_arm_left(5);
 			if (moveLeftArm() == true)
 				{
 					Robot_speed  = Change_Robot_speed;
-					m_state = 13;
+					m_state = 130;
 					sleep(1);
 				}
 			break;
 		}
-		case 13:   { //move to the object
+		case 130:   { //move to the object
 			// Robot_speed  = 1;
 			if (goTo(m_relayFrontTrash, 0) == true)
 				{
 
-					m_state = 14;
+					m_state = 140;
 				}
 			break;
 		}
 
 
-		case 14: {
+		case 140: {
 
 			if (goTo(m_relayFrontTable_reset, 0) == true)
 				{
 
 
 					sleep(2);
-					m_state = 15;
+					m_state = 150;
 				}
 			break;
 		}
 
-		case 99:   { //move to the object
+		case 990:   { //move to the object
 			// Robot_speed  = 1;
 			break;
 		}
 
-		case 15:   { //Optional case  !!!
+		case 150:   { //Optional case  !!!
 			Robot_speed  = Change_Robot_speed;
 			if (m_pointedtrash=="recycle")
 				{
-					if (goTo(m_RecycleFront, 0) == true)  m_state = 16;
+					if (goTo(m_RecycleFront, 0) == true)  m_state = 160;
 				}
 			else if (m_pointedtrash=="burnable")
 				{
-					if (goTo(m_BurnableFront, 0) == true) m_state = 16;
+					if (goTo(m_BurnableFront, 0) == true) m_state = 160;
 				}
 			else if (m_pointedtrash=="unburnable")
 				{
-					if (goTo(m_UnburnableFront, 0) == true) m_state = 16;
+					if (goTo(m_UnburnableFront, 0) == true) m_state = 160;
 				}
 			break;
 		}
-		case 16:   { //preparation of the arm for grasp
+		case 160:   { //preparation of the arm for grasp
 			recognizeObjectPosition(m_Trash_togo, m_pointedtrash);
 			if (goTo(m_Trash_togo, 50) == true)
 				{
-					m_state = 17;
+					m_state = 170;
 
 				}
 			break;
 		}
 
-		case 17:   { //preparation of the arm for grasp
+		case 170:   { //preparation of the arm for grasp
 			chooze_task_arm_left(1);
-			if (moveLeftArm() == true) m_state = 18;
+			if (moveLeftArm() == true) m_state = 180;
 			break;
 		}
-		case 18:   {
+		case 180:   {
 			Robot_speed  = 1;
-			if (goTo(m_Trash_togo, 60) == true) m_state = 19;
+			if (goTo(m_Trash_togo, 60) == true) m_state = 190;
 			break;
 		}
-		case 19:   { //move arm to grasp the object
+		case 190:   { //move arm to grasp the object
 			chooze_task_arm_left(3);
 
 			if (moveLeftArm() == true)
 				{
-					m_state = 20;
+					m_state = 200;
 					release_left_hand();
 				}
 			break;
 		}
-		case 20:  {
+		case 200:  {
 			my->setWheelVelocity(-2.5,-2.5);
 			chooze_task_arm_left(2);
 			if (moveLeftArm() == true)
 				{
 
 					Robot_speed  = Change_Robot_speed;
-					m_state = 21;
+					m_state = 210;
 				}
 			break;
 		}
-		case 21:   { //move to the object
+		case 210:   { //move to the object
 			Robot_speed  = Change_Robot_speed;
-			if (goTo(m_relayFrontTrash, 0) == true) m_state = 22;
+			if (goTo(m_relayFrontTrash, 0) == true) m_state = 220;
 			break;
 		}
-		case 22:   { //preparation of the arm for grasp
+		case 220:   { //preparation of the arm for grasp
 			chooze_task_arm_left(5);
-			if (moveLeftArm() == true) m_state = 23;
+			if (moveLeftArm() == true) m_state = 230;
 			break;
 		}
-		case 23:   { //move to the object
+		case 230:   { //move to the object
 			Robot_speed  = Change_Robot_speed;
 			if (goTo(m_relayFrontTable, 0) == true)
 				{
 					cycle = cycle-1;
-					m_state = 4;
+					m_state = 40;
 					broadcastMsg("Task_finished");
 					m_pointedtrash = "";
 					m_pointedObject = "";
@@ -1020,7 +1020,7 @@ void RobotController::onRecvMsg(RecvMsgEvent &evt)
 
 	if (msg == "Task_start" && m_state == 0)
 		{
-			m_state = 1 ;      
+			m_state = 10;      
 			Kinect_data_flag = false;
 			Record_Postures.clear();
 		}
