@@ -51,7 +51,7 @@ public:
 	void get_Kinect_Data();
 	void Kinect_Data_Off();
 	void Record_Kinect_Data(char* all_msg);
-    void PrintPosture();
+	void PrintPosture();
 
 
 private:
@@ -130,8 +130,8 @@ private:
 	};
 
 	struct Posture_Coordinates {
-		double  time;
-		std::vector <Joint_Coorditate> posture;
+	double  time;
+	std::vector <Joint_Coorditate> posture;
 
 	};
 
@@ -222,144 +222,143 @@ bool RobotController::moveLeftArm()
 	bool j0 = false, j1 = false , j3 = false, j4 = false, j5 = false, j6 = false, j7 = false;
 
 	if (joint_left[0] != m_joint_left[0] )
+	{
+		if (joint_left[0] < m_joint_left[0] && m_joint_left[0]-joint_left[0] > error_angle_arm)
 		{
-			if (joint_left[0] < m_joint_left[0] && m_joint_left[0]-joint_left[0] > error_angle_arm)
-				{
-					my->setJointVelocity("LARM_JOINT0", joint_veloc, 0.0);
-					joint_left[0] = my->getJointAngle("LARM_JOINT0");
-				}
-			else if (joint_left[0] > m_joint_left[0] && joint_left[0]-m_joint_left[0] > error_angle_arm)
-				{
-					my->setJointVelocity("LARM_JOINT0", -joint_veloc, 0.0);
-					joint_left[0] = my->getJointAngle("LARM_JOINT0");
-				}
-			else
-				{
-					my->setJointVelocity("LARM_JOINT0", 0.0, 0.0);
-					j0 = true;
-				}
-
+			my->setJointVelocity("LARM_JOINT0", joint_veloc, 0.0);
+			joint_left[0] = my->getJointAngle("LARM_JOINT0");
 		}
+		else if (joint_left[0] > m_joint_left[0] && joint_left[0]-m_joint_left[0] > error_angle_arm)
+		{
+			my->setJointVelocity("LARM_JOINT0", -joint_veloc, 0.0);
+			joint_left[0] = my->getJointAngle("LARM_JOINT0");
+		}
+		else
+		{
+			my->setJointVelocity("LARM_JOINT0", 0.0, 0.0);
+			j0 = true;
+		}
+	}
 	else j0 = true;
 
 	if (joint_left[1] != m_joint_left[1] )
+	{
+		if (joint_left[1] < m_joint_left[1] && m_joint_left[1]-joint_left[1] > error_angle_arm)
 		{
-			if (joint_left[1] < m_joint_left[1] && m_joint_left[1]-joint_left[1] > error_angle_arm)
-				{
-					my->setJointVelocity("LARM_JOINT1", joint_veloc, 0.0);
-					joint_left[1] = my->getJointAngle("LARM_JOINT1");
-				}
-			else if (joint_left[1] > m_joint_left[1] && joint_left[1]-m_joint_left[1] > error_angle_arm)
-				{
-					my->setJointVelocity("LARM_JOINT1", -joint_veloc, 0.0);
-					joint_left[1] = my->getJointAngle("LARM_JOINT1");
-				}
-			else
-				{
-					my->setJointVelocity("LARM_JOINT1", 0.0, 0.0);
-					j1 = true;
-				}
+			my->setJointVelocity("LARM_JOINT1", joint_veloc, 0.0);
+			joint_left[1] = my->getJointAngle("LARM_JOINT1");
 		}
+		else if (joint_left[1] > m_joint_left[1] && joint_left[1]-m_joint_left[1] > error_angle_arm)
+		{
+			my->setJointVelocity("LARM_JOINT1", -joint_veloc, 0.0);
+			joint_left[1] = my->getJointAngle("LARM_JOINT1");
+		}
+		else
+		{
+			my->setJointVelocity("LARM_JOINT1", 0.0, 0.0);
+			j1 = true;
+		}
+	}
 	else j1 = true;
 
 	if (joint_left[2] != m_joint_left[2] )
+	{
+		if (joint_left[2] < m_joint_left[2] && m_joint_left[2]-joint_left[2] > error_angle_arm)
 		{
-			if (joint_left[2] < m_joint_left[2] && m_joint_left[2]-joint_left[2] > error_angle_arm)
-				{
-					my->setJointVelocity("LARM_JOINT3", joint_veloc, 0.0);
-					joint_left[2] = my->getJointAngle("LARM_JOINT3");
-				}
-			else if (joint_left[2] > m_joint_left[2] && joint_left[2]-m_joint_left[2] > error_angle_arm)
-				{
-					my->setJointVelocity("LARM_JOINT3", -joint_veloc, 0.0);
-					joint_left[2] = my->getJointAngle("LARM_JOINT3");
-				}
-			else
-				{
-					my->setJointVelocity("LARM_JOINT3", 0.0, 0.0);
-					j3 = true;
-				}
+			my->setJointVelocity("LARM_JOINT3", joint_veloc, 0.0);
+			joint_left[2] = my->getJointAngle("LARM_JOINT3");
 		}
+		else if (joint_left[2] > m_joint_left[2] && joint_left[2]-m_joint_left[2] > error_angle_arm)
+		{
+			my->setJointVelocity("LARM_JOINT3", -joint_veloc, 0.0);
+			joint_left[2] = my->getJointAngle("LARM_JOINT3");
+		}
+		else
+		{
+			my->setJointVelocity("LARM_JOINT3", 0.0, 0.0);
+			j3 = true;
+		}
+	}
 	else j3 = true;
 
 	if (joint_left[3] != m_joint_left[3] )
+	{
+		if (joint_left[3] < m_joint_left[3] && m_joint_left[3]-joint_left[3] > error_angle_arm)
 		{
-			if (joint_left[3] < m_joint_left[3] && m_joint_left[3]-joint_left[3] > error_angle_arm)
-				{
-					my->setJointVelocity("LARM_JOINT4", joint_veloc, 0.0);
-					joint_left[3] = my->getJointAngle("LARM_JOINT4");
-				}
-			else if (joint_left[3] > m_joint_left[3] && joint_left[3]-m_joint_left[3] > error_angle_arm)
-				{
-					my->setJointVelocity("LARM_JOINT4", -joint_veloc, 0.0);
-					joint_left[3] = my->getJointAngle("LARM_JOINT4");
-				}
-			else
-				{
-					my->setJointVelocity("LARM_JOINT4", 0.0, 0.0);
-					j4 = true;
-				}
+			my->setJointVelocity("LARM_JOINT4", joint_veloc, 0.0);
+			joint_left[3] = my->getJointAngle("LARM_JOINT4");
 		}
+		else if (joint_left[3] > m_joint_left[3] && joint_left[3]-m_joint_left[3] > error_angle_arm)
+		{
+			my->setJointVelocity("LARM_JOINT4", -joint_veloc, 0.0);
+			joint_left[3] = my->getJointAngle("LARM_JOINT4");
+		}
+		else
+		{
+			my->setJointVelocity("LARM_JOINT4", 0.0, 0.0);
+			j4 = true;
+		}
+	}
 	else j4 = true;
 
 	if (joint_left[4] != m_joint_left[4] )
+	{
+		if (joint_left[4] < m_joint_left[4] && m_joint_left[4]-joint_left[4] > error_angle_arm)
 		{
-			if (joint_left[4] < m_joint_left[4] && m_joint_left[4]-joint_left[4] > error_angle_arm)
-				{
-					my->setJointVelocity("LARM_JOINT5", joint_veloc, 0.0);
-					joint_left[4] = my->getJointAngle("LARM_JOINT5");
-				}
-			else if (joint_left[4] > m_joint_left[4] && joint_left[4]-m_joint_left[4] > error_angle_arm)
-				{
-					my->setJointVelocity("LARM_JOINT5", -joint_veloc, 0.0);
-					joint_left[4] = my->getJointAngle("LARM_JOINT5");
-				}
-			else
-				{
-					my->setJointVelocity("LARM_JOINT5", 0.0, 0.0);
-					j5 = true;
-				}
+			my->setJointVelocity("LARM_JOINT5", joint_veloc, 0.0);
+			joint_left[4] = my->getJointAngle("LARM_JOINT5");
 		}
+		else if (joint_left[4] > m_joint_left[4] && joint_left[4]-m_joint_left[4] > error_angle_arm)
+		{
+			my->setJointVelocity("LARM_JOINT5", -joint_veloc, 0.0);
+			joint_left[4] = my->getJointAngle("LARM_JOINT5");
+		}
+		else
+		{
+			my->setJointVelocity("LARM_JOINT5", 0.0, 0.0);
+			j5 = true;
+		}
+	}
 	else j5 = true;
 
 	if (joint_left[5] != m_joint_left[5] )
+	{
+		if (joint_left[5] < m_joint_left[5] && m_joint_left[5]-joint_left[5] > error_angle_arm)
 		{
-			if (joint_left[5] < m_joint_left[5] && m_joint_left[5]-joint_left[5] > error_angle_arm)
-				{
-					my->setJointVelocity("LARM_JOINT6", joint_veloc, 0.0);
-					joint_left[5] = my->getJointAngle("LARM_JOINT6");
-				}
-			else if (joint_left[5] > m_joint_left[5] && joint_left[5]-m_joint_left[5] > error_angle_arm)
-				{
-					my->setJointVelocity("LARM_JOINT6", -joint_veloc, 0.0);
-					joint_left[5] = my->getJointAngle("LARM_JOINT6");
-				}
-			else
-				{
-					my->setJointVelocity("LARM_JOINT6", 0.0, 0.0);
-					j6 = true;
-				}
+			my->setJointVelocity("LARM_JOINT6", joint_veloc, 0.0);
+			joint_left[5] = my->getJointAngle("LARM_JOINT6");
 		}
+		else if (joint_left[5] > m_joint_left[5] && joint_left[5]-m_joint_left[5] > error_angle_arm)
+		{
+			my->setJointVelocity("LARM_JOINT6", -joint_veloc, 0.0);
+			joint_left[5] = my->getJointAngle("LARM_JOINT6");
+		}
+		else
+		{
+			my->setJointVelocity("LARM_JOINT6", 0.0, 0.0);
+			j6 = true;
+		}
+	}
 	else j6 = true;
 
 	if (joint_left[6] != m_joint_left[6] )
+	{
+		if (joint_left[5] < m_joint_left[6] && m_joint_left[6]-joint_left[5] > error_angle_arm)
 		{
-			if (joint_left[5] < m_joint_left[6] && m_joint_left[6]-joint_left[5] > error_angle_arm)
-				{
-					my->setJointVelocity("LARM_JOINT7", joint_veloc, 0.0);
-					joint_left[5] = my->getJointAngle("LARM_JOINT7");
-				}
-			else if (joint_left[5] > m_joint_left[6] && joint_left[5]-m_joint_left[6] > error_angle_arm)
-				{
-					my->setJointVelocity("LARM_JOINT7", -joint_veloc, 0.0);
-					joint_left[5] = my->getJointAngle("LARM_JOINT7");
-				}
-			else
-				{
-					my->setJointVelocity("LARM_JOINT7", 0.0, 0.0);
-					j7 = true;
-				}
+			my->setJointVelocity("LARM_JOINT7", joint_veloc, 0.0);
+			joint_left[5] = my->getJointAngle("LARM_JOINT7");
 		}
+		else if (joint_left[5] > m_joint_left[6] && joint_left[5]-m_joint_left[6] > error_angle_arm)
+		{
+			my->setJointVelocity("LARM_JOINT7", -joint_veloc, 0.0);
+			joint_left[5] = my->getJointAngle("LARM_JOINT7");
+		}
+		else
+		{
+			my->setJointVelocity("LARM_JOINT7", 0.0, 0.0);
+			j7 = true;
+		}
+	}
 	else j7 = true;
 
 	if (j0 == true && j1 == true && j3 == true && j4 == true && j5 == true && j6 == true && j7 == true)
@@ -391,144 +390,143 @@ bool RobotController::moveRightArm()
 	bool j0 = false, j1 = false , j3 = false, j4 = false, j5 = false, j6 = false, j7 = false;
 
 	if (joint_right[0] != m_joint_right[0] )
+	{
+		if (joint_right[0] < m_joint_right[0] && m_joint_right[0]-joint_right[0] > error_angle_arm)
 		{
-			if (joint_right[0] < m_joint_right[0] && m_joint_right[0]-joint_right[0] > error_angle_arm)
-				{
-					my->setJointVelocity("RARM_JOINT0",joint_veloc, 0.0);
-					joint_right[0] = my->getJointAngle("RARM_JOINT0");
-				}
-			else if (joint_right[0] > m_joint_right[0] && joint_right[0]-m_joint_right[0] > error_angle_arm)
-				{
-					my->setJointVelocity("RARM_JOINT0",-joint_veloc, 0.0);
-					joint_right[0] = my->getJointAngle("RARM_JOINT0");
-				}
-			else
-				{
-					my->setJointVelocity("RARM_JOINT0", 0.0, 0.0);
-					j0 = true;
-				}
-
+			my->setJointVelocity("RARM_JOINT0",joint_veloc, 0.0);
+			joint_right[0] = my->getJointAngle("RARM_JOINT0");
 		}
+		else if (joint_right[0] > m_joint_right[0] && joint_right[0]-m_joint_right[0] > error_angle_arm)
+		{
+			my->setJointVelocity("RARM_JOINT0",-joint_veloc, 0.0);
+			joint_right[0] = my->getJointAngle("RARM_JOINT0");
+		}
+		else
+		{
+			my->setJointVelocity("RARM_JOINT0", 0.0, 0.0);
+			j0 = true;
+		}
+	}
 	else j0 = true;
 
 	if (joint_right[1] != m_joint_right[1] )
+	{
+		if (joint_right[1] < m_joint_right[1] && m_joint_right[1]-joint_right[1] > error_angle_arm)
 		{
-			if (joint_right[1] < m_joint_right[1] && m_joint_right[1]-joint_right[1] > error_angle_arm)
-				{
-					my->setJointVelocity("RARM_JOINT1",joint_veloc, 0.0);
-					joint_right[1] = my->getJointAngle("RARM_JOINT1");
-				}
-			else if (joint_right[1] > m_joint_right[1] && joint_right[1]-m_joint_right[1] > error_angle_arm)
-				{
-					my->setJointVelocity("RARM_JOINT1",-joint_veloc, 0.0);
-					joint_right[1] = my->getJointAngle("RARM_JOINT1");
-				}
-			else
-				{
-					my->setJointVelocity("RARM_JOINT1", 0.0, 0.0);
-					j1 = true;
-				}
+			my->setJointVelocity("RARM_JOINT1",joint_veloc, 0.0);
+			joint_right[1] = my->getJointAngle("RARM_JOINT1");
 		}
+		else if (joint_right[1] > m_joint_right[1] && joint_right[1]-m_joint_right[1] > error_angle_arm)
+		{
+			my->setJointVelocity("RARM_JOINT1",-joint_veloc, 0.0);
+			joint_right[1] = my->getJointAngle("RARM_JOINT1");
+		}
+		else
+		{
+			my->setJointVelocity("RARM_JOINT1", 0.0, 0.0);
+			j1 = true;
+		}
+	}
 	else j1 = true;
 
 	if (joint_right[2] != m_joint_right[2] )
+	{
+		if (joint_right[2] < m_joint_right[2] && m_joint_right[2]-joint_right[2] > error_angle_arm)
 		{
-			if (joint_right[2] < m_joint_right[2] && m_joint_right[2]-joint_right[2] > error_angle_arm)
-				{
-					my->setJointVelocity("RARM_JOINT3",joint_veloc, 0.0);
-					joint_right[2] = my->getJointAngle("RARM_JOINT3");
-				}
-			else if (joint_right[2] > m_joint_right[2] && joint_right[2]-m_joint_right[2] > error_angle_arm)
-				{
-					my->setJointVelocity("RARM_JOINT3",-joint_veloc, 0.0);
-					joint_right[2] = my->getJointAngle("RARM_JOINT3");
-				}
-			else
-				{
-					my->setJointVelocity("RARM_JOINT3", 0.0, 0.0);
-					j3 = true;
-				}
+			my->setJointVelocity("RARM_JOINT3",joint_veloc, 0.0);
+			joint_right[2] = my->getJointAngle("RARM_JOINT3");
 		}
+		else if (joint_right[2] > m_joint_right[2] && joint_right[2]-m_joint_right[2] > error_angle_arm)
+		{
+			my->setJointVelocity("RARM_JOINT3",-joint_veloc, 0.0);
+			joint_right[2] = my->getJointAngle("RARM_JOINT3");
+		}
+		else
+		{
+			my->setJointVelocity("RARM_JOINT3", 0.0, 0.0);
+			j3 = true;
+		}
+	}
 	else j3 = true;
 
 	if (joint_right[3] != m_joint_right[3] )
+	{
+		if (joint_right[3] < m_joint_right[3] && m_joint_right[3]-joint_right[3] > error_angle_arm)
 		{
-			if (joint_right[3] < m_joint_right[3] && m_joint_right[3]-joint_right[3] > error_angle_arm)
-				{
-					my->setJointVelocity("RARM_JOINT4", joint_veloc, 0.0);
-					joint_right[3] = my->getJointAngle("RARM_JOINT4");
-				}
-			else if (joint_right[3] > m_joint_right[3] && joint_right[3]-m_joint_right[3] > error_angle_arm)
-				{
-					my->setJointVelocity("RARM_JOINT4",-joint_veloc, 0.0);
-					joint_right[3] = my->getJointAngle("RARM_JOINT4");
-				}
-			else
-				{
-					my->setJointVelocity("RARM_JOINT4", 0.0, 0.0);
-					j4 = true;
-				}
+			my->setJointVelocity("RARM_JOINT4", joint_veloc, 0.0);
+			joint_right[3] = my->getJointAngle("RARM_JOINT4");
 		}
+		else if (joint_right[3] > m_joint_right[3] && joint_right[3]-m_joint_right[3] > error_angle_arm)
+		{
+			my->setJointVelocity("RARM_JOINT4",-joint_veloc, 0.0);
+			joint_right[3] = my->getJointAngle("RARM_JOINT4");
+		}
+		else
+		{
+			my->setJointVelocity("RARM_JOINT4", 0.0, 0.0);
+			j4 = true;
+		}
+	}
 	else j4 = true;
 
 	if (joint_right[4] != m_joint_right[4] )
+	{
+		if (joint_right[4] < m_joint_right[4] && m_joint_right[4]-joint_right[4] > error_angle_arm)
 		{
-			if (joint_right[4] < m_joint_right[4] && m_joint_right[4]-joint_right[4] > error_angle_arm)
-				{
-					my->setJointVelocity("RARM_JOINT5", joint_veloc, 0.0);
-					joint_right[4] = my->getJointAngle("RARM_JOINT5");
-				}
-			else if (joint_right[4] > m_joint_right[4] && joint_right[4]-m_joint_right[4] > error_angle_arm)
-				{
-					my->setJointVelocity("RARM_JOINT5", -joint_veloc, 0.0);
-					joint_right[4] = my->getJointAngle("RARM_JOINT5");
-				}
-			else
-				{
-					my->setJointVelocity("RARM_JOINT5", 0.0, 0.0);
-					j5 = true;
-				}
+			my->setJointVelocity("RARM_JOINT5", joint_veloc, 0.0);
+			joint_right[4] = my->getJointAngle("RARM_JOINT5");
 		}
+		else if (joint_right[4] > m_joint_right[4] && joint_right[4]-m_joint_right[4] > error_angle_arm)
+		{
+			my->setJointVelocity("RARM_JOINT5", -joint_veloc, 0.0);
+			joint_right[4] = my->getJointAngle("RARM_JOINT5");
+		}
+		else
+		{
+			my->setJointVelocity("RARM_JOINT5", 0.0, 0.0);
+			j5 = true;
+		}
+	}
 	else j5 = true;
 
 	if (joint_right[5] != m_joint_right[5] )
+	{
+		if (joint_right[5] < m_joint_right[5] && m_joint_right[5]-joint_right[5] > error_angle_arm)
 		{
-			if (joint_right[5] < m_joint_right[5] && m_joint_right[5]-joint_right[5] > error_angle_arm)
-				{
-					my->setJointVelocity("RARM_JOINT6", joint_veloc, 0.0);
-					joint_right[5] = my->getJointAngle("RARM_JOINT6");
-				}
-			else if (joint_right[5] > m_joint_right[5] && joint_right[5]-m_joint_right[5] > error_angle_arm)
-				{
-					my->setJointVelocity("RARM_JOINT6", -joint_veloc, 0.0);
-					joint_right[5] = my->getJointAngle("RARM_JOINT6");
-				}
-			else
-				{
-					my->setJointVelocity("RARM_JOINT6", 0.0, 0.0);
-					j6 = true;
-				}
+			my->setJointVelocity("RARM_JOINT6", joint_veloc, 0.0);
+			joint_right[5] = my->getJointAngle("RARM_JOINT6");
 		}
+		else if (joint_right[5] > m_joint_right[5] && joint_right[5]-m_joint_right[5] > error_angle_arm)
+		{
+			my->setJointVelocity("RARM_JOINT6", -joint_veloc, 0.0);
+			joint_right[5] = my->getJointAngle("RARM_JOINT6");
+		}
+		else
+		{
+			my->setJointVelocity("RARM_JOINT6", 0.0, 0.0);
+			j6 = true;
+		}
+	}
 	else j6 = true;
 
 	if (joint_right[6] != m_joint_right[6] )
+	{
+		if (joint_right[5] < m_joint_right[6] && m_joint_right[6]-joint_right[5] > error_angle_arm)
 		{
-			if (joint_right[5] < m_joint_right[6] && m_joint_right[6]-joint_right[5] > error_angle_arm)
-				{
-					my->setJointVelocity("RARM_JOINT7", joint_veloc, 0.0);
-					joint_right[5] = my->getJointAngle("RARM_JOINT7");
-				}
-			else if (joint_right[5] > m_joint_right[6] && joint_right[5]-m_joint_right[6] > error_angle_arm)
-				{
-					my->setJointVelocity("RARM_JOINT7", -joint_veloc, 0.0);
-					joint_right[5] = my->getJointAngle("RARM_JOINT7");
-				}
-			else
-				{
-					my->setJointVelocity("RARM_JOINT7", 0.0, 0.0);
-					j7 = true;
-				}
+			my->setJointVelocity("RARM_JOINT7", joint_veloc, 0.0);
+			joint_right[5] = my->getJointAngle("RARM_JOINT7");
 		}
+		else if (joint_right[5] > m_joint_right[6] && joint_right[5]-m_joint_right[6] > error_angle_arm)
+		{
+			my->setJointVelocity("RARM_JOINT7", -joint_veloc, 0.0);
+			joint_right[5] = my->getJointAngle("RARM_JOINT7");
+		}
+		else
+		{
+			my->setJointVelocity("RARM_JOINT7", 0.0, 0.0);
+			j7 = true;
+		}
+	}
 	else j7 = true;
 
 	if (j0 == true && j1 == true && j3 == true && j4 == true && j5 == true && j6 == true && j7 == true)
@@ -547,8 +545,6 @@ void RobotController::chooze_task_arm_right(int task)
 }
 
 
-
-
 void RobotController::grasp_left_hand()
 {
 	Vector3d hand, object;
@@ -560,14 +556,14 @@ void RobotController::grasp_left_hand()
 	double distance = getDist3D(hand,object);
 
 	if (distance < 22 &&  m_grasp_left == false)
+	{
+		CParts * parts = my->getParts("LARM_LINK7");
+		if (parts->graspObj(m_pointedObject))
 		{
-			CParts * parts = my->getParts("LARM_LINK7");
-			if (parts->graspObj(m_pointedObject))
-				{
-					m_grasp_left = true;
-					//  broadcastMsg("Object_grasped");
-				}
+			m_grasp_left = true;
+			//  broadcastMsg("Object_grasped");
 		}
+	}
 }
 
 
@@ -618,77 +614,74 @@ bool RobotController::goTo(Vector3d pos, double rangeToPoint)
 
 	// error on angle
 	if ((angle-roll)>-error_angle && (angle-roll)<error_angle)
+	{
 		// error on distance
 		if (dist-rangeToPoint < error_distance && dist-rangeToPoint > -error_distance)
-			{
-				stopRobotMove();
-				return true;
-			}
-		else
-			{
-				speed = dist-rangeToPoint;
-				if (dist-rangeToPoint < 5)
-					if ( dist-rangeToPoint > 0 )
-						my->setWheelVelocity(1, 1);
-					else
-						my->setWheelVelocity(-1, -1);
-				else if ( dist-rangeToPoint > 0 )
-					my->setWheelVelocity(Robot_speed , Robot_speed );
-				else
-					my->setWheelVelocity(-Robot_speed , -Robot_speed );
-				return false;
-			}
-	else
 		{
-			speed = fabs(angle-roll)*4;
-			if (speed/4 > 0.3)
-				if (angle < -M_PI_2 && roll > M_PI_2)
-					my->setWheelVelocity(-0.5, 0.5);
-				else if (angle > M_PI_2 && roll < -M_PI_2)
-					my->setWheelVelocity(0.5, -0.5);
-				else if (angle < roll)
-					my->setWheelVelocity(0.5, -0.5);
+			stopRobotMove();
+			return true;
+		}
+		else
+		{
+			speed = dist-rangeToPoint;
+			if (dist-rangeToPoint < 5)
+			{
+				if ( dist-rangeToPoint > 0 )
+					my->setWheelVelocity(1, 1);
 				else
-					my->setWheelVelocity(-0.5, 0.5);
-			else if (angle < -M_PI_2 && roll > M_PI_2)
-				my->setWheelVelocity(-speed, speed);
-			else if (angle > M_PI_2 && roll < -M_PI_2)
-				my->setWheelVelocity(speed, -speed);
-			else if (angle < roll)
-				my->setWheelVelocity(speed, -speed);
+					my->setWheelVelocity(-1, -1);
+			}
+			else if ( dist-rangeToPoint > 0 )
+				my->setWheelVelocity(Robot_speed , Robot_speed );
 			else
-				my->setWheelVelocity(-speed, speed);
-
+				my->setWheelVelocity(-Robot_speed , -Robot_speed );
 			return false;
 		}
+	}
+	else
+	{
+		speed = fabs(angle-roll)*4;
+		if (speed/4 > 0.3)
+			if (angle < -M_PI_2 && roll > M_PI_2)
+				my->setWheelVelocity(-0.5, 0.5);
+			else if (angle > M_PI_2 && roll < -M_PI_2)
+				my->setWheelVelocity(0.5, -0.5);
+			else if (angle < roll)
+				my->setWheelVelocity(0.5, -0.5);
+			else
+				my->setWheelVelocity(-0.5, 0.5);
+		else if (angle < -M_PI_2 && roll > M_PI_2)
+			my->setWheelVelocity(-speed, speed);
+		else if (angle > M_PI_2 && roll < -M_PI_2)
+			my->setWheelVelocity(speed, -speed);
+		else if (angle < roll)
+			my->setWheelVelocity(speed, -speed);
+		else
+			my->setWheelVelocity(-speed, speed);
+		return false;
+	}
 	return false;
 }
 
 
-
-
-
-
-
 void RobotController::PrintPosture()
 {
-
 	for(int i = 0; i < Record_Postures.size(); i++){
-
-	std::cout << "The Time .....  " <<  Record_Postures[i].time << std::endl;
-		   std::cout << "///////////////////////////////////////////////////////////////////" << std::endl;
-		   	   std::cout << "Time :    " << Record_Postures[i].time << std::endl;
-					for(int j = 0; j < Record_Postures[i].posture.size(); j++){
-	   std::cout << "///////////////////////////////////////////////////////////////////" << std::endl;
-	   std::cout << "the name" <<  Record_Postures[i].posture[j].Name << " qw "  << Record_Postures[i].posture[j].qw << " qx "  << Record_Postures[i].posture[j].qx << " qy "  << Record_Postures[i].posture[j].qy <<  " qz "  << Record_Postures[i].posture[j].qz << std::endl;
-
-								}
-
+		std::cout << "The Time .....  " <<  Record_Postures[i].time << std::endl;
+		std::cout << "///////////////////////////////////////////////////////////////////" << std::endl;
+		std::cout << "Time :    " << Record_Postures[i].time << std::endl;
+		for(int j = 0; j < Record_Postures[i].posture.size(); j++){
+			std::cout << "///////////////////////////////////////////////////////////////////" << std::endl;
+			std::cout 
+				<< "the name" <<  Record_Postures[i].posture[j].Name 
+				<< " qw "  << Record_Postures[i].posture[j].qw 
+				<< " qx "  << Record_Postures[i].posture[j].qx 
+				<< " qy "  << Record_Postures[i].posture[j].qy 
+				<<  " qz "  << Record_Postures[i].posture[j].qz 
+				<< std::endl;
 		}
-
+	}
 }
-
-
 
 
 void RobotController::onInit(InitEvent &evt)
@@ -716,14 +709,10 @@ void RobotController::onInit(InitEvent &evt)
 	m_MuccupFront = Vector3d(0.0, 30, -40.0);
 	m_CanFront = Vector3d(-40.0, 30, -40.0);
 
-
-
 	// trashBoxs position
 	m_BurnableFront = Vector3d(-120.0, 30, -60);
 	m_UnburnableFront = Vector3d(-120.0, 30, 70);
 	m_RecycleFront = Vector3d(-60.0, 30, -100);
-
-
 
 	m_relayPoint1 = Vector3d(100, 30, -70);
 	m_relayPoint2 = Vector3d(0, 30, -70);
@@ -736,20 +725,14 @@ void RobotController::onInit(InitEvent &evt)
 
 	m_onActionReturn = 0.01;
 
-
 	srand((unsigned)time( NULL ));
-
 
 	// grasp初期化
 	m_grasp = false;
 
-
 	m_trashes.push_back("petbottle");
-
 	m_trashes.push_back("mugcup");
-
 	m_trashes.push_back("can");
-
 
 	// ゴミ箱登録
 	m_trashboxs.push_back("recycle");
@@ -763,8 +746,9 @@ double RobotController::onAction(ActionEvent &evt)
 	//std::cout << "m_state " <<  m_state << std::endl;
 	//std::cout << "the size of Vector " <<  Record_Postures.size() << std::endl;
 	switch(m_state)
+	{
+		case 10: 
 		{
-		case 10: {
 			Robot_speed  = Change_Robot_speed;
 			chooze_task_arm_left(5);
 			chooze_task_arm_right(5);
@@ -773,230 +757,234 @@ double RobotController::onAction(ActionEvent &evt)
 				{
 					m_state = 20;
 					//  printf("got it in case!1 \n");
-
 				}
 			break;
 		}
-		case 20:   { 
+		case 20:   
+		{ 
 			Robot_speed  = Change_Robot_speed;
 			if (goTo(m_relayPoint2, 0) == true) m_state = 30;
 			break;
 		}
-		case 30: {
+		case 30: 
+		{
 			Robot_speed  = Change_Robot_speed;
 			if (goTo(m_relayFrontTable, 0) == true) m_state = 40;
 			break;
 		}
-		case 40: {  // Test if the cycle is finished or not
+		case 40:   // Test if the cycle is finished or not
+		{
 			if (cycle > 0)
-				{
-					m_state = 41;
-					broadcastMsg("Show_me");
-					get_Kinect_Data();
-					m_time = evt.time() + 5;
-					break;
-				}
-			else {
-					m_state = 49;
-					break;
+			{
+				m_state = 41;
+				broadcastMsg("Show_me");
+				get_Kinect_Data();
+				m_time = evt.time() + 5;
+				break;
+			}
+			else 
+			{
+				m_state = 49;
+				break;
 			}
 		}
-		case 41: {
+		case 41: 
+		{
 			if(evt.time() > m_time) m_state = 42;
 			break;
 		}
-		case 42:{
-				Kinect_Data_Off(); // finished analysing data
-				m_pointedObject = "petbottle";
-				m_pointedtrash = "recycle";
-				std::cout << "Task started Robot ........ "  << std::endl;
-			
-				m_state = 50;
-			}
+		case 42:
+		{
+			Kinect_Data_Off(); // finished analysing data
+			m_pointedObject = "petbottle";
+			m_pointedtrash = "recycle";
+			std::cout << "Task started Robot ........ "  << std::endl;
+			m_state = 50;
+		}
 		case 49:
-			{
-				break;
-			}
-
-		case 50:   {  //Optional case  !!!
-			
+		{
+			break;
+		}
+		case 50:     //Optional case  !!!
+		{
 			Robot_speed  = Change_Robot_speed;
 			if (m_pointedObject=="petbottle")
-				{
-					if (goTo(m_BottleFront, 0) == true) m_state = 60;
-				}
-
+			{
+				if (goTo(m_BottleFront, 0) == true) m_state = 60;
+			}
 			else if (m_pointedObject=="mugcup")
-				{
-					if (goTo(m_MuccupFront, 0) == true) m_state = 60;
-				}
+			{
+				if (goTo(m_MuccupFront, 0) == true) m_state = 60;
+			}
 			else if (m_pointedObject=="can")
-				{
-					if (goTo(m_CanFront, 0) == true)  m_state = 60;
-				}
+			{
+				if (goTo(m_CanFront, 0) == true)  m_state = 60;
+			}
 			break;
-
 		}
-		case 60:   { //preparation of the arm for grasp
+		case 60:    //preparation of the arm for grasp
+		{
 			Robot_speed  = Change_Robot_speed;
 			recognizeObjectPosition(m_Object_togo, m_pointedObject);
 			if (goTo(m_Object_togo, 70) == true)
-				{
-					m_state = 70;
-
-				}
+			{
+				m_state = 70;
+			}
 			break;
 		}
-
-		case 70:   { //preparation of the arm for grasp
+		case 70:    //preparation of the arm for grasp
+		{
 			chooze_task_arm_left(1);
 			if (moveLeftArm() == true) m_state = 80;
 			break;
 		}
-		case 80:   { //move to the object
+		case 80:    //move to the object
+		{
 			Robot_speed  = 1;
 			if (goTo(m_Object_togo, 38) == true) m_state = 90;
 			break;
 		}
-		case 90:   { //move arm to grasp the object
+		case 90:    //move arm to grasp the object
+		{
 			chooze_task_arm_left(2);
 			grasp_left_hand();
 			if (moveLeftArm() == true) m_state = 100;
 			break;
 		}
-		case 100:   {
+		case 100:
+		{
 			m_state = 110;
 			break;
 		}
-		case 110:   { //move arm to place in good position for moving
+		case 110:    //move arm to place in good position for moving
+		{
 			grasp_left_hand();
 			chooze_task_arm_left(3);
 			if (moveLeftArm() == true)
 				m_state = 120;
 			break;
 		}
-		case 120:  {
+		case 120:  
+		{
 			my->setWheelVelocity(-1.4,-1.4);
 			chooze_task_arm_left(5);
 			if (moveLeftArm() == true)
-				{
-					Robot_speed  = Change_Robot_speed;
-					m_state = 130;
-					sleep(1);
-				}
+			{
+				Robot_speed  = Change_Robot_speed;
+				m_state = 130;
+				sleep(1);
+			}
 			break;
 		}
-		case 130:   { //move to the object
+		case 130:    //move to the object
+		{
 			// Robot_speed  = 1;
 			if (goTo(m_relayFrontTrash, 0) == true)
-				{
-
-					m_state = 140;
-				}
+			{
+				m_state = 140;
+			}
 			break;
 		}
-
-
-		case 140: {
-
+		case 140: 
+		{
 			if (goTo(m_relayFrontTable_reset, 0) == true)
-				{
-
-
-					sleep(2);
-					m_state = 150;
-				}
+			{
+				sleep(2);
+				m_state = 150;
+			}
 			break;
 		}
-
-		case 990:   { //move to the object
+		case 990:    //move to the object
+		{
 			// Robot_speed  = 1;
 			break;
 		}
-
-		case 150:   { //Optional case  !!!
+		case 150:    //Optional case  !!!
+		{
 			Robot_speed  = Change_Robot_speed;
 			if (m_pointedtrash=="recycle")
-				{
-					if (goTo(m_RecycleFront, 0) == true)  m_state = 160;
-				}
+			{
+				if (goTo(m_RecycleFront, 0) == true)  m_state = 160;
+			}
 			else if (m_pointedtrash=="burnable")
-				{
-					if (goTo(m_BurnableFront, 0) == true) m_state = 160;
-				}
+			{
+				if (goTo(m_BurnableFront, 0) == true) m_state = 160;
+			}
 			else if (m_pointedtrash=="unburnable")
-				{
-					if (goTo(m_UnburnableFront, 0) == true) m_state = 160;
-				}
+			{
+				if (goTo(m_UnburnableFront, 0) == true) m_state = 160;
+			}
 			break;
 		}
-		case 160:   { //preparation of the arm for grasp
+		case 160:    //preparation of the arm for grasp
+		{
 			recognizeObjectPosition(m_Trash_togo, m_pointedtrash);
 			if (goTo(m_Trash_togo, 50) == true)
-				{
-					m_state = 170;
-
-				}
+			{
+				m_state = 170;
+			}
 			break;
 		}
-
-		case 170:   { //preparation of the arm for grasp
+		case 170:    //preparation of the arm for grasp
+		{
 			chooze_task_arm_left(1);
 			if (moveLeftArm() == true) m_state = 180;
 			break;
 		}
-		case 180:   {
+		case 180:   
+		{
 			Robot_speed  = 1;
 			if (goTo(m_Trash_togo, 60) == true) m_state = 190;
 			break;
 		}
-		case 190:   { //move arm to grasp the object
+		case 190:    //move arm to grasp the object
+		{
 			chooze_task_arm_left(3);
-
 			if (moveLeftArm() == true)
-				{
-					m_state = 200;
-					release_left_hand();
-				}
+			{
+				m_state = 200;
+				release_left_hand();
+			}
 			break;
 		}
-		case 200:  {
+		case 200:  
+		{
 			my->setWheelVelocity(-2.5,-2.5);
 			chooze_task_arm_left(2);
 			if (moveLeftArm() == true)
-				{
-
-					Robot_speed  = Change_Robot_speed;
-					m_state = 210;
-				}
+			{
+				Robot_speed  = Change_Robot_speed;
+				m_state = 210;
+			}
 			break;
 		}
-		case 210:   { //move to the object
+		case 210:    //move to the object
+		{
 			Robot_speed  = Change_Robot_speed;
 			if (goTo(m_relayFrontTrash, 0) == true) m_state = 220;
 			break;
 		}
-		case 220:   { //preparation of the arm for grasp
+		case 220:    //preparation of the arm for grasp
+		{
 			chooze_task_arm_left(5);
 			if (moveLeftArm() == true) m_state = 230;
 			break;
 		}
-		case 230:   { //move to the object
+		case 230:    //move to the object
+		{
 			Robot_speed  = Change_Robot_speed;
 			if (goTo(m_relayFrontTable, 0) == true)
-				{
-					cycle = cycle-1;
-					m_state = 40;
-					broadcastMsg("Task_finished");
-					m_pointedtrash = "";
-					m_pointedObject = "";
-					m_state = 0;
-				}
+			{
+				cycle = cycle-1;
+				m_state = 40;
+				broadcastMsg("Task_finished");
+				m_pointedtrash = "";
+				m_pointedObject = "";
+				m_state = 0;
+			}
 			break;
 		}
-			
-
-		}
+	}
 	return m_onActionReturn;
 }
 
@@ -1019,11 +1007,11 @@ void RobotController::onRecvMsg(RecvMsgEvent &evt)
 	headss.assign(ss, strPos1, strPos2-strPos1);
 
 	if (msg == "Task_start" && m_state == 0)
-		{
-			m_state = 10;      
-			Kinect_data_flag = false;
-			Record_Postures.clear();
-		}
+	{
+		m_state = 10;      
+		Kinect_data_flag = false;
+		Record_Postures.clear();
+	}
 
 	char* m_msg = strtok(all_msg,"  ");
 
@@ -1035,7 +1023,6 @@ void RobotController::onRecvMsg(RecvMsgEvent &evt)
 /////////////////////////////////////////////////////////////////////////////
 
 }
-
 
 
 void RobotController::Record_Kinect_Data(char* all_msg)  //   
