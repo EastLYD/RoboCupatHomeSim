@@ -7,6 +7,7 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <sstream>
 
 #define DEG2RAD(DEG) ( (M_PI) * (DEG) / 180.0 )
 
@@ -50,7 +51,7 @@ public:
 	void chooze_task_arm_right(int task);
 	void get_Kinect_Data();
 	void Kinect_Data_Off();
-	void Record_Kinect_Data(char* all_msg);
+	void Record_Kinect_Data(std::string all_msg);
 	void PrintPosture();
 
 
@@ -121,7 +122,7 @@ private:
 
 //////////////  Kinect Data  //////////////////
 
-	struct Joint_Coorditate {
+	struct Joint_Coordinate {
 		std::string Name;
 		double qw;
 		double qx;
@@ -131,7 +132,7 @@ private:
 
 	struct Posture_Coordinates {
 	double  time;
-	std::vector <Joint_Coorditate> posture;
+	std::vector <Joint_Coordinate> posture;
 
 	};
 
@@ -799,6 +800,7 @@ double RobotController::onAction(ActionEvent &evt)
 			m_pointedObject = "petbottle";
 			m_pointedtrash = "recycle";
 			std::cout << "Task started Robot ........ "  << std::endl;
+			//PrintPosture();
 			m_state = 50;
 		}
 		case 49:
@@ -992,19 +994,12 @@ double RobotController::onAction(ActionEvent &evt)
 void RobotController::onRecvMsg(RecvMsgEvent &evt)
 {
 	std::string sender = evt.getSender();
-
-	char *all_msg = (char*)evt.getMsg();
 	std::string msg;
 	msg= evt.getMsg();
-
-/////////////////////////////////// On_Message //////////////////////////////
-	std::string ss = all_msg;
-	int strPos1 = 0;
-	int strPos2;
-	std::string headss;
-	std::string tmpss;
-	strPos2 = ss.find("  ", strPos1);
-	headss.assign(ss, strPos1, strPos2-strPos1);
+	std::stringstream ss;
+	ss << msg;
+	std::string header;
+	ss >> header;
 
 	if (msg == "Task_start" && m_state == 0)
 	{
@@ -1013,51 +1008,40 @@ void RobotController::onRecvMsg(RecvMsgEvent &evt)
 		Record_Postures.clear();
 	}
 
-	char* m_msg = strtok(all_msg,"  ");
-
-	if (strcmp(m_msg,"KINECT_DATA_Sensor") == 0 && Kinect_data_flag == true) {
-		char* kinect_msg = (char*)msg.c_str();
-		Record_Kinect_Data(kinect_msg);
+	if ( header == "KINECT_DATA_Sensor" && Kinect_data_flag == true)
+	{
+		Record_Kinect_Data(msg);
 	}
-
-/////////////////////////////////////////////////////////////////////////////
-
 }
 
 
-void RobotController::Record_Kinect_Data(char* all_msg)  //   
+void RobotController::Record_Kinect_Data(std::string all_msg)  //   
 {
-	float qw ;
-	float qx ;
-	float qy ;
-	float qz ;
-	std::string name;
-	float m_time;				
-	char* m_msg = strtok(all_msg,"  ");
-	Posture_Coordinates m_posture;
+	Posture_Coordinates myPosture;
+	std::stringstream ss;
+	ss << all_msg;
+	std::string header;
+	ss >> header;
 
-	if (strcmp(m_msg,"KINECT_DATA_Sensor") == 0 ) {
-		int i = 0;
-		while (true) {
-			Joint_Coorditate m_joint;
-			char *type = strtok(NULL,":");
-
-			if (strcmp(type,"END") == 0) {
-				m_time = atof(strtok(NULL,".."));
-				m_posture.time = m_time;
-				break;
-			}
-			else {
-				m_joint.Name = type;
-				m_joint.qw = atof(strtok(NULL,","));
-				m_joint.qx = atof(strtok(NULL,","));
-				m_joint.qy = atof(strtok(NULL,","));
-				m_joint.qz = atof(strtok(NULL," "));
-			}
-			m_posture.posture.push_back(m_joint);
+	while(ss){
+		std::string jointInformation;
+		ss >> jointInformation;
+		std::replace(jointInformation.begin(),jointInformation.end(),':',' ');
+		std::replace(jointInformation.begin(),jointInformation.end(),',',' ');
+		std::stringstream jointss;
+		jointss << jointInformation;
+		Joint_Coordinate myJoint;
+		jointss >> myJoint.Name;
+		if(myJoint.Name == "END"){
+			jointss >> myPosture.time;
+			break;
 		}
-		Record_Postures.push_back(m_posture);
+		else{
+			jointss >> myJoint.qw >> myJoint.qx >> myJoint.qy >> myJoint.qz;
+			myPosture.posture.push_back(myJoint);
+		}
 	}
+	Record_Postures.push_back(myPosture);
 }
 
 
