@@ -135,6 +135,8 @@ private:
 
 	Rotation rot;
 
+	typedef std::map<std::string, double> JointMap;
+	JointMap initialJointMap;
 
 };
 
@@ -195,43 +197,23 @@ void MyController::parseFile(const std::string fileNam_my)
 
 }
 
-	void   MyController::InitRobot()
-	{
-		RobotObj *r_my = getRobotObj(roboName.c_str());
-				  r_my->setWheelVelocity(0.0,0.0);
-				  r_my->setPosition(m_RobotPos);
+void MyController::InitRobot()
+{
+	RobotObj *r_my = getRobotObj(roboName.c_str());
 
-				  r_my->setRotation(rot);
-				  r_my->setJointVelocity("LARM_JOINT0", 0.0,0.0);
-				  r_my->setJointAngle("LARM_JOINT0", 0.0);
-				  r_my->setJointVelocity("LARM_JOINT1", 0.0,0.0);
-				  r_my->setJointAngle("LARM_JOINT1", 0.0);
-				  r_my->setJointVelocity("LARM_JOINT3", 0.0,0.0);
-				  r_my->setJointAngle("LARM_JOINT3", 0.0);
-				  r_my->setJointVelocity("LARM_JOINT4", 0.0,0.0);
-				  r_my->setJointAngle("LARM_JOINT4", -1.57);
-				  r_my->setJointVelocity("LARM_JOINT5", 0.0,0.0);
-				  r_my->setJointAngle("LARM_JOINT5", 0.0);
-				  r_my->setJointVelocity("LARM_JOINT6", 0.0,0.0);
-				  r_my->setJointAngle("LARM_JOINT6", 0.0);
-				  r_my->setJointVelocity("LARM_JOINT7", 0.0,0.0);
-				  r_my->setJointAngle("LARM_JOINT7", 0.0);
+	r_my->setWheelVelocity(0.0,0.0);
+	r_my->setPosition(m_RobotPos);
 
-				  r_my->setJointVelocity("RARM_JOINT0", 0.0,0.0);
-				  r_my->setJointAngle("RARM_JOINT0", 0.0);
-				  r_my->setJointVelocity("RARM_JOINT1", 0.0,0.0);
-				  r_my->setJointAngle("RARM_JOINT1", 0.0);
-				  r_my->setJointVelocity("RARM_JOINT3", 0.0,0.0);
-				  r_my->setJointAngle("RARM_JOINT3", 0.0);
-				  r_my->setJointVelocity("RARM_JOINT4", 0.0,0.0);
-				  r_my->setJointAngle("RARM_JOINT4", -1.57);
-				  r_my->setJointVelocity("RARM_JOINT5", 0.0,0.0);
-				  r_my->setJointAngle("RARM_JOINT5", 0.0);
-				  r_my->setJointVelocity("RARM_JOINT6", 0.0,0.0);
-				  r_my->setJointAngle("RARM_JOINT6", 0.0);
-				  r_my->setJointVelocity("RARM_JOINT7", 0.0,0.0);
-				  r_my->setJointAngle("RARM_JOINT7", 0.0);
+	JointMap::iterator now_it = initialJointMap.begin();
 
+	while(now_it != initialJointMap.end()){
+		std::string jointName = (*now_it).first;
+		double initialJointAngle = (*now_it).second;
+
+		r_my->setJointVelocity(jointName.c_str(), 0.0, 0.0);
+		r_my->setJointAngle(jointName.c_str(), initialJointAngle);
+		now_it++;
+	}
 }
 
 
@@ -493,6 +475,8 @@ void MyController::onInit(InitEvent &evt)
 
 	}
 	entNum = m_entNames.size();
+
+	initialJointMap = getObj(roboName.c_str())->getAllJointAngles();
 }
 
 
