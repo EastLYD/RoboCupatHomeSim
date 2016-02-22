@@ -25,24 +25,24 @@ public:
 
 	void   onCheckObject();
 	void   onRecvMsg(RecvMsgEvent &evt);
-    void   onCheckCollision();
+	void   onCheckCollision();
 	void   breakTask();
-    void   parseFile(const std::string fileNam_my);
-    void   PlaceThings();
-    void   CheckObjects();
-    void   CheckTrashes();
-    void   InitRobot();
+	void   parseFile(const std::string fileNam_my);
+	void   PlaceThings();
+	void   CheckObjects();
+	void   CheckTrasheBoxs();
+	void   InitRobot();
 	// void takeAwayObjects();
 
 private:
-	BaseService *m_ref;   // Referee service
-	double retValue;      // Refresh rate of the modification
-	bool   colState;      // Collision state
-	bool  pcolState;      // Collision state
-	std::string roboName; // Robot's name
-	std::string mdName;   // Moderator's name
-	std::string humanName;   // Human's name
-    std::string ktName;   // kinect's name
+	BaseService *m_ref;		// Referee service
+	double retValue;		// Refresh rate of the modification
+	bool   colState;		// Collision state
+	bool   pcolState;		// Collision state
+	std::string roboName;	// Robot's name
+	std::string mdName;		// Moderator's name
+	std::string humanName;	// Human's name
+	std::string ktName;		// kinect's name
 	const static unsigned int jtnum=7;
 	std::vector<std::string> jointName;
 	double prv1JAng_r[jtnum];
@@ -100,40 +100,40 @@ private:
 	std::string Trash_Position;
 	int Location_Status[2];
 
-double Y_PetteBotle ,Y_Mug ,Y_Can  ,Y_General_trash ;
+	double Y_PetteBotle ,Y_Mug ,Y_Can  ,Y_General_trash ;
 
 
-Vector3d m_Object_Right;
-Vector3d m_Object_Center;
-Vector3d m_Object_Left;
-Vector3d m_RobotPos;
-Vector3d m_Table;
+	Vector3d m_Object_Right;
+	Vector3d m_Object_Center;
+	Vector3d m_Object_Left;
+	Vector3d m_RobotPos;
+	Vector3d m_Table;
 
-Vector3d m_Trash_Right;
-Vector3d m_Trash_Center;
-Vector3d m_Trash_Left;
+	Vector3d m_TrashBox_Right;
+	Vector3d m_TrashBox_Center;
+	Vector3d m_TrashBox_Left;
 
 
-struct Objects_Coordinates {
-  Vector3d Coord;
-  std::string Object;
-  bool On;
-} ;
+	struct Objects_Coordinates {
+		Vector3d Coord;
+		std::string ObjectName;
+		bool On;
+	};
 
-struct Trashes_Coordinates {
-  Vector3d Coord;
-  std::string Trash;
-  bool On;
-} ;
+	struct TrashBoxs_Coordinates {
+		Vector3d Coord;
+		std::string TrashBoxName;
+		bool On;
+	};
 
-std::vector<Objects_Coordinates> Cm_Objects;
-std::vector<Trashes_Coordinates> Cm_trashes;
+	std::vector<Objects_Coordinates> Cm_Objects;
+	std::vector<TrashBoxs_Coordinates> Cm_trashBoxs;
 
-std::vector<std::string> m_trashes;
-	// ゴミ箱オブジェクト
-std::vector<std::string> m_trashboxs;
+	std::vector<std::string> m_objects;
+		// ゴミ箱オブジェクト
+	std::vector<std::string> m_trashboxs;
 
-Rotation rot;
+	Rotation rot;
 
 
 };
@@ -143,7 +143,7 @@ Rotation rot;
 void MyController::parseFile(const std::string fileNam_my)
 {
 
-std::ifstream fin;
+	std::ifstream fin;
 	fin.open(fileNam_my.c_str());
 	bool dest = false;
 	//std::string On_table, Trash_Box;
@@ -156,7 +156,7 @@ std::ifstream fin;
 	Location  elements;
 	while(!fin.eof()){
 		//std::map < int, std::pair<std::string, std::string> > One_File;
-       //MapType One_File;
+		//MapType One_File;
 		std::size_t found=0;
 		std::size_t found2=0;
 		char Cbuf[MAX_CHARS_PER_LINE];
@@ -185,9 +185,9 @@ std::ifstream fin;
 			//buf = buf.substr(found+1);
 		//	objects.push_back(object);
 			// printf("found2 %d",found2);
-		  elements.push_back(Trash_Box);
+			elements.push_back(Trash_Box);
 		}
-		    File_List[Number]=elements;
+		File_List[Number]=elements;
 		Number = "";
 		elements.clear();
 	}
@@ -195,51 +195,50 @@ std::ifstream fin;
 
 }
 
- void   MyController::InitRobot()
- {
- 	RobotObj *r_my = getRobotObj(roboName.c_str());
-			  r_my->setWheelVelocity(0.0,0.0);
-			  r_my->setPosition(m_RobotPos);
+	void   MyController::InitRobot()
+	{
+		RobotObj *r_my = getRobotObj(roboName.c_str());
+				  r_my->setWheelVelocity(0.0,0.0);
+				  r_my->setPosition(m_RobotPos);
 
-			  r_my->setRotation(rot);
-			  r_my->setJointVelocity("LARM_JOINT0", 0.0,0.0);
-			  r_my->setJointAngle("LARM_JOINT0", 0.0);
-			  r_my->setJointVelocity("LARM_JOINT1", 0.0,0.0);
-			  r_my->setJointAngle("LARM_JOINT1", 0.0);
-			  r_my->setJointVelocity("LARM_JOINT3", 0.0,0.0);
-			  r_my->setJointAngle("LARM_JOINT3", 0.0);
-			  r_my->setJointVelocity("LARM_JOINT4", 0.0,0.0);
-			  r_my->setJointAngle("LARM_JOINT4", -1.57);
-			  r_my->setJointVelocity("LARM_JOINT5", 0.0,0.0);
-			  r_my->setJointAngle("LARM_JOINT5", 0.0);
-			  r_my->setJointVelocity("LARM_JOINT6", 0.0,0.0);
-			  r_my->setJointAngle("LARM_JOINT6", 0.0);
-			  r_my->setJointVelocity("LARM_JOINT7", 0.0,0.0);
-			  r_my->setJointAngle("LARM_JOINT7", 0.0);
+				  r_my->setRotation(rot);
+				  r_my->setJointVelocity("LARM_JOINT0", 0.0,0.0);
+				  r_my->setJointAngle("LARM_JOINT0", 0.0);
+				  r_my->setJointVelocity("LARM_JOINT1", 0.0,0.0);
+				  r_my->setJointAngle("LARM_JOINT1", 0.0);
+				  r_my->setJointVelocity("LARM_JOINT3", 0.0,0.0);
+				  r_my->setJointAngle("LARM_JOINT3", 0.0);
+				  r_my->setJointVelocity("LARM_JOINT4", 0.0,0.0);
+				  r_my->setJointAngle("LARM_JOINT4", -1.57);
+				  r_my->setJointVelocity("LARM_JOINT5", 0.0,0.0);
+				  r_my->setJointAngle("LARM_JOINT5", 0.0);
+				  r_my->setJointVelocity("LARM_JOINT6", 0.0,0.0);
+				  r_my->setJointAngle("LARM_JOINT6", 0.0);
+				  r_my->setJointVelocity("LARM_JOINT7", 0.0,0.0);
+				  r_my->setJointAngle("LARM_JOINT7", 0.0);
 
-			  r_my->setJointVelocity("RARM_JOINT0", 0.0,0.0);
-			  r_my->setJointAngle("RARM_JOINT0", 0.0);
-			  r_my->setJointVelocity("RARM_JOINT1", 0.0,0.0);
-			  r_my->setJointAngle("RARM_JOINT1", 0.0);
-			  r_my->setJointVelocity("RARM_JOINT3", 0.0,0.0);
-			  r_my->setJointAngle("RARM_JOINT3", 0.0);
-			  r_my->setJointVelocity("RARM_JOINT4", 0.0,0.0);
-			  r_my->setJointAngle("RARM_JOINT4", -1.57);
-			  r_my->setJointVelocity("RARM_JOINT5", 0.0,0.0);
-			  r_my->setJointAngle("RARM_JOINT5", 0.0);
-			  r_my->setJointVelocity("RARM_JOINT6", 0.0,0.0);
-			  r_my->setJointAngle("RARM_JOINT6", 0.0);
-			  r_my->setJointVelocity("RARM_JOINT7", 0.0,0.0);
-			  r_my->setJointAngle("RARM_JOINT7", 0.0);
+				  r_my->setJointVelocity("RARM_JOINT0", 0.0,0.0);
+				  r_my->setJointAngle("RARM_JOINT0", 0.0);
+				  r_my->setJointVelocity("RARM_JOINT1", 0.0,0.0);
+				  r_my->setJointAngle("RARM_JOINT1", 0.0);
+				  r_my->setJointVelocity("RARM_JOINT3", 0.0,0.0);
+				  r_my->setJointAngle("RARM_JOINT3", 0.0);
+				  r_my->setJointVelocity("RARM_JOINT4", 0.0,0.0);
+				  r_my->setJointAngle("RARM_JOINT4", -1.57);
+				  r_my->setJointVelocity("RARM_JOINT5", 0.0,0.0);
+				  r_my->setJointAngle("RARM_JOINT5", 0.0);
+				  r_my->setJointVelocity("RARM_JOINT6", 0.0,0.0);
+				  r_my->setJointAngle("RARM_JOINT6", 0.0);
+				  r_my->setJointVelocity("RARM_JOINT7", 0.0,0.0);
+				  r_my->setJointAngle("RARM_JOINT7", 0.0);
 
- }
+}
 
 
-
- void   MyController::PlaceThings()
+void MyController::PlaceThings()
 {
-Rotation rot;
-rot.setQuaternion(0.707, 0, 0.707, 0);
+	Rotation rot;
+	rot.setQuaternion(0.707, 0, 0.707, 0);
 	SimObj *target_Obj1 = this->getObj("petbottle");
 	SimObj *target_Obj2 = this->getObj("mugcup");
 	SimObj *target_Obj3 = this->getObj("can");
@@ -252,42 +251,41 @@ rot.setQuaternion(0.707, 0, 0.707, 0);
 
 ////////////////////////    Object Placement  ////////////////////////////
 
-			int pos_OBJ = rand() % 3;
-			Cm_Objects[pos_OBJ].Coord.y(Y_PetteBotle);
-			target_Obj1->setPosition(Cm_Objects[pos_OBJ].Coord);
-			Cm_Objects[pos_OBJ].Object = "petbottle";
-			target_Obj1->setRotation(rot);
-            Cm_Objects[pos_OBJ].On = true;
+	int pos_OBJ = rand() % 3;
+	Cm_Objects[pos_OBJ].Coord.y(Y_PetteBotle);
+	target_Obj1->setPosition(Cm_Objects[pos_OBJ].Coord);
+	Cm_Objects[pos_OBJ].ObjectName = "petbottle";
+	target_Obj1->setRotation(rot);
+	Cm_Objects[pos_OBJ].On = true;
 
 
 
-			bool choice_Obj = true;
-			while (choice_Obj)
-			{
-			pos_OBJ = rand() % 3;
-							if(Cm_Objects[pos_OBJ].On == false)
-							{
-							Cm_Objects[pos_OBJ].Coord.y(Y_Mug);
-							target_Obj2->setPosition(Cm_Objects[pos_OBJ].Coord);
-							Cm_Objects[pos_OBJ].Object = "mugcup";
-							target_Obj2->setRotation(rot);
-							Cm_Objects[pos_OBJ].On = true;
-							 choice_Obj = false;
-							}
-			}
+	bool choice_Obj = true;
+	while (choice_Obj)
+	{
+		pos_OBJ = rand() % 3;
+		if(Cm_Objects[pos_OBJ].On == false)
+		{
+			Cm_Objects[pos_OBJ].Coord.y(Y_Mug);
+			target_Obj2->setPosition(Cm_Objects[pos_OBJ].Coord);
+			Cm_Objects[pos_OBJ].ObjectName = "mugcup";
+			target_Obj2->setRotation(rot);
+			Cm_Objects[pos_OBJ].On = true;
+			choice_Obj = false;
+		}
+	}
 
-				for (int i= 0 ; i < Cm_Objects.size(); i++ )
-
-				{
-							if(Cm_Objects[i].On == false)
-							{
-							Cm_Objects[i].Coord.y(Y_Can);
-						    target_Obj3->setPosition(Cm_Objects[i].Coord);
-						    Cm_Objects[i].Object = "can";
-						    target_Obj3->setRotation(rot);
-						    Cm_Objects[i].On = true;
-							}
-				}
+	for (int i= 0 ; i < Cm_Objects.size(); i++ )
+	{
+		if(Cm_Objects[i].On == false)
+		{
+			Cm_Objects[i].Coord.y(Y_Can);
+			target_Obj3->setPosition(Cm_Objects[i].Coord);
+			Cm_Objects[i].ObjectName = "can";
+			target_Obj3->setRotation(rot);
+			Cm_Objects[i].On = true;
+		}
+	}
 
 ////////////////////////////////////////////////////////////////////////////
 
@@ -297,56 +295,52 @@ rot.setQuaternion(0.707, 0, 0.707, 0);
 /////////////////////  Trash Placement /////////////////////////////////////
 
 
-			int pos_TRASH = rand() % 3;
-            Cm_trashes[pos_TRASH].Coord.y(Y_General_trash);
-			target_trash1->setPosition(Cm_trashes[pos_TRASH].Coord);
-			Cm_trashes[pos_TRASH].Trash = "recycle";
-			target_trash1->setRotation(rot);
-            Cm_trashes[pos_TRASH].On = true;
+	int pos_TRASH = rand() % 3;
+	Cm_trashBoxs[pos_TRASH].Coord.y(Y_General_trash);
+	target_trash1->setPosition(Cm_trashBoxs[pos_TRASH].Coord);
+	Cm_trashBoxs[pos_TRASH].TrashBoxName = "recycle";
+	target_trash1->setRotation(rot);
+	Cm_trashBoxs[pos_TRASH].On = true;
 
 
 
-			bool choice_Trash = true;
-			while (choice_Trash)
-			{
-			pos_TRASH = rand() % 3;
-							if(Cm_trashes[pos_TRASH].On == false)
-							{
-							Cm_trashes[pos_TRASH].Coord.y(Y_General_trash);
-							target_trash2->setPosition(Cm_trashes[pos_TRASH].Coord);
-							Cm_trashes[pos_TRASH].Trash = "burnable";
-							target_trash2->setRotation(rot);
-							Cm_trashes[pos_TRASH].On = true;
-							 choice_Trash = false;
-							}
-			}
+	bool choice_Trash = true;
+	while (choice_Trash)
+	{
+		pos_TRASH = rand() % 3;
+		if(Cm_trashBoxs[pos_TRASH].On == false)
+		{
+			Cm_trashBoxs[pos_TRASH].Coord.y(Y_General_trash);
+			target_trash2->setPosition(Cm_trashBoxs[pos_TRASH].Coord);
+			Cm_trashBoxs[pos_TRASH].TrashBoxName = "burnable";
+			target_trash2->setRotation(rot);
+			Cm_trashBoxs[pos_TRASH].On = true;
+			choice_Trash = false;
+		}
+	}
 
 
-				for (int i= 0 ; i < Cm_trashes.size(); i++ )
-
-				{
-							if(Cm_trashes[i].On == false)
-							{
-							Cm_trashes[pos_TRASH].Coord.y(Y_General_trash);
-						    target_trash3->setPosition(Cm_trashes[i].Coord);
-						    Cm_trashes[i].Trash = "unburnable";
-						    target_trash3->setRotation(rot);
-						    Cm_trashes[i].On = true;
-							}
-				}
+	for (int i= 0 ; i < Cm_trashBoxs.size(); i++ )
+	{
+		if(Cm_trashBoxs[i].On == false)
+		{
+			Cm_trashBoxs[pos_TRASH].Coord.y(Y_General_trash);
+			target_trash3->setPosition(Cm_trashBoxs[i].Coord);
+			Cm_trashBoxs[i].TrashBoxName = "unburnable";
+			target_trash3->setRotation(rot);
+			Cm_trashBoxs[i].On = true;
+		}
+	}
 //////////////////////////////////////////////////////////////////////////////
-for (int i= 0 ; i < Cm_Objects.size(); i++ )
+	for (int i= 0 ; i < Cm_Objects.size(); i++ )
+	{
+		Cm_Objects[i].On = false;
+	}
 
-				{
-                         Cm_Objects[i].On = false;
-
-				}
-
-for (int i= 0 ; i < Cm_trashes.size(); i++ )
-
-				{
-                          Cm_trashes[i].On = false;
-				}
+	for (int i= 0 ; i < Cm_trashBoxs.size(); i++ )
+	{
+		Cm_trashBoxs[i].On = false;
+	}
 
 }
 
@@ -354,75 +348,75 @@ for (int i= 0 ; i < Cm_trashes.size(); i++ )
 
 void MyController::onInit(InitEvent &evt)
 {
-   parseFile("File_Position.dat");
+	parseFile("File_Position.dat");
 
-  m_Object_Right = Vector3d(40, 59.15, 50.0);
-  m_Object_Center = Vector3d(0.0, 52.15, 50.0);
-  m_Object_Left = Vector3d(-40.0, 54.25, 50.0);
-
-
-m_Trash_Right = Vector3d(-150.0, 36.35, -190.0);
-m_Trash_Center = Vector3d(-150.0, 36.35, -60.0);
-m_Trash_Left = Vector3d(-150.0, 36.35, 70.0);
+	m_Object_Right = Vector3d(40, 59.15, 50.0);
+	m_Object_Center = Vector3d(0.0, 52.15, 50.0);
+	m_Object_Left = Vector3d(-40.0, 54.25, 50.0);
 
 
-Y_PetteBotle = 59.55;
-Y_Mug = 53.95;
-Y_Can = 56.5;
-Y_General_trash = 36.35 ;
+	m_TrashBox_Right = Vector3d(-150.0, 36.35, -190.0);
+	m_TrashBox_Center = Vector3d(-150.0, 36.35, -60.0);
+	m_TrashBox_Left = Vector3d(-150.0, 36.35, 70.0);
 
 
-m_RobotPos = Vector3d(100.0, 30.0,-100.0);
-
-Objects_Coordinates m_Object_Right_c;
-Objects_Coordinates m_Object_Center_c;
-Objects_Coordinates m_Object_Left_c;
-
+	Y_PetteBotle = 59.55;
+	Y_Mug = 53.95;
+	Y_Can = 56.5;
+	Y_General_trash = 36.35 ;
 
 
+	m_RobotPos = Vector3d(100.0, 30.0,-100.0);
 
-m_Object_Right_c.Coord = m_Object_Right;
-m_Object_Right_c.On = false;
-Cm_Objects.push_back(m_Object_Right_c);
-
-m_Object_Center_c.Coord = m_Object_Center;
-m_Object_Center_c.On = false;
-Cm_Objects.push_back(m_Object_Center_c);
-
-m_Object_Left_c.Coord = m_Object_Left;
-m_Object_Left_c.On = false;
-Cm_Objects.push_back(m_Object_Left_c);
+	Objects_Coordinates m_Object_Right_c;
+	Objects_Coordinates m_Object_Center_c;
+	Objects_Coordinates m_Object_Left_c;
 
 
 
-Trashes_Coordinates m_Trash_Right_c;
-Trashes_Coordinates m_Trash_Center_c;
-Trashes_Coordinates m_Trash_Left_c;
 
-m_Trash_Right_c.Coord = m_Trash_Right;
-m_Trash_Right_c.On = false;
-Cm_trashes.push_back(m_Trash_Right_c);
+	m_Object_Right_c.Coord = m_Object_Right;
+	m_Object_Right_c.On = false;
+	Cm_Objects.push_back(m_Object_Right_c);
 
-m_Trash_Center_c.Coord = m_Trash_Center;
-m_Trash_Center_c.On = false;
-Cm_trashes.push_back(m_Trash_Center_c);
+	m_Object_Center_c.Coord = m_Object_Center;
+	m_Object_Center_c.On = false;
+	Cm_Objects.push_back(m_Object_Center_c);
 
-
-m_Trash_Left_c.Coord = m_Trash_Left;
-m_Trash_Left_c.On = false;
-Cm_trashes.push_back(m_Trash_Left_c);
-
-
-  m_RobotPos = Vector3d(100.0, 30.0,-100.0);
-  m_Table = Vector3d(0.0, 24.0,70.0);
-
-rot.setQuaternion(1, 0, 0 , 0);
+	m_Object_Left_c.Coord = m_Object_Left;
+	m_Object_Left_c.On = false;
+	Cm_Objects.push_back(m_Object_Left_c);
 
 
 
-	m_trashes.push_back("petbottle");
-	m_trashes.push_back("mugcup");
-	m_trashes.push_back("can");
+	TrashBoxs_Coordinates m_TrashBox_Right_c;
+	TrashBoxs_Coordinates m_TrashBox_Center_c;
+	TrashBoxs_Coordinates m_TrashBox_Left_c;
+
+	m_TrashBox_Right_c.Coord = m_TrashBox_Right;
+	m_TrashBox_Right_c.On = false;
+	Cm_trashBoxs.push_back(m_TrashBox_Right_c);
+
+	m_TrashBox_Center_c.Coord = m_TrashBox_Center;
+	m_TrashBox_Center_c.On = false;
+	Cm_trashBoxs.push_back(m_TrashBox_Center_c);
+
+
+	m_TrashBox_Left_c.Coord = m_TrashBox_Left;
+	m_TrashBox_Left_c.On = false;
+	Cm_trashBoxs.push_back(m_TrashBox_Left_c);
+
+
+	m_RobotPos = Vector3d(100.0, 30.0,-100.0);
+	m_Table = Vector3d(0.0, 24.0,70.0);
+
+	rot.setQuaternion(1, 0, 0 , 0);
+
+
+
+	m_objects.push_back("petbottle");
+	m_objects.push_back("mugcup");
+	m_objects.push_back("can");
 
 	// ゴミ箱登録
 	m_trashboxs.push_back("recycle");
@@ -444,7 +438,7 @@ rot.setQuaternion(1, 0, 0 , 0);
 	roboName = "robot_000";
 	mdName   = "moderator_0";
 	humanName = "man_000";
-    ktName = "Kinect_000";
+	ktName = "Kinect_000";
 
 	crrPos  = Vector3d(0,0,0);
 	prv1Pos = Vector3d(0,0,0);
@@ -473,12 +467,12 @@ rot.setQuaternion(1, 0, 0 , 0);
 	isCleaningUp = false;
 
 	startTime =  0.0;
-	endTime   = 600.0; // [sec]
+	endTime   = 180.0; // [sec]
 
 	take_time = 0.0;
 	init = false;
 
-cnt = m_entities.size();
+	cnt = m_entities.size();
 
 	for(i=0;i<cnt;i++) {
 		int found;
@@ -488,11 +482,11 @@ cnt = m_entities.size();
 
 
 		if((m_entities[i] != mdName) &&
-		   (m_entities[i] != ktName) &&
-		   (m_entities[i] != roboName) &&
-		   (m_entities[i] != "petbottle") &&
-		   (m_entities[i] != "mugcup") &&
-		   (m_entities[i] != "can")  ){
+			(m_entities[i] != ktName) &&
+			(m_entities[i] != roboName) &&
+			(m_entities[i] != "petbottle") &&
+			(m_entities[i] != "mugcup") &&
+			(m_entities[i] != "can")  ){
 			m_entNames.push_back(m_entities[i]);
 			//std::cout << "entitie: " << m_entities[i] << " pushed!" << std::endl;
 		}
@@ -525,29 +519,29 @@ double MyController::onAction(ActionEvent &evt)
 	rsLen = rsLenVec.length();
 
 	if(Task_st == true && trialCount < NUMBER_OF_REPETITION)
-		{
-			broadcastMsg("Task_start");
-			// printf("tast_start moderator \n");
-			PlaceThings();
-			Task_st = false;
-			std::stringstream trial_ss;
-			trial_ss << "RoboCupReferee/trial/";
-			trial_ss << trialCount + 1 << "/";
-			trial_ss << NUMBER_OF_REPETITION;
-			if (m_ref != NULL){
-				m_ref->sendMsgToSrv(trial_ss.str().c_str());
-			}
-			else{
-				LOG_MSG((trial_ss.str().c_str()));
-			}
+	{
+		broadcastMsg("Task_start");
+		// printf("tast_start moderator \n");
+		PlaceThings();
+		Task_st = false;
+		std::stringstream trial_ss;
+		trial_ss << "RoboCupReferee/trial/";
+		trial_ss << trialCount + 1 << "/";
+		trial_ss << NUMBER_OF_REPETITION;
+		if (m_ref != NULL){
+			m_ref->sendMsgToSrv(trial_ss.str().c_str());
 		}
-if( Task_st == true && trialCount >= NUMBER_OF_REPETITION)
+		else{
+			LOG_MSG((trial_ss.str().c_str()));
+		}
+	}
+	if( Task_st == true && trialCount >= NUMBER_OF_REPETITION)
 	{
 		// resetRobotCondition();
 		LOG_MSG(("Mission_complete"));
 		broadcastMsg("Mission_complete");
 		if(m_ref != NULL){
-            m_ref->sendMsgToSrv("RoboCupReferee/time/- END -");
+			m_ref->sendMsgToSrv("RoboCupReferee/time/- END -");
 		}
 		time_display = false;
 		Task_st = false;
@@ -555,37 +549,38 @@ if( Task_st == true && trialCount >= NUMBER_OF_REPETITION)
 
 
 	onCheckCollision();
-   //     std::cout << "entNum : " << entNum << std::endl;
+	//     std::cout << "entNum : " << entNum << std::endl;
 	// onCheckObject();
 	for(int k=0;k<entNum;k++){
 		SimObj* locObj = getObj(m_entNames[k].c_str());
 		CParts *parts = locObj->getMainParts();
 		bool state = parts->getCollisionState();
-      //  std::cout << "the entity : " << m_entNames[k] << std::endl;
-      //  std::cout << "the entity stat : " << state << std::endl;
+	//	std::cout << "the entity : " << m_entNames[k] << std::endl;
+	//	std::cout << "the entity stat : " << state << std::endl;
 		if ( unable_collision == false)
-			{
-				if(state){
-					colState=true;       // collided with main body of robot
+		{
+			if(state){
+				colState=true;	// collided with main body of robot
 
-					if(rsLen == 0.0) {
-						//        pcolState=true;
-						r_my->setRotation(prv1Rot);
-					} else {
-						//        pcolState=false;
-						r_my->setPosition(prv1Pos);
-					}
-
-					std::string msg = "RoboCupReferee/Collision with [" + m_entNames[k] + "]" "/-100";
-					if(m_ref != NULL){
-						m_ref->sendMsgToSrv(msg.c_str());
-					}
-					else{
-						LOG_MSG((msg.c_str()));
-					}
-					break;
+				if(rsLen == 0.0) {
+					//pcolState=true;
+					r_my->setRotation(prv1Rot);
 				}
+				else {
+					//pcolState=false;
+					r_my->setPosition(prv1Pos);
+				}
+
+				std::string msg = "RoboCupReferee/Collision with [" + m_entNames[k] + "]" "/-100";
+				if(m_ref != NULL){
+					m_ref->sendMsgToSrv(msg.c_str());
+				}
+				else{
+					LOG_MSG((msg.c_str()));
+				}
+				break;
 			}
+		}
 	}
 
 	//  if(!colState && !pcolState){
@@ -605,46 +600,46 @@ if( Task_st == true && trialCount >= NUMBER_OF_REPETITION)
 	std::stringstream time_ss;
 
 	if(init == true)
-		{
-			take_time = evt.time();
-			init = false;
-		}
+	{
+		take_time = evt.time();
+		init = false;
+	}
 
 	double elapsedTime = evt.time() - startTime - take_time;
 
 	if( time_display == true)
-		{
-			//if(evt.time() - startTime > endTime){
-			if(elapsedTime > endTime){
-				LOG_MSG(("Time_over"));
-				broadcastMsg("Time_over");
-				breakTask();
-				//time_ss << "RoboCupReferee/time/00:00:00";
-			}
-			else{
-				double remainedTime = endTime - elapsedTime;
-				int min, sec, msec;
-				sec = (int)remainedTime;
-				min = sec / 60;
-				sec %= 60;
-				msec = (int)((remainedTime - sec) * 100);
-				time_ss.str("");
-				time_ss <<  "RoboCupReferee/time/";
-				time_ss << std::setw(2) << std::setfill('0') << min << ":";
-				time_ss << std::setw(2) << std::setfill('0') << sec;// << ":";
-
-				//time_ss << std::setw(2) << std::setfill('0') << msec;
-			}
-			if(m_ref != NULL){
-				std::string mess;
-				mess =time_ss.str();
-				m_ref->sendMsgToSrv(mess.c_str());
-				 //std::cout << "Message to referee : " << time_ss.str() << std::endl;
-			}
-			else{
-				//LOG_MSG((time_ss.str().c_str()));
-			}
+	{
+		//if(evt.time() - startTime > endTime){
+		if(elapsedTime > endTime){
+			LOG_MSG(("Time_over"));
+			broadcastMsg("Time_over");
+			breakTask();
+			//time_ss << "RoboCupReferee/time/00:00:00";
 		}
+		else{
+			double remainedTime = endTime - elapsedTime;
+			int min, sec, msec;
+			sec = (int)remainedTime;
+			min = sec / 60;
+			sec %= 60;
+			msec = (int)((remainedTime - sec) * 100);
+			time_ss.str("");
+			time_ss <<  "RoboCupReferee/time/";
+			time_ss << std::setw(2) << std::setfill('0') << min << ":";
+			time_ss << std::setw(2) << std::setfill('0') << sec;// << ":";
+
+			//time_ss << std::setw(2) << std::setfill('0') << msec;
+		}
+		if(m_ref != NULL){
+			std::string mess;
+			mess =time_ss.str();
+			m_ref->sendMsgToSrv(mess.c_str());
+			 //std::cout << "Message to referee : " << time_ss.str() << std::endl;
+		}
+		else{
+			//LOG_MSG((time_ss.str().c_str()));
+		}
+	}
 
 	return retValue;
 }
@@ -682,67 +677,66 @@ void MyController::onRecvMsg(RecvMsgEvent &evt)
 
 
 	if(msg == "Start_motion")
-		{
-			clock_t t;
-			t = clock();
-			//init = true;
-                        srand(t);
-                        std::cout << "List size " << File_List.size() <<std::endl;
-						std::map < std::string, Location >::iterator it = File_List.begin();
-						std::advance(it, rand() % File_List.size());
-                        LOG_MSG(("Show Task"));
-						 std::string File_name = "Send_";
-						  File_name+= it->first;
-						  File_name+= ".";
-						   std::cout << "File Name moderator " << File_name<<std::endl;
-						  sendMsg("Kinect_000", File_name.c_str());
-						  Location Curent_Locations = it->second;
+	{
+		clock_t t;
+		t = clock();
+		//init = true;
+		srand(t);
+		std::cout << "List size " << File_List.size() <<std::endl;
+		std::map < std::string, Location >::iterator it = File_List.begin();
+		std::advance(it, rand() % File_List.size());
+		LOG_MSG(("Show Task"));
+		std::string File_name = "Send_";
+		File_name+= it->first;
+		File_name+= ".";
+		std::cout << "File Name moderator " << File_name<<std::endl;
+		sendMsg("Kinect_000", File_name.c_str());
+		Location Curent_Locations = it->second;
 
-						 // Object_Position = Curent_Locations[0];
-						 // Trash_Position =  Curent_Locations[1];
-										for(int i =0;i<Curent_Locations.size();i++)
-										{
-										  if( Curent_Locations[i] == "Right")
-										  {
-										Location_Status[i] = 0;
-										  }
-										  if(Curent_Locations[i] == "Center")
-										  {
-										Location_Status[i] = 1;
-										  }
-										    if(Curent_Locations[i] == "Left")
-										  {
-										Location_Status[i] = 2;
-										  }
-										}
-                          sendMsg("Kinect_000","Start_motion");
+		// Object_Position = Curent_Locations[0];
+		// Trash_Position =  Curent_Locations[1];
+		for(int i =0;i<Curent_Locations.size();i++)
+		{
+			if( Curent_Locations[i] == "Right")
+			{
+				Location_Status[i] = 0;
+			}
+			if(Curent_Locations[i] == "Center")
+			{
+				Location_Status[i] = 1;
+			}
+			if(Curent_Locations[i] == "Left")
+			{
+				Location_Status[i] = 2;
+			}
+		}
+		sendMsg("Kinect_000","Start_motion");
 		
-}
+	}
 
 
-if(msg == "Object_Grasped")
-		{
- CheckObjects();
-
-		}
-
-
-if(msg == "Object_Trashed")
-		{
- CheckTrashes();
-		}
+	if(msg == "Object_Grasped")
+	{
+		CheckObjects();
+	}
 
 
-		if (sender == "robot_000" && msg == "Task_finished") {
+	if(msg == "Object_Trashed")
+	{
+		CheckTrasheBoxs();
+	}
+
+
+	if (sender == "robot_000" && msg == "Task_finished") {
 		LOG_MSG(("Task_end"));
-		
+	
 		sleep(1);
 
 		startTime = 0.0;
-        Task_st = true;
+		Task_st = true;
 
-        CheckObjects();
-        CheckTrashes();  
+		CheckObjects();
+		CheckTrasheBoxs();  
 		breakTask();
 		broadcastMsg("Task_end");
 	}
@@ -756,9 +750,9 @@ if(msg == "Object_Trashed")
 	}
 	
 	if(msg == "init_time")
-		{
-			init = true;
-		}
+	{
+		init = true;
+	}
 
 
 }
@@ -789,7 +783,7 @@ void  MyController::CheckObjects()
 	//Location_Status[0]
 	for( int i = 0; i < 3 ; i++){
 		std:: string name;
-		name = Cm_Objects[i].Object;
+		name = Cm_Objects[i].ObjectName;
 		SimObj *Obj = getObj(name.c_str());
 		// get trash's position
 		Vector3d objectPosition;
@@ -809,7 +803,7 @@ void  MyController::CheckObjects()
 			{
 				std::stringstream ss;
 				ss << SCORE_CORRECT_OBJECT;
-				std::string msg = "RoboCupReferee/Robot took the right Object [" + Cm_Objects[Location_Status[0]].Object + "]" "/+" + ss.str();
+				std::string msg = "RoboCupReferee/Robot took the right Object [" + Cm_Objects[Location_Status[0]].ObjectName + "]" "/+" + ss.str();
 
 				if(m_ref != NULL){
 					m_ref->sendMsgToSrv(msg.c_str());
@@ -835,12 +829,12 @@ void  MyController::CheckObjects()
 }
 
 
-void  MyController::CheckTrashes()
+void  MyController::CheckTrasheBoxs()
 {
 	bool objectInTrashBox = false;
 	for( int trashBoxIndex = 0; trashBoxIndex < 3; trashBoxIndex++){
 		std:: string trashBoxName;
-		trashBoxName = Cm_trashes[trashBoxIndex].Trash;
+		trashBoxName = Cm_trashBoxs[trashBoxIndex].TrashBoxName;
 		SimObj *TrashBox = getObj(trashBoxName.c_str());
 		// get trash box position
 		Vector3d trashBoxPosition;
@@ -848,14 +842,14 @@ void  MyController::CheckTrashes()
 
 		for( int objectIndex = 0; objectIndex < 3; objectIndex++){ 
 			std:: string objectName;
-			objectName = Cm_Objects[objectIndex].Object;
+			objectName = Cm_Objects[objectIndex].ObjectName;
 			SimObj *Obj = getObj(objectName.c_str());
 			// get object position
 			Vector3d objectPosition;
 			Obj->getPosition(objectPosition);
 			
 			// Are objects in trash boxes?
-			if(objectPosition.x()== Cm_trashes[trashBoxIndex].Coord.x() &&  objectPosition.z()== Cm_trashes[trashBoxIndex].Coord.z())
+			if(objectPosition.x()== Cm_trashBoxs[trashBoxIndex].Coord.x() &&  objectPosition.z()== Cm_trashBoxs[trashBoxIndex].Coord.z())
 			{
 				//LOG_MSG(("<For debug> \"%s\" is in \"%s\".", objectName.c_str(), trashBoxName.c_str()));
 				objectInTrashBox = true;
@@ -863,7 +857,7 @@ void  MyController::CheckTrashes()
 					//LOG_MSG(("<For debug> \"Correct\" object was trashed to \"Correct\" trash box."));
 					std::stringstream ss;
 					ss << SCORE_CORRECT_TRASH_BOX;
-					std::string msg = "RoboCupReferee/Robot chose th right Trash box [" + Cm_trashes[trashBoxIndex].Trash + "]" "/+" + ss.str();
+					std::string msg = "RoboCupReferee/Robot chose th right Trash box [" + Cm_trashBoxs[trashBoxIndex].TrashBoxName + "]" "/+" + ss.str();
 					if(m_ref != NULL){
 						m_ref->sendMsgToSrv(msg.c_str());
 					}
@@ -917,23 +911,21 @@ void MyController::breakTask()
 		// m_ref->sendMsgToSrv(msg.c_str());
 		 SimObj *robot;
 		 robot = this->getObj("robot_000");
-
-
 	}
-if(trialCount < NUMBER_OF_REPETITION)
-{
-		 broadcastMsg("Task_end");
+	if(trialCount < NUMBER_OF_REPETITION)
+	{
+		broadcastMsg("Task_end");
 		// reposObjects();
-		 InitRobot();
+		InitRobot();
 		// PlaceThings();
-}
+	}
 	if(trialCount >= NUMBER_OF_REPETITION) {
 		// resetRobotCondition();
 		LOG_MSG(("Mission_complete"));
 		broadcastMsg("Mission_complete");
 		if(m_ref != NULL){
 			msg = "RoboCupReferee/time/- END -";
-            m_ref->sendMsgToSrv(msg.c_str());
+			m_ref->sendMsgToSrv(msg.c_str());
 		}
 		Task_st = false;
 		time_display = false;
