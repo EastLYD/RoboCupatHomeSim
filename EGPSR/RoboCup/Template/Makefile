@@ -1,5 +1,5 @@
 #sigverse header
-SIG_SRC  = $(SIGVERSE_PATH)/include/sigverse
+SIG_SRC  = $(SIGVERSE_PATH)/include
 
 #オブジェクトファイルの指定
 #OBJS     = Test.so TrashBox.so Camera.so Wagon.so Moderator.so
