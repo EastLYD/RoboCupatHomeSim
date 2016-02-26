@@ -36,7 +36,6 @@ namespace RoboCupReferee {
 			//if(m_srv->connect("socio4.iir.nii.ac.jp", 9333)){
 			if(m_srv->connect(args[1], System::Convert::ToInt32(args[2]))){
 				m_connected = true;
-				this->connect->Enabled = false;
 					 
 				m_srv->connectToViewer();
 				m_srv->setAutoExitProc(true);
@@ -69,12 +68,12 @@ namespace RoboCupReferee {
 		/// </summary>
 
 	private: System::Windows::Forms::Label^  label1;
-	private: System::Windows::Forms::Button^  connect;
+
 
 
 	private: System::Windows::Forms::Timer^  timer1;
-	private: System::Windows::Forms::Button^  button1;
-	private: System::Windows::Forms::Button^  button2;
+
+
 	private: System::Windows::Forms::ListBox^  listBox1;
 	private: System::Windows::Forms::Label^  label2;
 	private: System::Windows::Forms::TextBox^  textBox1;
@@ -110,10 +109,7 @@ namespace RoboCupReferee {
 		{
 			this->components = (gcnew System::ComponentModel::Container());
 			this->label1 = (gcnew System::Windows::Forms::Label());
-			this->connect = (gcnew System::Windows::Forms::Button());
 			this->timer1 = (gcnew System::Windows::Forms::Timer(this->components));
-			this->button1 = (gcnew System::Windows::Forms::Button());
-			this->button2 = (gcnew System::Windows::Forms::Button());
 			this->listBox1 = (gcnew System::Windows::Forms::ListBox());
 			this->label2 = (gcnew System::Windows::Forms::Label());
 			this->textBox1 = (gcnew System::Windows::Forms::TextBox());
@@ -147,47 +143,11 @@ namespace RoboCupReferee {
 			this->label1->Text = L"Total";
 			this->label1->Click += gcnew System::EventHandler(this, &Form1::label1_Click);
 			// 
-			// connect
-			// 
-			this->connect->Enabled = false;
-			this->connect->Font = (gcnew System::Drawing::Font(L"HGP恨集窫", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(128)));
-			this->connect->Location = System::Drawing::Point(1, 412);
-			this->connect->Name = L"connect";
-			this->connect->Size = System::Drawing::Size(88, 34);
-			this->connect->TabIndex = 1;
-			this->connect->Text = L"Connect";
-			this->connect->UseVisualStyleBackColor = true;
-			this->connect->Click += gcnew System::EventHandler(this, &Form1::button1_Click_1);
-			// 
 			// timer1
 			// 
 			this->timer1->Enabled = true;
 			this->timer1->Interval = 10;
 			this->timer1->Tick += gcnew System::EventHandler(this, &Form1::timer1_Tick);
-			// 
-			// button1
-			// 
-			this->button1->Font = (gcnew System::Drawing::Font(L"HGP恨集窫", 14.25F));
-			this->button1->Location = System::Drawing::Point(91, 412);
-			this->button1->Name = L"button1";
-			this->button1->Size = System::Drawing::Size(118, 34);
-			this->button1->TabIndex = 2;
-			this->button1->Text = L"Disconnect";
-			this->button1->UseVisualStyleBackColor = true;
-			this->button1->Click += gcnew System::EventHandler(this, &Form1::button1_Click_2);
-			// 
-			// button2
-			// 
-			this->button2->Font = (gcnew System::Drawing::Font(L"HGP恨集窫", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(128)));
-			this->button2->Location = System::Drawing::Point(299, 412);
-			this->button2->Name = L"button2";
-			this->button2->Size = System::Drawing::Size(90, 34);
-			this->button2->TabIndex = 3;
-			this->button2->Text = L"Initialize";
-			this->button2->UseVisualStyleBackColor = true;
-			this->button2->Click += gcnew System::EventHandler(this, &Form1::button2_Click);
 			// 
 			// listBox1
 			// 
@@ -198,10 +158,10 @@ namespace RoboCupReferee {
 			this->listBox1->FormattingEnabled = true;
 			this->listBox1->HorizontalScrollbar = true;
 			this->listBox1->ItemHeight = 21;
-			this->listBox1->Location = System::Drawing::Point(4, 45);
+			this->listBox1->Location = System::Drawing::Point(0, 45);
 			this->listBox1->Name = L"listBox1";
 			this->listBox1->RightToLeft = System::Windows::Forms::RightToLeft::No;
-			this->listBox1->Size = System::Drawing::Size(311, 172);
+			this->listBox1->Size = System::Drawing::Size(300, 172);
 			this->listBox1->TabIndex = 4;
 			this->listBox1->SelectedIndexChanged += gcnew System::EventHandler(this, &Form1::listBox1_SelectedIndexChanged);
 			// 
@@ -210,7 +170,7 @@ namespace RoboCupReferee {
 			this->label2->AutoSize = true;
 			this->label2->Font = (gcnew System::Drawing::Font(L"HGS恨集窫", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(128)));
-			this->label2->Location = System::Drawing::Point(316, 26);
+			this->label2->Location = System::Drawing::Point(303, 26);
 			this->label2->Name = L"label2";
 			this->label2->Size = System::Drawing::Size(46, 16);
 			this->label2->TabIndex = 5;
@@ -222,7 +182,7 @@ namespace RoboCupReferee {
 			this->textBox1->Font = (gcnew System::Drawing::Font(L"MS UI Gothic", 18, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(128)));
 			this->textBox1->ForeColor = System::Drawing::SystemColors::InactiveBorder;
-			this->textBox1->Location = System::Drawing::Point(296, 327);
+			this->textBox1->Location = System::Drawing::Point(293, 327);
 			this->textBox1->Name = L"textBox1";
 			this->textBox1->RightToLeft = System::Windows::Forms::RightToLeft::No;
 			this->textBox1->Size = System::Drawing::Size(86, 31);
@@ -239,9 +199,9 @@ namespace RoboCupReferee {
 			this->listBox2->FormattingEnabled = true;
 			this->listBox2->HorizontalScrollbar = true;
 			this->listBox2->ItemHeight = 21;
-			this->listBox2->Location = System::Drawing::Point(311, 45);
+			this->listBox2->Location = System::Drawing::Point(300, 45);
 			this->listBox2->Name = L"listBox2";
-			this->listBox2->Size = System::Drawing::Size(76, 172);
+			this->listBox2->Size = System::Drawing::Size(80, 172);
 			this->listBox2->TabIndex = 7;
 			// 
 			// label3
@@ -249,7 +209,7 @@ namespace RoboCupReferee {
 			this->label3->AutoSize = true;
 			this->label3->Font = (gcnew System::Drawing::Font(L"HGS恨集窫", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(128)));
-			this->label3->Location = System::Drawing::Point(13, 26);
+			this->label3->Location = System::Drawing::Point(4, 26);
 			this->label3->Name = L"label3";
 			this->label3->Size = System::Drawing::Size(71, 16);
 			this->label3->TabIndex = 8;
@@ -300,7 +260,7 @@ namespace RoboCupReferee {
 			this->label5->AutoSize = true;
 			this->label5->Font = (gcnew System::Drawing::Font(L"HGS恨集窫", 15.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(128)));
-			this->label5->Location = System::Drawing::Point(101, 376);
+			this->label5->Location = System::Drawing::Point(100, 376);
 			this->label5->Name = L"label5";
 			this->label5->Size = System::Drawing::Size(161, 21);
 			this->label5->TabIndex = 9;
@@ -311,7 +271,7 @@ namespace RoboCupReferee {
 			this->label6->AutoSize = true;
 			this->label6->Font = (gcnew System::Drawing::Font(L"HGS恨集窫", 20.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(128)));
-			this->label6->Location = System::Drawing::Point(309, 373);
+			this->label6->Location = System::Drawing::Point(308, 373);
 			this->label6->Name = L"label6";
 			this->label6->Size = System::Drawing::Size(27, 27);
 			this->label6->TabIndex = 11;
@@ -324,7 +284,7 @@ namespace RoboCupReferee {
 			this->textBox4->Font = (gcnew System::Drawing::Font(L"MS UI Gothic", 18, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(128)));
 			this->textBox4->ForeColor = System::Drawing::SystemColors::InactiveBorder;
-			this->textBox4->Location = System::Drawing::Point(338, 370);
+			this->textBox4->Location = System::Drawing::Point(335, 370);
 			this->textBox4->Name = L"textBox4";
 			this->textBox4->RightToLeft = System::Windows::Forms::RightToLeft::No;
 			this->textBox4->Size = System::Drawing::Size(44, 31);
@@ -336,7 +296,7 @@ namespace RoboCupReferee {
 			// 
 			this->button3->Font = (gcnew System::Drawing::Font(L"HGP恨集窫", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(128)));
-			this->button3->Location = System::Drawing::Point(211, 412);
+			this->button3->Location = System::Drawing::Point(144, 410);
 			this->button3->Name = L"button3";
 			this->button3->Size = System::Drawing::Size(88, 34);
 			this->button3->TabIndex = 13;
@@ -393,7 +353,7 @@ namespace RoboCupReferee {
 			this->textBox5->Font = (gcnew System::Drawing::Font(L"MS UI Gothic", 18, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(128)));
 			this->textBox5->ForeColor = System::Drawing::SystemColors::InactiveBorder;
-			this->textBox5->Location = System::Drawing::Point(296, 278);
+			this->textBox5->Location = System::Drawing::Point(293, 278);
 			this->textBox5->Name = L"textBox5";
 			this->textBox5->RightToLeft = System::Windows::Forms::RightToLeft::No;
 			this->textBox5->Size = System::Drawing::Size(86, 31);
@@ -430,7 +390,7 @@ namespace RoboCupReferee {
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 12);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->BackColor = System::Drawing::SystemColors::ButtonFace;
-			this->ClientSize = System::Drawing::Size(390, 456);
+			this->ClientSize = System::Drawing::Size(380, 450);
 			this->Controls->Add(this->checkBox1);
 			this->Controls->Add(this->textBox5);
 			this->Controls->Add(this->label8);
@@ -449,42 +409,20 @@ namespace RoboCupReferee {
 			this->Controls->Add(this->textBox1);
 			this->Controls->Add(this->label2);
 			this->Controls->Add(this->listBox1);
-			this->Controls->Add(this->button2);
-			this->Controls->Add(this->button1);
-			this->Controls->Add(this->connect);
 			this->Controls->Add(this->label4);
 			this->Controls->Add(this->label1);
 			this->Name = L"Form1";
 			this->RightToLeft = System::Windows::Forms::RightToLeft::No;
 			this->Text = L"Robocup@home 2015";
 			this->Load += gcnew System::EventHandler(this, &Form1::Form1_Load);
+			this->ClientSizeChanged += gcnew System::EventHandler(this, &Form1::Form1_ClientSizeChanged);
 			this->ResumeLayout(false);
 			this->PerformLayout();
 
 		}
 
 #pragma endregion
-	private: System::Void button1_Click(System::Object^  sender, System::EventArgs^  e) {
-
-
-				 //
-			 }
 	private: System::Void label1_Click(System::Object^  sender, System::EventArgs^  e) {
-			 }
-	private: System::Void button1_Click_1(System::Object^  sender, System::EventArgs^  e) {
-				 if(m_srv == nullptr){
-					 m_srv = gcnew Referee("RoboCupReferee");
-					 //if(m_srv->connect("socio4.iir.nii.ac.jp", 9333)){
-					 if (m_srv->connect(args[1], System::Convert::ToInt32(args[2]))){
-						 m_connected = true;
-						 m_srv->connectToViewer();
-						 m_srv->setAutoExitProc(true);
-						 this->connect->Enabled = false;
-						 this->button1->Enabled = true;
-						 m_srv->trialCount = int::Parse(this->textBox3->Text);
-						 m_srv->numberOfRepetition = int::Parse(this->textBox4->Text);
-					 }
-				 }
 			 }
 private: System::Void timer1_Tick(System::Object^  sender, System::EventArgs^  e) {
 			 if(m_srv != nullptr){
@@ -572,13 +510,6 @@ private: System::Void timer1_Tick(System::Object^  sender, System::EventArgs^  e
 				}
 			 }
 		 }
-private: System::Void button1_Click_2(System::Object^  sender, System::EventArgs^  e) {
-			 m_srv->disconnect();
-			 this->connect->Enabled = true;
-			 this->button1->Enabled = false;
-			 m_connected = false;
-			 m_srv = nullptr;
-		 }
 private: System::Void listBox1_SelectedIndexChanged(System::Object^  sender, System::EventArgs^  e) {
 		 }
 private: System::Void Form1_Load(System::Object^  sender, System::EventArgs^  e) {
@@ -595,6 +526,33 @@ private: System::Void button3_Click(System::Object^  sender, System::EventArgs^ 
 			 m_srv->sendMsgToCtr("moderator_0", "Give_up");
 }
 private: System::Void textBox5_TextChanged(System::Object^  sender, System::EventArgs^  e) {
+}
+private: System::Void Form1_ClientSizeChanged(System::Object^  sender, System::EventArgs^  e) {
+			 int formWidth = this->Size.Width - 20;
+			 if (formWidth < 360){
+				 this->ClientSize = System::Drawing::Size(380, 450);
+			 }
+			 else{
+				 this->label1->Location = System::Drawing::Point(formWidth - 143, 333);
+				 this->listBox1->Size = System::Drawing::Size(formWidth - 80, 172);
+				 this->label2->Location = System::Drawing::Point(formWidth - 77, 26);
+				 this->textBox1->Location = System::Drawing::Point(formWidth - 87, 327);
+				 this->listBox2->Location = System::Drawing::Point(formWidth - 80, 45);
+				 this->textBox2->Location = System::Drawing::Point(formWidth - 224, 278);
+				 this->label4->Location = System::Drawing::Point(formWidth - 279, 283);
+				 this->textBox3->Location = System::Drawing::Point(formWidth - 119, 370);
+				 this->label5->Location = System::Drawing::Point(formWidth - 280, 376);
+				 this->label6->Location = System::Drawing::Point(formWidth - 72, 373);
+				 this->textBox4->Location = System::Drawing::Point(formWidth - 45, 370);
+				 this->button3->Location = System::Drawing::Point((formWidth / 2) - 46, 410);
+				 this->label7->Location = System::Drawing::Point(formWidth - 379, 250);
+				 this->radioButton1->Location = System::Drawing::Point(formWidth - 144, 256);
+				 this->radioButton2->Location = System::Drawing::Point(formWidth - 94, 256);
+				 this->radioButton3->Location = System::Drawing::Point(formWidth - 42, 256);
+				 this->textBox5->Location = System::Drawing::Point(formWidth - 87, 278);
+				 this->label8->Location = System::Drawing::Point(formWidth - 153, 283);
+				 this->checkBox1->Location = System::Drawing::Point(formWidth - 78, 220);
+			 }
 }
 };
 }
