@@ -13,6 +13,8 @@
 #define NUMBER_OF_REPETITION   27
 #define MAX_CHARS_PER_LINE 512
 
+#define TRIAL_NUMBER_TEXT_FILE_NAME "trialnum.txt"
+
 #define SCORE_CORRECT_OBJECT	+400
 #define SCORE_WRONG_OBJECT   	-400
 #define SCORE_CORRECT_TRASH_BOX	+400
@@ -137,7 +139,7 @@ private:
 
 	typedef std::map<std::string, double> JointMap;
 	JointMap initialJointMap;
-
+	Rotation initialRotation;
 };
 
 
@@ -201,7 +203,6 @@ void MyController::InitRobot()
 {
 	RobotObj *r_my = getRobotObj(roboName.c_str());
 	bool allJointInitialized = false;
-	
 
 	CParts * lparts = r_my->getParts("LARM_LINK7");
 	lparts->releaseObj();
@@ -234,6 +235,15 @@ void MyController::InitRobot()
 			}
 			initialJointMap_iterator++;
 			currentJointMap_iterator++;
+			Rotation myRotation;
+			r_my->getRotation(myRotation);
+			if( 	myRotation.qw() != initialRotation.qw()
+				|| myRotation.qx() != initialRotation.qx()
+				|| myRotation.qy() != initialRotation.qy()
+				|| myRotation.qz() != initialRotation.qz())
+			{
+				r_my->setRotation(initialRotation);
+			}
 		}
 	}
 }
@@ -463,11 +473,6 @@ void MyController::onInit(InitEvent &evt)
 
 	getAllEntities(m_entities);
 
-	
-	srand (2);
-
-	trialCount = 0;
-
 	isCleaningUp = false;
 
 	startTime =  0.0;
@@ -499,7 +504,34 @@ void MyController::onInit(InitEvent &evt)
 	entNum = m_entNames.size();
 
 	initialJointMap = getObj(roboName.c_str())->getAllJointAngles();
+	getObj(roboName.c_str())->getRotation(initialRotation); 
+
+	std::ifstream trialNumberFile(TRIAL_NUMBER_TEXT_FILE_NAME);
+	if(trialNumberFile.fail())
+	{
+		trialNumberFile.close();
+		std::cerr << "\"" << TRIAL_NUMBER_TEXT_FILE_NAME << "\" is can not opend" << std::endl;
+		std::cout << "Trial count 0" << std::endl;
+		std::ofstream trialNumberOutput;
+		trialNumberOutput.open(TRIAL_NUMBER_TEXT_FILE_NAME);
+		while(!trialNumberOutput.fail()){
+			std::cerr << "\"" << TRIAL_NUMBER_TEXT_FILE_NAME << "\" is can not opend" << std::endl;
+			trialNumberOutput.open(TRIAL_NUMBER_TEXT_FILE_NAME);
+		}
+		trialCount = 0;
+	}
+	else
+	{
+		std::string trial_str;
+		std::getline(trialNumberFile, trial_str);
+		std::stringstream ss;
+		ss << trial_str;
+		ss >> trialCount;
+	}
+	std::cout << "Trial count " << trialCount << std::endl;
+	srand(trialCount);
 }
+
 
 
 
@@ -684,10 +716,7 @@ void MyController::onRecvMsg(RecvMsgEvent &evt)
 
 	if(msg == "Start_motion")
 	{
-		clock_t t;
-		t = clock();
-		//init = true;
-		srand(t);
+		srand(trialCount);
 		std::cout << "List size " << File_List.size() <<std::endl;
 		std::map < std::string, Location >::iterator it = File_List.begin();
 		std::advance(it, rand() % File_List.size());
@@ -912,6 +941,9 @@ void MyController::breakTask()
 	isCleaningUp = false;
 	//takeAwayObjects();
 	trialCount++;
+	std::ofstream ofs(TRIAL_NUMBER_TEXT_FILE_NAME);
+	ofs << trialCount << std::endl;
+	ofs.close();
 	std::string msg = "RoboCupReferee/reset/";
 	if(m_ref != NULL){
 		// m_ref->sendMsgToSrv(msg.c_str());
