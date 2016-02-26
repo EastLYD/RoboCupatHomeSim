@@ -200,19 +200,41 @@ void MyController::parseFile(const std::string fileNam_my)
 void MyController::InitRobot()
 {
 	RobotObj *r_my = getRobotObj(roboName.c_str());
+	bool allJointInitialized = false;
+	
+
+	CParts * lparts = r_my->getParts("LARM_LINK7");
+	lparts->releaseObj();
+	CParts * rparts = r_my->getParts("RARM_LINK7");
+	rparts->releaseObj();
 
 	r_my->setWheelVelocity(0.0,0.0);
 	r_my->setPosition(m_RobotPos);
 
-	JointMap::iterator now_it = initialJointMap.begin();
+	while(!allJointInitialized)
+	{
+		allJointInitialized = true;
+		JointMap::iterator initialJointMap_iterator = initialJointMap.begin();
+		JointMap currentJointMap = r_my->getAllJointAngles();
+		JointMap::iterator currentJointMap_iterator = currentJointMap.begin();
 
-	while(now_it != initialJointMap.end()){
-		std::string jointName = (*now_it).first;
-		double initialJointAngle = (*now_it).second;
-
-		r_my->setJointVelocity(jointName.c_str(), 0.0, 0.0);
-		r_my->setJointAngle(jointName.c_str(), initialJointAngle);
-		now_it++;
+		while(initialJointMap_iterator != initialJointMap.end())
+		{
+			std::string initialJointName = (*initialJointMap_iterator).first;
+			//LOG_MSG(("<debug> \"%s\" is Joint.", initialJointName.c_str()));
+			if(	(*initialJointMap_iterator).first != (*currentJointMap_iterator).first
+				|| (*initialJointMap_iterator).second != (*currentJointMap_iterator).second)
+			{
+				initialJointName = (*initialJointMap_iterator).first;
+				double initialJointAngle = (*initialJointMap_iterator).second;
+				r_my->setJointVelocity(initialJointName.c_str(), 0.0, 0.0);
+				r_my->setJointAngle(initialJointName.c_str(), initialJointAngle);
+				//LOG_MSG(("<debug> \"%s\" is initialized.", initialJointName.c_str()));
+				allJointInitialized = false;
+			}
+			initialJointMap_iterator++;
+			currentJointMap_iterator++;
+		}
 	}
 }
 

@@ -55,6 +55,8 @@ public:
 	void Record_Kinect_Data(std::string all_msg);
 	void PrintPosture();
 
+	void initialize();
+
 private:
 	// New defifinitions
 	RobotObj *my;
@@ -438,6 +440,20 @@ void RobotController::onInit(InitEvent &evt)
 }
 
 
+void RobotController::initialize()
+{
+	m_state = 0;
+	m_grasp_left = false;
+	for( int i = 0; i<2; i++)
+	{
+		for( int j = 0; j<8; j++)
+		{
+			armJoint[i][j] = 0;
+		}
+	}
+}
+
+
 double RobotController::onAction(ActionEvent &evt)
 {
 	//std::cout << "m_state " <<  m_state << std::endl;
@@ -704,10 +720,16 @@ void RobotController::onRecvMsg(RecvMsgEvent &evt)
 		Record_Postures.clear();
 	}
 
+	if (msg == "Task_end") 
+	{
+		initialize();
+	}
+
 	if ( header == "KINECT_DATA_Sensor" && Kinect_data_flag == true)
 	{
 		Record_Kinect_Data(msg);
 	}
+
 }
 
 
@@ -749,6 +771,8 @@ void RobotController::onCollision(CollisionEvent &evt)
 		const std::vector<std::string> & with = evt.getWith();
 		// 衝突した自分のパーツを得ます
 		const std::vector<std::string> & mparts = evt.getMyParts();
+
+		//LOG_MSG(("<debug> with size : %d", with.size()));
 		//　衝突したエンティティでループします
 		for(int i = 0; i < with.size(); i++){
 			//右手に衝突した場合
