@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<define-class inherit="Entity.xml" name="_kitchen sink">
+
+  <!--derived class from Entity.xml ALWAYS NEEDS body tag-->
+
+  <!--(otherwise sigserver.sh crashes)-->
+
+  <body filename="dummy-body.xml"/>
+
+	<simpleShape type="box">
+		<position x="2.9" y="-46.0" z ="4.0"/>
+		<size sx="60.0" sy="82.0" sz="114.0"/>
+	</simpleShape>
+
+  <x3d>
+    <filename>A1_kitchen_sink.wrl</filename>
+  </x3d>
+</define-class>
