@@ -2,6 +2,8 @@
 #include "stdafx.h"
 #include <fstream>
 #include <vector>
+#include <iostream>
+#include <algorithm>
 
 std::ofstream ofs("log.csv", std::ios::app);
 std::vector<int> tmp_total;
@@ -23,6 +25,8 @@ public:
 		numberOfRepetition = 0;
 		penalty.push_back(0);
 		writeLog = true;
+		logFileName = "log.csv";
+		logFileName_old = "log.csv";
 	};
 	~Referee();
 	int getScore();
@@ -36,12 +40,15 @@ public:
 	void setTotal(int total){ m_total = total; }
 	System::String^ getMessage();
 	System::String^ getRemainingTime();
+	void changeOutputLogFile();
 	virtual void onRecvMsg(sigverse::RecvMsgEvent ^evt) override;
 	virtual double onAction() override;
 	int m_total;
 	int m_score;
 	int trialCount;
 	int numberOfRepetition;
+	System::String^ logFileName;
+	System::String^ logFileName_old;
 
 private:
 	System::Collections::Generic::List<int>^ tmp_score;
@@ -114,6 +121,12 @@ int Referee::getScoreSize()
 int Referee::getMessageSize()
 {
 	return tmp_msg->Count;
+}
+
+void Referee::changeOutputLogFile()
+{
+	ofs.close();	
+	ofs.open(sysString2stdStrng(logFileName), std::ios::app);
 }
 
 double Referee::onAction()
