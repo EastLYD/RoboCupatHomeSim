@@ -20,6 +20,8 @@
 #define SCORE_CORRECT_TRASH_BOX	+400
 #define SCORE_WRONG_TRASH_BOX	-400
 
+#define SRAND_FACTOR 5
+
 class MyController : public Controller {
 public:
 	void   onInit(InitEvent &evt);
@@ -243,6 +245,7 @@ void MyController::InitRobot()
 				|| myRotation.qz() != initialRotation.qz())
 			{
 				r_my->setRotation(initialRotation);
+				r_my->setWheelVelocity(0.0,0.0);
 			}
 		}
 	}
@@ -529,7 +532,7 @@ void MyController::onInit(InitEvent &evt)
 		ss >> trialCount;
 	}
 	std::cout << "Trial count " << trialCount << std::endl;
-	srand(trialCount);
+	//srand(trialCount * SRAND_FACTOR);
 }
 
 
@@ -558,6 +561,7 @@ double MyController::onAction(ActionEvent &evt)
 
 	if(Task_st == true && trialCount < NUMBER_OF_REPETITION)
 	{
+		srand(trialCount * SRAND_FACTOR);
 		broadcastMsg("Task_start");
 		// printf("tast_start moderator \n");
 		PlaceThings();
@@ -716,7 +720,7 @@ void MyController::onRecvMsg(RecvMsgEvent &evt)
 
 	if(msg == "Start_motion")
 	{
-		srand(trialCount);
+		srand(trialCount * SRAND_FACTOR);
 		std::cout << "List size " << File_List.size() <<std::endl;
 		std::map < std::string, Location >::iterator it = File_List.begin();
 		std::advance(it, rand() % File_List.size());

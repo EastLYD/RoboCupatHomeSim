@@ -420,7 +420,7 @@ void RobotController::onInit(InitEvent &evt)
 	m_relayFrontTable_reset = Vector3d(-80, 30,-50);
 	m_relayFrontTrash = Vector3d(-80, 30, -80);
 
-	cycle = 3;
+	cycle = 27;
 
 	m_onActionReturn = 0.01;
 
