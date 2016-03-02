@@ -20,6 +20,7 @@
 #define SCORE_CORRECT_TRASH_BOX	+400
 #define SCORE_WRONG_TRASH_BOX	-400
 
+#define SRAND_INITIAL_NUMBER 2
 #define SRAND_FACTOR 5
 
 class MyController : public Controller {
@@ -561,7 +562,7 @@ double MyController::onAction(ActionEvent &evt)
 
 	if(Task_st == true && trialCount < NUMBER_OF_REPETITION)
 	{
-		srand(trialCount * SRAND_FACTOR);
+		srand(SRAND_INITIAL_NUMBER + trialCount * SRAND_FACTOR);
 		broadcastMsg("Task_start");
 		// printf("tast_start moderator \n");
 		PlaceThings();
@@ -720,7 +721,7 @@ void MyController::onRecvMsg(RecvMsgEvent &evt)
 
 	if(msg == "Start_motion")
 	{
-		srand(trialCount * SRAND_FACTOR);
+		srand(SRAND_INITIAL_NUMBER + trialCount * SRAND_FACTOR);
 		std::cout << "List size " << File_List.size() <<std::endl;
 		std::map < std::string, Location >::iterator it = File_List.begin();
 		std::advance(it, rand() % File_List.size());
