@@ -15,10 +15,13 @@
 
 #define TRIAL_NUMBER_TEXT_FILE_NAME "trialnum.txt"
 
-#define SCORE_CORRECT_OBJECT	+400
-#define SCORE_WRONG_OBJECT   	-400
-#define SCORE_CORRECT_TRASH_BOX	+400
-#define SCORE_WRONG_TRASH_BOX	-400
+#define ALLOW_ADD_SCORE_WITHOUT_THROW_AWAY true
+#define ADD_SCORE_GRASP_RIGHT_OBJECT	+400
+#define ADD_SCORE_GRASP_WRONG_OBJECT	-400
+#define ADD_SCORE_RIGHT_OBJECT_IN_RIGHT_TRASH_BOX	+600
+#define ADD_SCORE_RIGHT_OBJECT_IN_WRONG_TRASH_BOX	-200
+#define ADD_SCORE_WRONG_OBJECT_IN_RIGHT_TRASH_BOX	0
+#define ADD_SCORE_WRONG_OBJECT_IN_WRONG_TRASH_BOX	0
 
 #define SRAND_INITIAL_NUMBER 2
 #define SRAND_FACTOR 5
@@ -757,13 +760,13 @@ void MyController::onRecvMsg(RecvMsgEvent &evt)
 
 	if(msg == "Object_Grasped")
 	{
-		CheckObjects();
+		//CheckObjects();
 	}
 
 
 	if(msg == "Object_Trashed")
 	{
-		CheckTrasheBoxs();
+		//CheckTrasheBoxs();
 	}
 
 
@@ -775,7 +778,7 @@ void MyController::onRecvMsg(RecvMsgEvent &evt)
 		startTime = 0.0;
 		Task_st = true;
 
-		CheckObjects();
+		if(ALLOW_ADD_SCORE_WITHOUT_THROW_AWAY) CheckObjects();
 		CheckTrasheBoxs();  
 		breakTask();
 		broadcastMsg("Task_end");
@@ -842,7 +845,7 @@ void  MyController::CheckObjects()
 			if(i == Location_Status[0])
 			{
 				std::stringstream ss;
-				ss << SCORE_CORRECT_OBJECT;
+				ss << ADD_SCORE_GRASP_RIGHT_OBJECT;
 				std::string msg = "RoboCupReferee/Robot took the right Object [" + Cm_Objects[Location_Status[0]].ObjectName + "]" "/+" + ss.str();
 
 				if(m_ref != NULL){
@@ -854,8 +857,8 @@ void  MyController::CheckObjects()
 			}
 			else{				
 				std::stringstream ss;
-				ss << SCORE_WRONG_OBJECT;
-				std::string msg = "RoboCupReferee/Robot  the wrong Object "  "" "/" + ss.str();
+				ss << ADD_SCORE_GRASP_WRONG_OBJECT;
+				std::string msg = "RoboCupReferee/Robot took the wrong Object "  "" "/" + ss.str();
 
 				if(m_ref != NULL){
 					m_ref->sendMsgToSrv(msg.c_str());
@@ -896,8 +899,9 @@ void  MyController::CheckTrasheBoxs()
 				if( trashBoxIndex == Location_Status[1] && objectIndex == Location_Status[0] ){
 					//LOG_MSG(("<For debug> \"Correct\" object was trashed to \"Correct\" trash box."));
 					std::stringstream ss;
-					ss << SCORE_CORRECT_TRASH_BOX;
-					std::string msg = "RoboCupReferee/Robot chose th right Trash box [" + Cm_trashBoxs[trashBoxIndex].TrashBoxName + "]" "/+" + ss.str();
+					if(ADD_SCORE_RIGHT_OBJECT_IN_RIGHT_TRASH_BOX > 0) ss << "+";
+					ss << ADD_SCORE_RIGHT_OBJECT_IN_RIGHT_TRASH_BOX;
+					std::string msg = "RoboCupReferee/Robot threw away right obj in right trash box " "/" + ss.str();
 					if(m_ref != NULL){
 						m_ref->sendMsgToSrv(msg.c_str());
 					}
@@ -907,21 +911,42 @@ void  MyController::CheckTrasheBoxs()
 				}
 				else if( trashBoxIndex == Location_Status[1] ){
 					//LOG_MSG(("<For debug> \"Wrong\" object was trashed to \"Correct\" trash box."));	
-				}
-				else if( objectIndex == Location_Status[0] ){
-					//LOG_MSG(("<For debug> \"Correct\" object was trashed to \"Wrong\" trash box."));	
 					std::stringstream ss;
-					ss << SCORE_WRONG_TRASH_BOX;
-					std::string msg = "RoboCupReferee/Robot chose the wrong Trash box"  "" "/" + ss.str();
+					if(ADD_SCORE_WRONG_OBJECT_IN_RIGHT_TRASH_BOX > 0) ss << "+";
+					ss << ADD_SCORE_WRONG_OBJECT_IN_RIGHT_TRASH_BOX;
+					std::string msg = "RoboCupReferee/Robot threw away wrong obj in right trash box " "/" + ss.str();
 					if(m_ref != NULL){
 						m_ref->sendMsgToSrv(msg.c_str());
 					}
 					else{
 						LOG_MSG((msg.c_str()));
-					}				
+					}
+				}
+				else if( objectIndex == Location_Status[0] ){
+					//LOG_MSG(("<For debug> \"Correct\" object was trashed to \"Wrong\" trash box."));	
+					std::stringstream ss;
+					if(ADD_SCORE_RIGHT_OBJECT_IN_WRONG_TRASH_BOX > 0) ss << "+";
+					ss << ADD_SCORE_RIGHT_OBJECT_IN_WRONG_TRASH_BOX;
+					std::string msg = "RoboCupReferee/Robot threw away right obj in wrong trash box " "/" + ss.str();
+					if(m_ref != NULL){
+						m_ref->sendMsgToSrv(msg.c_str());
+					}
+					else{
+						LOG_MSG((msg.c_str()));
+					}
 				}
 				else{
 					//LOG_MSG(("<For debug> \"Wrong\" object was trashed to \"Wrong\" trash box."));	
+					std::stringstream ss;
+					if(ADD_SCORE_WRONG_OBJECT_IN_WRONG_TRASH_BOX > 0) ss << "+";
+					ss << ADD_SCORE_WRONG_OBJECT_IN_WRONG_TRASH_BOX;
+					std::string msg = "RoboCupReferee/Robot threw away wrong obj in wrong trash box " "/" + ss.str();
+					if(m_ref != NULL){
+						m_ref->sendMsgToSrv(msg.c_str());
+					}
+					else{
+						LOG_MSG((msg.c_str()));
+					}
 				}
 			}
 			else
