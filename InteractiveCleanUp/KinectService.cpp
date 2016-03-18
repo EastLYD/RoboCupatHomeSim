@@ -29,6 +29,7 @@ private:
 	std::string File_Current;
 	double Current_t;
 	clock_t Start_t;
+	std::string Folder;
 };
 
 void KinectService::onInit(InitEvent &evt){
@@ -153,14 +154,17 @@ void KinectService::onRecvMsg(RecvMsgEvent &evt){
 	strPos2 = ss.find("_", strPos1);
 	headss.assign(ss, strPos1, strPos2-strPos1);
 	if (headss == "Send") {
+		 Folder = "Motion_Data/";
 		// Contol of body movement by KINECT
 		strPos3 = ss.find(".", strPos2+1);
 		File_ID.assign(ss, strPos2+1, strPos3);
 		File_ID += "dat";
+		 Folder += File_ID;
+		  std::cout << "The File path " <<  Folder << std::endl;
 	}
 	if (msg == "Start_motion" && sender == "moderator_0" )
 	{
-		in_stream_motion.open(File_ID.c_str());
+		in_stream_motion.open(Folder.c_str());
 		std::string previousLine = "";
 		while(getline(in_stream_motion,line)) // To get you all the lines.
 		{

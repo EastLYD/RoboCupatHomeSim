@@ -10,7 +10,7 @@
 //#include  <random>
 //#include  <iterator>
 
-#define NUMBER_OF_REPETITION   27
+#define NUMBER_OF_REPETITION   41
 #define MAX_CHARS_PER_LINE 512
 
 #define TRIAL_NUMBER_TEXT_FILE_NAME "trialnum.txt"
@@ -724,20 +724,24 @@ void MyController::onRecvMsg(RecvMsgEvent &evt)
 
 	if(msg == "Start_motion")
 	{
-		srand(SRAND_INITIAL_NUMBER + trialCount * SRAND_FACTOR);
+		//srand(SRAND_INITIAL_NUMBER + trialCount * SRAND_FACTOR);
 		std::cout << "List size " << File_List.size() <<std::endl;
 		std::map < std::string, Location >::iterator it = File_List.begin();
-		std::advance(it, rand() % File_List.size());
+		//std::advance(it, rand() % File_List.size());
+		std::advance(it, trialCount);
+		//std::cout << " the trial count " << trialCount << std::endl;
+		//std::advance(it, (trialCount)+41); // Modetator2
 		LOG_MSG(("Show Task"));
 		std::string File_name = "Send_";
 		File_name+= it->first;
 		File_name+= ".";
-		std::cout << "File Name moderator " << File_name<<std::endl;
 		sendMsg("Kinect_000", File_name.c_str());
 		Location Curent_Locations = it->second;
 
 		// Object_Position = Curent_Locations[0];
 		// Trash_Position =  Curent_Locations[1];
+		//std::cout << " Curent_Locations[0] " << Curent_Locations[0] << std::endl;
+        //std::cout << " Curent_Locations[1] " << Curent_Locations[1] << std::endl;
 		for(int i =0;i<Curent_Locations.size();i++)
 		{
 			if( Curent_Locations[i] == "Right")
