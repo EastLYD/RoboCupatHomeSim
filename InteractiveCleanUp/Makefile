@@ -2,7 +2,7 @@
 SIG_SRC  = $(SIGVERSE_PATH)/include
 
 #オブジェクトファイルの指定
-OBJS     =  Robot.so  Human_avatar.so  TrashBox.so Table.so Moderator.so KinectService.so
+OBJS     =  Robot.so  Human_avatar.so  TrashBox.so Table.so Moderator1.so Moderator2.so  KinectService.so
 
 all: $(OBJS)
 
