@@ -728,13 +728,14 @@ void MyController::onRecvMsg(RecvMsgEvent &evt)
 		std::cout << "List size " << File_List.size() <<std::endl;
 		std::map < std::string, Location >::iterator it = File_List.begin();
 		//std::advance(it, rand() % File_List.size());
-		std::advance(it, trialCount);
-		//std::cout << " the trial count " << trialCount << std::endl;
-		//std::advance(it, (trialCount)+41); // Modetator2
+		//std::advance(it, trialCount); // Moderator1
+		std::advance(it, (trialCount)+41); // Modetator2
+		std::cout << " the trial count " << trialCount << std::endl;
 		LOG_MSG(("Show Task"));
 		std::string File_name = "Send_";
 		File_name+= it->first;
 		File_name+= ".";
+		std::cout << " Moderator File Name " << File_name << std::endl;
 		sendMsg("Kinect_000", File_name.c_str());
 		Location Curent_Locations = it->second;
 

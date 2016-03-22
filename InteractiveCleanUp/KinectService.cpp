@@ -86,7 +86,7 @@ double KinectService::onAction(ActionEvent &evt){
 			int strPos22;
 			int strPos32;
 			std::string headss2;
-			strPos22 = list_current[Data_Size].find(" ", strPos12);
+			strPos22 = list_motion[Data_Size].find(" ", strPos12);
 			headss2.assign(list_motion[Data_Size], strPos12, strPos22-strPos12);
 
 			if ( headss2 == "KINECT_DATA" )
@@ -115,7 +115,7 @@ double KinectService::onAction(ActionEvent &evt){
 			if(Send_Data && headss == "KINECT_DATA_Sensor" )
 			{
 				std::string Message;
-				Message = list_current[Data_Size] + str + ".";
+				Message = list_current[Data_Size] + str + "..";
 				sendMsg("robot_000", Message.c_str());
 			}
 			int strPos12 = 0;
@@ -156,11 +156,12 @@ void KinectService::onRecvMsg(RecvMsgEvent &evt){
 	if (headss == "Send") {
 		 Folder = "Motion_Data/";
 		// Contol of body movement by KINECT
+		File_ID = "";
 		strPos3 = ss.find(".", strPos2+1);
 		File_ID.assign(ss, strPos2+1, strPos3);
 		File_ID += "dat";
 		 Folder += File_ID;
-		  std::cout << "The File path " <<  Folder << std::endl;
+		//  std::cout << "The File path " <<  Folder << std::endl;
 	}
 	if (msg == "Start_motion" && sender == "moderator_0" )
 	{

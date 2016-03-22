@@ -77,6 +77,9 @@
     <set-attr-value name="graspable" value="false"/>
   </instanciate> 
 
+
+ <!--  Moderator 1    --> 
+
   <instanciate class="seModerator.xml">
     <set-attr-value name="name" value="moderator_0"/>
     <set-attr-value name="dynamics" value="false"/>
@@ -85,14 +88,28 @@
     <set-attr-value name="z" value="190.0"/>
        <set-attr-value name="language" value="c++"/>
       <set-attr-value name="implementation"
-                    value="./Moderator.so"/> 
+                    value="./Moderator1.so"/> 
     <set-attr-value name="collision" value="false"/>
     <set-attr-value name="graspable" value="false"/>
   </instanciate>
 
 
+<!--  Moderator 2    -->
 
-
+<!--
+  <instanciate class="seModerator.xml">
+    <set-attr-value name="name" value="moderator_0"/>
+    <set-attr-value name="dynamics" value="false"/>
+    <set-attr-value name="x" value="190.0"/>
+    <set-attr-value name="y" value="200.0"/>
+    <set-attr-value name="z" value="190.0"/>
+       <set-attr-value name="language" value="c++"/>
+      <set-attr-value name="implementation"
+                    value="./Moderator2.so"/> 
+    <set-attr-value name="collision" value="false"/>
+    <set-attr-value name="graspable" value="false"/>
+  </instanciate>
+-->
 
 <!--
   <instanciate class="seSidetable_B.xml">
