@@ -7,6 +7,9 @@
 #include <iomanip>
 #include <map>
 #include <time.h> 
+#include <string> 
+#include <stdio.h>
+#include <stdlib.h>
 //#include  <random>
 //#include  <iterator>
 
@@ -164,6 +167,7 @@ void MyController::parseFile(const std::string fileNam_my)
 	std::string On_table;
 	std::string Trash_Box;
 	Location  elements;
+
 	while(!fin.eof()){
 		//std::map < int, std::pair<std::string, std::string> > One_File;
 		//MapType One_File;
@@ -724,20 +728,25 @@ void MyController::onRecvMsg(RecvMsgEvent &evt)
 
 	if(msg == "Start_motion")
 	{
-		//srand(SRAND_INITIAL_NUMBER + trialCount * SRAND_FACTOR);
 		std::cout << "List size " << File_List.size() <<std::endl;
-		std::map < std::string, Location >::iterator it = File_List.begin();
-		//std::advance(it, rand() % File_List.size());
-		std::advance(it, trialCount); // Moderator1
-		//std::advance(it, (trialCount)+41); // Modetator2
+	std::stringstream ss;
+	ss << "File";
+    ss << trialCount;// Moderator1
+    // ss << trialCount+41; // Modetator2
+    std::string str = ss.str();  
+    //Location Curent_Locations  = File_List[str];
+
+
 		std::cout << " the trial count " << trialCount << std::endl;
 		LOG_MSG(("Show Task"));
 		std::string File_name = "Send_";
-		File_name+= it->first;
+		//File_name+= it->first;
+		File_name+=str ;
 		File_name+= ".";
 		std::cout << " Moderator File Name " << File_name << std::endl;
 		sendMsg("Kinect_000", File_name.c_str());
-		Location Curent_Locations = it->second;
+		//Location Curent_Locations = it->second;
+		Location Curent_Locations = File_List[str];
 
 		// Object_Position = Curent_Locations[0];
 		// Trash_Position =  Curent_Locations[1];
