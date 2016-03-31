@@ -16,7 +16,7 @@
 #define DEG2RAD(DEG) ( (M_PI) * (DEG) / 180.0 )
 #define MAX_CHARS_PER_LINE 512
 
-#define NUMBER_OF_REPETITION   14
+#define NUMBER_OF_REPETITION   10
 
 double tab_joint_left[3][8] = {{0,0,-1.57,0,0,0,0,0},{-0.68,0,0,0,0,0,0,0},{-1.3,0,0,0,0,0,0,0}};
 double tab_joint_right[3][8] = {{0,0,1.57,0,0,0,0,0},{0.68,0,0,0,0,0,0},{1.3,0,0,0,0,0,0,0}};

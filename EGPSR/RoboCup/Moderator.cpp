@@ -7,7 +7,7 @@
 #include <iomanip>
 
 #define JOINT_NUM 7
-#define MAX_TRIAL 14
+#define MAX_TRIAL 10
 #define RANDOM_TRIAL 10
 #define MAX_SCORE 1200
 #define PENALTY "-100"
@@ -931,7 +931,7 @@ void MyController::reposObjects()
 			target->setPosition(Vector3d(xObj, yObj, zObj));
 			Rotation rot;
 			rot.setQuaternion(1, 0, 0, 0);
-			target->setRotation(rot);
+            target->setRotation(rot);
 			it2->x = xObj;
 			it2->y = yObj;
 			it2->z = zObj;

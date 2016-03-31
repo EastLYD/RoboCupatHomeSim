@@ -9,8 +9,3 @@ lobby:mugcup.
 kitchen:apple.
 bed room:mugcup.
 living room:apple.
-living room:can.
-bed room:can.
-living room:mugcup.
-bed room:apple.
-living room:petbottle.
