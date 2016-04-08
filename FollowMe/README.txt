@@ -20,5 +20,7 @@ Role of each directory
   Source code including template code to distribute to participants
 
 
+* JapanOpen2015
 
+  Source code used in Japan Open 2015
 
